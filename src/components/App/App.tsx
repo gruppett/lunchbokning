@@ -1,7 +1,5 @@
 import {useState, useEffect, createContext} from 'react';
-import logo from './logo.svg';
 import SignIn from '../SignIn/SignIn';
-import SignOutButton from '../SignOutButton/SignOutButton';
 import { useIsAuthenticated, useMsal } from "@azure/msal-react";
 import { loginRequest } from '../../authConfig';
 import { callMsGraph } from "../../graph";
@@ -27,7 +25,7 @@ export const GraphContext = createContext({} as GraphContextInterface)
 
 function App() {
   const isAuthenticated = useIsAuthenticated();
-  const { instance, accounts, inProgress } = useMsal();
+  const { instance, accounts } = useMsal();
   const [graphData, setGraphData] = useState({} as GraphContextInterface);
 
   useEffect(() => {
@@ -47,7 +45,7 @@ function App() {
     });
     
   
-  }, [])
+  }, [instance, accounts])
   console.log(graphData)
 
 

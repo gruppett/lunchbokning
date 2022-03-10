@@ -8,9 +8,7 @@ function handleLogout(instance: any) {
   });
 }
 
-type Props = {}
-
-function SignOutButton({}: Props) {
+function SignOutButton() {
   const { instance } = useMsal();
   return (
     <button onClick={() => handleLogout(instance)}>Logga ut</button>
