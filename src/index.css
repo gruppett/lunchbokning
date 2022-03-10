@@ -3,10 +3,3 @@
 @tailwind components;
 
 @tailwind utilities;
-
-
-@font-face{
-  font-family: "Segoe UI";
-  font-weight: "600";
-  font-size: "15";
-}

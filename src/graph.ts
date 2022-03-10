@@ -14,8 +14,12 @@ export async function callMsGraph(accessToken: any) {
     method: "GET",
     headers: headers
   };
-
-  return fetch(graphConfig.graphMeEndpoint, options)
+  let result: any = {}
+  result.user = await fetch(graphConfig.graphMeEndpoint, options)
     .then(response => response.json())
     .catch(error => console.log(error));
+  result.groups = await fetch(graphConfig.graphTransitiveMemberOf, options)
+    .then(response => response.json())
+    .catch(error => console.log(error));
+  return result;
 }
