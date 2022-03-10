@@ -4,10 +4,10 @@ import { GraphContext } from "../App/App"
 
 
 function Header() {
-  const {mail} = useContext(GraphContext)
+  const {displayName} = useContext(GraphContext)
   return (
-      <header>
-        <p>Inloggad som {mail}</p>
+      <header className='flex justify-between p-4'>
+        <p>Inloggad som {displayName}</p>
         <SignOutButton />
       </header>
   )
