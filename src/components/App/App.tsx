@@ -4,24 +4,24 @@ import { useIsAuthenticated, useMsal } from "@azure/msal-react";
 import { loginRequest } from '../../authConfig';
 import { callMsGraph } from "../../graph";
 import Header from '../Header/Header';
-
 interface GraphContextInterface {
-  businessPhones: []
-  displayName: string
-  givenName: string
-  id: string
-  jobTitle: string
-  mail: string
-  mobilePhone: string
-  officeLocation: string
-  preferredLanguage: string
-  surname: string
-  userPrincipalName: string
+  user: {
+    businessPhones: []
+    displayName: string
+    givenName: string
+    id: string
+    jobTitle: string
+    mail: string
+    mobilePhone: string
+    officeLocation: string
+    preferredLanguage: string
+    surname: string
+    userPrincipalName: string
+  }
+  groups: any
 }
 
 export const GraphContext = createContext({} as GraphContextInterface)
-
-
 
 function App() {
   const isAuthenticated = useIsAuthenticated();
@@ -43,11 +43,19 @@ function App() {
         await callMsGraph(response.accessToken).then(response => setGraphData(response));
       });
     });
-    
-  
-  }, [instance, accounts])
-  console.log(graphData)
 
+  }, [instance, accounts])
+
+  // for development,
+  // see all groups user is member of in console.log as well as the graph data
+  if (graphData.groups != undefined ) {
+    console.log(graphData)
+    let groups: string[] = [];
+    graphData.groups?.value.forEach((g:any) => {
+      groups.push(g.displayName)
+    });
+    console.log(groups)
+  }
 
   if (!isAuthenticated) return (
       <SignIn />
