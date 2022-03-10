@@ -1,10 +1,9 @@
-import React,{ Context, useContext } from 'react'
+import React,{ useContext } from 'react'
 import SignOutButton from '../SignOutButton/SignOutButton';
 import { GraphContext } from "../App/App"
 
-type Props = {}
 
-function Header({}: Props) {
+function Header() {
   const {mail} = useContext(GraphContext)
   return (
       <header>
