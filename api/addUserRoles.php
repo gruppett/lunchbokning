@@ -5,7 +5,6 @@
  * * Important
  * ! Felhantering
  * TODO: employee.vegetarian saknas
- * TODO: fixxa array för roller
 */
 
 declare(strict_types=1);
