@@ -89,7 +89,9 @@ if ($sql->execute()) {
     exit();
 }
 
+//* Kolla om rollerna finns i tabell roles och ta fram deras id
 
+//* Om rollerna finns lägg till user och roll i tabell employeeroles
 
 if (count($roles) > 0) {
     //* Lägg till roller i DB
