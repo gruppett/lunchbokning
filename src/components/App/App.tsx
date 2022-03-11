@@ -4,6 +4,15 @@ import { useIsAuthenticated, useMsal } from "@azure/msal-react";
 import { loginRequest } from '../../authConfig';
 import { callMsGraph } from "../../graph";
 import Header from '../Header/Header';
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Link,
+} from "react-router-dom";
+import Nav from '../Nav/Nav';
+
+
 interface GraphContextInterface {
   user: {
     businessPhones: []
@@ -30,6 +39,10 @@ function App() {
 
   useEffect(() => {
 
+    if (!isAuthenticated) {
+      return
+    }
+
     const request = {
       ...loginRequest,
       account: accounts[0]
@@ -44,7 +57,7 @@ function App() {
       });
     });
 
-  }, [instance, accounts])
+  }, [instance, accounts, isAuthenticated])
 
   // for development,
   // see all groups user is member of in console.log as well as the graph data
@@ -62,9 +75,25 @@ function App() {
   ) 
    
   return (
-    <GraphContext.Provider value={graphData}>
-      <Header></Header>
-    </GraphContext.Provider>
+    <BrowserRouter>
+      <GraphContext.Provider value={graphData}>
+        <div className='flex'>
+
+        <Nav></Nav>
+        <div className="flex-grow">
+        <Header></Header>
+        <Routes>
+          <Route path="/" element={<>Översikt</>}></Route>
+          <Route path="personlig" element={<>Personligt</>}></Route>
+          <Route path="grupper" element={<>Grupper</>}></Route>
+          <Route path="externa-grupper" element={<>Externa grupper</>}></Route>
+          <Route path="sammanstallning" element={<>Sammanställning</>}></Route>
+          <Route path="*" element={<>404</>}></Route>
+        </Routes>
+        </div>
+        </div>
+      </GraphContext.Provider>
+    </BrowserRouter>
   );
 }
 

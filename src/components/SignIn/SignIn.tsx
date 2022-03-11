@@ -1,8 +1,8 @@
 import React from 'react'
 import { useMsal } from "@azure/msal-react";
 import { loginRequest } from "../../authConfig";
-import hjorten from "./hjorten.png"
-import ms from "./ms.svg"
+import hjorten from "../../assets/hjorten.png"
+import ms from "../../assets/ms.svg"
 
 
 function handleLogin(instance: any) {
