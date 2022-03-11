@@ -17,26 +17,23 @@ if ($_SERVER['REQUEST_METHOD'] !== "POST") {
     exit();
 }
 
-//* Kolla om method är POST med mail
+//* Kolla om metod är POST med mail
 if (!isset($_POST['mail'])) {
     $error[] = "Bad indata. Mail saknas";
 }
 
 //* Kolla om method är POST med roller och i array
-if ((!isset($_POST['roles'])) && (!is_array($_POST['roles']))) {
-    $error[] = "Bad indata. Roller saknas eller är inte en array";
+if ((!isset($_POST['roles'])) || (!is_array($_POST['roles']))) {
+    $error[] = "Bad indata. Roller saknas eller så är roller inte i en array";
 }
 
 //* Filtrera, sanitize strängar och kolla att mail inte är tom.
-$mail = trim(filter_input(INPUT_POST, "mail", FILTER_SANITIZE_EMAIL));
-if ($mail === "") {
-    // Meddela fel
-    $error[] = "Fel vid spara, Mail får inte vara tom";
-} 
-
-//* Filtrera, sanitize strängar och kolla att rollerna inte är tom och i array
-if (isset($_POST['roles'])) {
-    $roles = array_map("htmlspecialchars", $_POST['roles']);
+if (isset($_POST['mail'])) {
+    $mail = trim(filter_input(INPUT_POST, "mail", FILTER_SANITIZE_EMAIL));
+    if ($mail === "") {
+        // Meddela fel
+        $error[] = "Fel vid spara, Mail får inte vara tom";
+    } 
 }
 
 //* Indata fel?
@@ -47,6 +44,11 @@ if (count($error) > 0) {
     $out->error = $error;
     echo skickaJSON($out, 400);
     exit();
+}
+
+//* Filtrera, sanitize strängar och kolla att rollerna inte är tom och i array
+if (isset($_POST['roles'])) {
+    $roles = array_map("htmlspecialchars", $_POST['roles']);
 }
 
 //* Koppla till DB
@@ -73,7 +75,7 @@ if ($resultat->num_rows > 0) {
 }
 
 //* Lägg till ny mail i DB 
-$sql = $db->prepare("INSERT INTO employees mail VALUES ($mail)");
+$sql = $db->prepare("INSERT INTO employees (Mail) VALUES ('$mail')");
 
 if ($sql->execute()) {
     $nyID = $db->insert_id;
@@ -91,51 +93,25 @@ if ($sql->execute()) {
 
 //* Kolla om rollerna finns i tabell roles och ta fram deras id
 
-//* Om rollerna finns lägg till user och roll i tabell employeeroles
+for ($i = 0; $i < count($roles); $i++) {
+    $roller = array();
+    $sql = $db->prepare("SELECT RoleID as id FROM roles WHERE Role = '$roles[$i]'");
+    $sql->execute();
+    $roller[] = mysqli_fetch_assoc($sql->get_result());
+}
+print_r($roller);
 
-if (count($roles) > 0) {
-    //* Lägg till roller i DB
-    foreach ($roles as $rolle) {
-        $sql = $db->prepare("INSERT INTO employee_roles (EmployeeID, RoleID) VALUES ($nyID, $rolle)");
+//* Om rollerna finns lägg till user och roll i tabell employeeroles
+if (count($roller) >= 1) {
+
+    for ($i = 0; $i < count($roller); $i++) {
+        $sql = $db->prepare("INSERT INTO employeeRoles (EmployeeID, RoleID) VALUES ('$nyID', '$roller[$i]')");
         $sql->execute();
     }
 }
-for ($i = 0; $i < count($roles); $i++) {
-    $sql .= $db->prepare("INSERT INTO employeesroles mail VALUES ($mail, $roles[$i])");
-    
-}
-
-
-if ($sql->execute()) {
-    $nyID = $db->insert_id;
-    $out = new stdClass();
-    $out->meddelande = ["Spara lyckades"];
-    $out->id = $nyID;
-    echo skickaJSON($out);
-    exit();
-} else {
-    // Meddela fel
-    $fel = $db->error;
-    $out = new stdClass();
-    $out->error = ["Fel vid spara", " $fel"];
-    echo skickaJSON($out, 400);
-    exit();
-}
-
-//* Lägg till roller i DB
-
-
-
 
 echo skickaJSON($out);
 exit();
-
-
-
-
-
-
-
 
 
 
@@ -169,7 +145,3 @@ if (isset($mail)) {
         }
     }
 }
-
-
-
-
