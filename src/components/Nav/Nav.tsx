@@ -39,8 +39,8 @@ function Nav() {
   return (
     <nav className='flex flex-col items-center gap-3 p-3'>
       <img className="w-12" src={hjorten}></img>
-      {nav.map(ne => (
-        <NavElement element={ne}></NavElement>
+      {nav.map((ne, i) => (
+        <NavElement element={ne} key={i}></NavElement>
       ))
       } 
     </nav>
