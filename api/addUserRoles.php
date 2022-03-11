@@ -125,11 +125,11 @@ for ($i = 0; $i < count($roles); $i++) {
     }
 }
 
-//* Om rollerna finns lägg till user och roll i tabell employeeroles och skicka tillbaka deras roll och roll id
+//* Om rollerna finns lägg till user och roll i tabell employee_roles och skicka tillbaka deras roll och roll id
 if (count($roller) >= 1) {
 
     for ($i = 0; $i < count($roller); $i++) {
-        $sql = $db->prepare("INSERT INTO employeeRoles (EmployeeID, RoleID) VALUES ('$nyID', '$roller[$i]')");
+        $sql = $db->prepare("INSERT INTO employee_roles (EmployeeID, RoleID) VALUES ('$nyID', '$roller[$i]')");
         if  ($sql->execute()){
             $rec = ["Spara lyckades för $nyID med rollen $roller[$i]"];
             $out->roller[] = $rec;
