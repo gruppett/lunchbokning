@@ -30,6 +30,10 @@ function App() {
 
   useEffect(() => {
 
+    if (!isAuthenticated) {
+      return
+    }
+
     const request = {
       ...loginRequest,
       account: accounts[0]
@@ -44,7 +48,7 @@ function App() {
       });
     });
 
-  }, [instance, accounts])
+  }, [instance, accounts, isAuthenticated])
 
   // for development,
   // see all groups user is member of in console.log as well as the graph data
