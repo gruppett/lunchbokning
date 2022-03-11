@@ -1,9 +1,11 @@
 import {useState, useEffect, createContext} from 'react';
-import SignIn from '../SignIn/SignIn';
 import { useIsAuthenticated, useMsal } from "@azure/msal-react";
 import { loginRequest } from '../../authConfig';
 import { callMsGraph } from "../../graph";
+import SignIn from '../SignIn/SignIn';
 import Header from '../Header/Header';
+import Overview from '../Views/Quick_overview';
+
 interface GraphContextInterface {
   user: {
     businessPhones: []
@@ -59,13 +61,14 @@ function App() {
 
   if (!isAuthenticated) return (
       <SignIn />
-  ) 
+  ); 
    
   return (
     <GraphContext.Provider value={graphData}>
       <Header></Header>
+      <Overview></Overview>
     </GraphContext.Provider>
   );
-}
+};
 
 export default App;
