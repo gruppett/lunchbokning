@@ -61,11 +61,6 @@ if (count($error) > 0) {
     exit();
 }
 
-// //* Filtrera, sanitize strängar för array
-// if (isset($_POST['roles'])) {
-//     $roles = array_map("htmlspecialchars", $_POST['roles']);
-// }
-
 //* Koppla till DB
 if (!$db = kopplaDB()) {
      //! Meddela fel
@@ -86,27 +81,29 @@ if ($resultat->num_rows > 0) {
     $out = new stdClass();
     $out->meddelande = ["$mail finns redan"];
     echo skickaJSON($out, 200);
-    // TODO: ta bort kommentar
-    #exit();
+    exit();
 }
 
-//* Lägg till ny mail i DB 
-//! Bort kommenterad för att testa
-// $sql = $db->prepare("INSERT INTO employees (Mail) VALUES ('$mail')");
+//* Ny class för json
+$out = new stdClass();
+$out->roller = [];
 
-// if ($sql->execute()) {
-//     $nyID = $db->insert_id;
-//     $out = new stdClass();
-//     $out->meddelande = ["Spara lyckades för $mail"];
-//     $out->id = $nyID;
-// } else {
-//     //! Meddela fel
-//     $fel = $db->error;
-//     $out = new stdClass();
-//     $out->error = ["Fel vid spara", " $fel"];
-//     echo skickaJSON($out, 400);
-//     exit();
-// }
+//* Lägg till ny mail i DB 
+//TODO: Kommentera för att testa array 
+$sql = $db->prepare("INSERT INTO employees (Mail) VALUES ('$mail')");
+
+if ($sql->execute()) {
+     $nyID = $db->insert_id;     
+     $out->meddelande = ["Spara lyckades för $mail med ID $nyID"];
+     // $out->id = $nyID;
+} else {
+    //! Meddela fel
+    $fel = $db->error;
+    $out = new stdClass();
+    $out->error = ["Fel vid spara", " $fel"];
+    echo skickaJSON($out, 400);
+    exit();
+}
 
 //* Kolla om rollerna finns i tabell roles och ta fram deras id o lägg till i array
 for ($i = 0; $i < count($roles); $i++) {
@@ -121,57 +118,33 @@ for ($i = 0; $i < count($roles); $i++) {
         $roller[] = $row['id'];
     } else {
         //! Meddela fel
+        // TODO: Eller ska vi tillåta att fortsätta utan och lägga till?
         $out = new stdClass();
         $out->error = ["Rollen $roles[$i] finns inte i tabellen roles"];
         echo skickaJSON($out, 400);
         exit();
     }
-
 }
 
-print_r($roller);
-
-//* Om rollerna finns lägg till user och roll i tabell employeeroles
+//* Om rollerna finns lägg till user och roll i tabell employeeroles och skicka tillbaka deras roll och roll id
 if (count($roller) >= 1) {
 
     for ($i = 0; $i < count($roller); $i++) {
         $sql = $db->prepare("INSERT INTO employeeRoles (EmployeeID, RoleID) VALUES ('$nyID', '$roller[$i]')");
-        $sql->execute();
-    }
-}
-
-echo skickaJSON($out);
-exit();
-
-
-
-
-
-
-
-
-
-if (isset($mail)) {
-    /**
-     * ! kan int lägga in $set som bind_param?
-     */
-    $sql = $db->prepare("UPDATE leverantorer SET $set WHERE leverantor_id LIKE ?");
-    $sql->bind_param("i", $id);
-
-    if ($sql->execute()) {
-        if ($db->affected_rows === 0) {
-            // Meddela fel
-            $out = new stdClass();
-            $out->error = ["Fel vid spara", " Företaget $foretagNamn ändrades inte"];
-            echo skickaJSON($out, 400);
-            exit();
+        if  ($sql->execute()){
+            $rec = ["Spara lyckades för $nyID med rollen $roller[$i]"];
+            $out->roller[] = $rec;
         } else {
-            $antal = $db->affected_rows;
+            //! Meddela fel
+            $fel = $db->error;
             $out = new stdClass();
-            $out->resultat = true;
-            $out->meddelande = ["$antal poster uppdaterades"];
-            echo skickaJSON($out);
+            $out->error = ["Fel vid spara", " $fel"];
+            echo skickaJSON($out, 400);
             exit();
         }
     }
 }
+
+//* Skicka tillbaka json med svar och avsluta
+echo skickaJSON($out);
+exit();
