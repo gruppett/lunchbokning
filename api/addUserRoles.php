@@ -4,7 +4,7 @@
  * ? 
  * * Important
  * ! Felhantering
- * TODO: employee.vegetarian saknas
+ * TODO: Fixa prepared statements
 */
 
 declare(strict_types=1);
@@ -113,7 +113,7 @@ for ($i = 0; $i < count($roles); $i++) {
     //* Om rollen finns i tabellen, lägg till i array
     if ($resultat->num_rows > 0) {
         $row = mysqli_fetch_assoc($resultat);
-        $roles[] = $row['id'];
+        $roller[] = $row['id'];
     } else {
         //! Meddela fel
         // TODO: Eller ska vi tillåta att fortsätta utan och lägga till?
@@ -125,10 +125,10 @@ for ($i = 0; $i < count($roles); $i++) {
 }
 
 //* Om roles finns lägg till user och roll i tabell employee_roles och skicka tillbaka deras roll och roll id
-if (count($roles) >= 1) {
+if (count($roller) >= 1) {
 
-    for ($i = 0; $i < count($roles); $i++) {
-        $sql = $db->prepare("INSERT INTO employee_roles (EmployeeID, RoleID) VALUES ('$nyID', '$roles[$i]')");
+    for ($i = 0; $i < count($roller); $i++) {
+        $sql = $db->prepare("INSERT INTO employee_roles (EmployeeID, RoleID) VALUES ('$nyID', '$roller[$i]')");
         if  ($sql->execute()){
             $rec = ["Spara lyckades för $nyID med rollen $roles[$i]"];
             $out->roles[] = $rec;
