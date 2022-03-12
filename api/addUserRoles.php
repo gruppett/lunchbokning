@@ -13,7 +13,7 @@ require_once("functions.php");
 //* Kontroll för indata array
 $error = [];
 
-//* Kontrollera anrops metod är POST
+//* Kontrollera om anrops metod är POST
 if ($_SERVER['REQUEST_METHOD'] !== "POST") {
     //! Meddela fel
     $out = new stdClass();
@@ -35,12 +35,12 @@ if (isset($_POST['mail'])) {
     } 
 }
 
-//* Kolla om metod är POST med roller och i array
+//* Kolla om metod är POST med roles och i array
 if (!isset($_POST['roles']))  {
-    $error[] = "Bad indata. Roller saknas";
+    $error[] = "Bad indata. Roles saknas";
 }
 
-//* Kolla om roller är i array och sanitize
+//* Kolla om roles är i array och sanitize
 if (isset($_POST['roles'])) {
     $roles = array_map("htmlspecialchars", $_POST['roles']);
     if (!is_array($roles)) {
@@ -85,7 +85,7 @@ if ($resultat->num_rows > 0) {
 
 //* Ny class för json
 $out = new stdClass();
-$out->roller = [];
+$out->roles = [];
 
 //* Lägg till ny mail i DB 
 //TODO: Kommentera för att testa array 
@@ -104,9 +104,8 @@ if ($sql->execute()) {
     exit();
 }
 
-//* Kolla om rollerna finns i tabell roles och ta fram deras id o lägg till i array
+//* Kolla om roles finns i tabell roles och ta fram deras id o lägg till i array
 for ($i = 0; $i < count($roles); $i++) {
-    #$roller = array();
     $sql = $db->prepare("SELECT RoleID as id FROM roles WHERE Role = '$roles[$i]'");
     $sql->execute();
     $resultat = mysqli_stmt_get_result($sql);
@@ -114,7 +113,7 @@ for ($i = 0; $i < count($roles); $i++) {
     //* Om rollen finns i tabellen, lägg till i array
     if ($resultat->num_rows > 0) {
         $row = mysqli_fetch_assoc($resultat);
-        $roller[] = $row['id'];
+        $roles[] = $row['id'];
     } else {
         //! Meddela fel
         // TODO: Eller ska vi tillåta att fortsätta utan och lägga till?
@@ -125,14 +124,14 @@ for ($i = 0; $i < count($roles); $i++) {
     }
 }
 
-//* Om rollerna finns lägg till user och roll i tabell employeeroles och skicka tillbaka deras roll och roll id
-if (count($roller) >= 1) {
+//* Om roles finns lägg till user och roll i tabell employee_roles och skicka tillbaka deras roll och roll id
+if (count($roles) >= 1) {
 
-    for ($i = 0; $i < count($roller); $i++) {
-        $sql = $db->prepare("INSERT INTO employeeRoles (EmployeeID, RoleID) VALUES ('$nyID', '$roller[$i]')");
+    for ($i = 0; $i < count($roles); $i++) {
+        $sql = $db->prepare("INSERT INTO employee_roles (EmployeeID, RoleID) VALUES ('$nyID', '$roles[$i]')");
         if  ($sql->execute()){
-            $rec = ["Spara lyckades för $nyID med rollen $roller[$i]"];
-            $out->roller[] = $rec;
+            $rec = ["Spara lyckades för $nyID med rollen $roles[$i]"];
+            $out->roles[] = $rec;
         } else {
             //! Meddela fel
             $fel = $db->error;
@@ -144,6 +143,6 @@ if (count($roller) >= 1) {
     }
 }
 
-//* Skicka tillbaka json med svar och avsluta
-echo skickaJSON($out);
+//* Skicka tillbaka json med svar om ok spara och avsluta
+echo skickaJSON($out, 201);
 exit();

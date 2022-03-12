@@ -36,6 +36,10 @@ function getStatusMeddelande(int $status): string
     switch ($status) {
         case 200:
             return "HTTP/1.1 200 OK";
+        case 201:
+            return "HTTP/1.1 201 Created";
+        case 204:
+            return "HTTP/1.1 204 No Content";
         case 400:
             return "HTTP/1.1 400 Bad Request";
         case 401:
