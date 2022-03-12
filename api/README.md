@@ -9,11 +9,11 @@
 
 ## Routes
 
-### api/addUserRoles.php
+### api/addUserRoles.php\_
 
-Checks if first login, if so, adds user and their roles to the database.
+Checks if first login, if so, adds user and their roles to the database and returns json.
 
-#### Parameters
+\***\*Parameters\*\***
 
 - `$_POST['mail']` : The user's mail. Required
 - `$_POST['roles["Administratör", "Kökslärare", "Salslärare", "Grupphandledare", "Personal"]']` : The user's groups. Required
@@ -22,7 +22,7 @@ Checks if first login, if so, adds user and their roles to the database.
 
 json encoded array with status code and message examples
 
-##### 200 OK
+**_200 OK_**
 
 ```json
 {
@@ -30,7 +30,7 @@ json encoded array with status code and message examples
 }
 ```
 
-##### 201 Created
+**_201 Created_**
 
 ```json
 {
@@ -44,7 +44,7 @@ json encoded array with status code and message examples
 
 ### Global Status Codes
 
-#### 400 Bad Request
+**_400 Bad Request_**
 
 ```json
 {
@@ -52,7 +52,7 @@ json encoded array with status code and message examples
 }
 ```
 
-#### 405 Method Not Allowed
+**_405 Method Not Allowed_**
 
 ```json
 {
@@ -60,4 +60,4 @@ json encoded array with status code and message examples
 }
 ```
 
-#### 500 Internal Server Error
+**_500 Internal Server Error_**
