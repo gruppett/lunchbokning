@@ -40,21 +40,31 @@ if (!isset($_POST['roles']))  {
     $error[] = "Bad indata. Roles saknas";
 }
 
-//* Kolla om roles är i array och sanitize
+//* Kolla om roles är i array, inte är tom och sanitize
 if (isset($_POST['roles'])) {
     
     if (!is_array($_POST['roles'])) {
         $error[] = "Bad indata, Roles måste vara i array";
     } else {
         $roles = array_map("htmlspecialchars", $_POST['roles']);
+
+        //* Kontrollera om array innehåller något
+        $antal_roller = count($roles);
+        for ($i = 0; $i < $antal_roller; $i++) {
+            if ($roles[$i] === "") {
+                $error[] = "Bad indata, En roll får inte vara tom";
+            }
+        }
     }
 }
+
+//* Ny class för json response
+$out = new stdClass();
 
 //* Indata fel?
 if (count($error) > 0) {
     //! Meddela fel
     array_unshift($error, "Fel på indata");
-    $out = new stdClass();
     $out->error = $error;
     echo skickaJSON($out, 400); 
     exit();
@@ -64,7 +74,6 @@ if (count($error) > 0) {
 if (!$db = kopplaDB()) {
      //! Meddela fel
     $fel = mysqli_connect_error();
-    $out = new stdClass();
     $out->error = ["Något gick fel vid databas kopplingen", $fel];
     echo skickaJSON($out, 500);
     exit();
@@ -76,16 +85,11 @@ $sql->execute();
 $resultat = mysqli_stmt_get_result($sql);
 
 if ($resultat->num_rows > 0) {
-    //* Meddela att användaren redan finns 
-    $out = new stdClass();
+    //* Meddela att användaren redan finns i DB
     $out->meddelande = ["$mail finns redan"];
     echo skickaJSON($out, 200);
     exit();
 }
-
-//* Ny class för json
-$out = new stdClass();
-$out->roles = [];
 
 //* Lägg till ny mail i DB 
 //TODO: Kommentera för att testa array 
@@ -94,7 +98,7 @@ $sql = $db->prepare("INSERT INTO employees (Mail) VALUES ('$mail')");
 if ($sql->execute()) {
      $nyID = $db->insert_id;     
      $out->meddelande = ["Spara lyckades för $mail med ID $nyID"];
-     // $out->id = $nyID;
+     #$out->id = $nyID;
 } else {
     //! Meddela fel
     $fel = $db->error;
@@ -116,8 +120,7 @@ for ($i = 0; $i < count($roles); $i++) {
         $roller[] = $row['id'];
     } else {
         //! Meddela fel
-        // TODO: Eller ska vi tillåta att fortsätta utan och lägga till?
-        $out = new stdClass();
+        // TODO: Eller ska vi tillåta att fortsätta utan och lägga till?, nu fortsätter vi loppen.
         $out->error = ["Rollen $roles[$i] finns inte i tabellen roles"];
         # echo skickaJSON($out, 400);
         # exit();
@@ -128,7 +131,7 @@ for ($i = 0; $i < count($roles); $i++) {
 //* Om rollerna finns lägg till user och roll i tabell employee_roles och skicka tillbaka deras roll och roll id
 
 if (count($roller) >= 1) {
-
+    $out->roles = [];
     for ($i = 0; $i < count($roller); $i++) {
         $sql = $db->prepare("INSERT INTO employee_roles (EmployeeID, RoleID) VALUES ('$nyID', '$roller[$i]')");
         if  ($sql->execute()){
