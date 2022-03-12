@@ -42,6 +42,14 @@ json encoded array with status code and message examples
 }
 ```
 
+```json
+{
+  "meddelande": ["Spara lyckades för test_user@mail_4 med ID 1"],
+  "error": ["Rollen personal1 finns inte i tabellen roles"],
+  "roles": [["Spara lyckades för 1 med grundrollen Personal"]]
+}
+```
+
 ### Global Status Codes
 
 **_400 Bad Request_**
