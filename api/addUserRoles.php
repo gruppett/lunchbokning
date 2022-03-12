@@ -109,6 +109,7 @@ if ($sql->execute()) {
 }
 
 //* Kolla om roles finns i tabell roles och ta fram deras id o lägg till i array
+$roller = array();
 for ($i = 0; $i < count($roles); $i++) {
     $sql = $db->prepare("SELECT RoleID as id FROM roles WHERE Role = '$roles[$i]'");
     $sql->execute();
