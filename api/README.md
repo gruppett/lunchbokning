@@ -4,8 +4,8 @@
 
 ### Files
 
-[]: # Path: api\README.md || this file
-[]: # Path: api\functions.php || db connection, json encode, status codes
+- Path: api\README.md || this file
+- Path: api\functions.php || db connection, json encode, status codes
 
 ## Routes
 
