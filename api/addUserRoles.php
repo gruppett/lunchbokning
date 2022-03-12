@@ -35,7 +35,7 @@ if (isset($_POST['mail'])) {
     } 
 }
 
-//* Kolla om metod är POST med roles och i array
+//* Kolla om metod är POST med roles
 if (!isset($_POST['roles']))  {
     $error[] = "Bad indata. Roles saknas";
 }
@@ -109,6 +109,7 @@ if ($sql->execute()) {
 }
 
 //* Kolla om roles finns i tabell roles och ta fram deras id o lägg till i array
+$roller = array();
 for ($i = 0; $i < count($roles); $i++) {
     $sql = $db->prepare("SELECT RoleID as id FROM roles WHERE Role = '$roles[$i]'");
     $sql->execute();
@@ -146,6 +147,19 @@ if (count($roller) >= 1) {
             exit();
         }
     }
+} else {
+    //* om ingen roll är rätt ge employee Personal roll
+    $sql = $db->prepare("INSERT INTO employee_roles (EmployeeID, RoleID) VALUES ('$nyID', '5')");
+    if  ($sql->execute()){
+        $rec = ["Spara lyckades för $nyID med grundrollen Personal"];
+        $out->roles[] = $rec;
+    } else {
+        //! Meddela fel
+        $fel = $db->error;
+        $out->error = ["Fel vid spara", " $fel"];
+        echo skickaJSON($out, 400);
+        exit();
+    } 
 }
 
 //* Skicka tillbaka json med svar om ok spara och avsluta
