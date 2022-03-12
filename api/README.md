@@ -24,45 +24,40 @@ json encoded array with status code and message examples
 
 ##### 200 OK
 
+```json
 {
-"meddelande": [
-"mail@test finns redan"
-]
+  "meddelande": ["mail@test finns redan"]
 }
+```
 
-201 Created
+##### 201 Created
+
+```json
 {
-"roles": [
-[
-"Spara lyckades för 10 med rollen Personal"
-],
-[
-"Spara lyckades för 10 med rollen Kökslärare"
-]
-],
-"meddelande": [
-"Spara lyckades för mail@test7 med ID 10"
-]
+  "roles": [
+    ["Spara lyckades för 10 med rollen Personal"],
+    ["Spara lyckades för 10 med rollen Kökslärare"]
+  ],
+  "meddelande": ["Spara lyckades för mail@test7 med ID 10"]
 }
+```
 
 ### Global Status Codes
 
 #### 400 Bad Request
 
+```json
 {
-"error": [
-"Fel på indata",
-"Bad indata. Roles saknas"
-]
+  "error": ["Fel på indata", "Bad indata. Roles saknas"]
 }
+```
 
 #### 405 Method Not Allowed
 
+```json
 {
-"error": [
-"Missing post data",
-"POST required"
-]
+  "error": ["Missing post data", "POST required"]
 }
+```
 
-500 Internal Server Error
+#### 500 Internal Server Error
