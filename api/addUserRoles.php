@@ -40,13 +40,21 @@ if (!isset($_POST['roles']))  {
     $error[] = "Bad indata. Roles saknas";
 }
 
-//* Kolla om roles är i array och sanitize
+//* Kolla om roles är i array, inte är tom och sanitize
 if (isset($_POST['roles'])) {
     
     if (!is_array($_POST['roles'])) {
         $error[] = "Bad indata, Roles måste vara i array";
     } else {
         $roles = array_map("htmlspecialchars", $_POST['roles']);
+
+        //* Kontrollera om array innehåller något
+        $antal_roller = count($roles);
+        for ($i = 0; $i < $antal_roller; $i++) {
+            if ($roles[$i] === "") {
+                $error[] = "Bad indata, En roll får inte vara tom";
+            }
+        }
     }
 }
 
@@ -116,7 +124,7 @@ for ($i = 0; $i < count($roles); $i++) {
         $roller[] = $row['id'];
     } else {
         //! Meddela fel
-        // TODO: Eller ska vi tillåta att fortsätta utan och lägga till?
+        // TODO: Eller ska vi tillåta att fortsätta utan och lägga till?, nu fortsätter vi loppen.
         $out = new stdClass();
         $out->error = ["Rollen $roles[$i] finns inte i tabellen roles"];
         # echo skickaJSON($out, 400);
