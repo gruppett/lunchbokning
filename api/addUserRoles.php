@@ -124,7 +124,9 @@ for ($i = 0; $i < count($roles); $i++) {
     }
 }
 
-//* Om roles finns lägg till user och roll i tabell employee_roles och skicka tillbaka deras roll och roll id
+
+//* Om rollerna finns lägg till user och roll i tabell employee_roles och skicka tillbaka deras roll och roll id
+
 if (count($roller) >= 1) {
 
     for ($i = 0; $i < count($roller); $i++) {
