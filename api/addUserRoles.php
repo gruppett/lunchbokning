@@ -120,7 +120,7 @@ for ($i = 0; $i < count($roles); $i++) {
         $out = new stdClass();
         $out->error = ["Rollen $roles[$i] finns inte i tabellen roles"];
         # echo skickaJSON($out, 400);
-        exit();
+        # exit();
     }
 }
 
