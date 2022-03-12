@@ -1,8 +1,9 @@
 <?php
 /**
- * @param myParam The parameter for the function
- * ? 
- * * Important
+ * ? api för att lägga till en användare om den inte finns samt ge den en roll
+ * @param POST['mail'] required
+ * @param POST['role[]'] required
+ * * Beskrivning av block
  * ! Felhantering
  * TODO: Fixa prepared statements
 */
