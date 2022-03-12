@@ -16,7 +16,7 @@ Checks if first login, if so, adds user and their roles to the database.
 #### Parameters
 
 - `$_POST['mail']` : The user's mail. Required
-- `$_POST['roles[]']` : The user's groups. Required
+- `$_POST['roles["Administratör", "Kökslärare", "Salslärare", "Grupphandledare", "Personal"]']` : The user's groups. Required
 
 #### Return
 
