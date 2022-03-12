@@ -42,11 +42,11 @@ if (!isset($_POST['roles']))  {
 
 //* Kolla om roles är i array och sanitize
 if (isset($_POST['roles'])) {
-    $roles = array_map("htmlspecialchars", $_POST['roles']);
-    if (!is_array($roles)) {
+    
+    if (!is_array($_POST['roles'])) {
         $error[] = "Bad indata, Roles måste vara i array";
     } else {
-        
+        $roles = array_map("htmlspecialchars", $_POST['roles']);
     }
 }
 
@@ -119,8 +119,8 @@ for ($i = 0; $i < count($roles); $i++) {
         // TODO: Eller ska vi tillåta att fortsätta utan och lägga till?
         $out = new stdClass();
         $out->error = ["Rollen $roles[$i] finns inte i tabellen roles"];
-        echo skickaJSON($out, 400);
-        exit();
+        # echo skickaJSON($out, 400);
+        # exit();
     }
 }
 
