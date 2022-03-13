@@ -36,16 +36,16 @@ if (!isset($_POST['mail'])) {
         $mail = trim(filter_input(INPUT_POST, "mail", FILTER_SANITIZE_EMAIL));
     }
     
-    //* Kolla om metod är POST med group_handler annars lägg mail som group_handler
-    if (!isset($_POST['group_handler'])) {
-        $group_handler =  $_POST['mail'];
-    } else {
-        //* If group_handler post exists, check if empty and filter string. bind to variable. 
-        if ($_POST['group_handler'] === "") {        
-            $error[] = "Bad indata, group_handler får inte vara tom"; 
-        } else{ 
-            $group_handler = htmlspecialchars($_POST['group_handler']);
-        }
+
+}
+
+//* Kolla om metod är POST med group_handler annars lägg mail som group_handler
+if (isset($_POST['group_handler'])) {
+    //* If group_handler post exists, check if empty and filter string. bind to variable. 
+    if ($_POST['group_handler'] === "") {        
+        $error[] = "Bad indata, group_handler får inte vara tom"; 
+    } else{ 
+        $group_handler = htmlspecialchars($_POST['group_handler']);
     }
 }
 
@@ -53,11 +53,12 @@ if (!isset($_POST['mail'])) {
 if (!isset($_POST['count'])) {
     $error[] = "Bad indata. Antal saknas";
 } else {
+    $count = trim(filter_input(INPUT_POST, "count", FILTER_SANITIZE_NUMBER_INT));
     //* Filtrera, sanitize strängar och kolla att count inte är tom.
     if ($_POST['count'] === "") {        
         $error[] = "Bad indata, Count får inte vara tom"; 
     } else {
-        $count = trim(filter_input(INPUT_POST, "count", FILTER_SANITIZE_NUMBER_INT));
+       
     }
 }
 
@@ -106,63 +107,70 @@ if (!$db = kopplaDB()) {
    exit();
 }
 
-//* Kolla om mail är Grupphandläggare
-$sql = "SELECT er.employeeID AS id,
-        r.role
-        FROM employee_roles er
-        LEFT JOIN roles r ON er.roleID = r.roleID
-        LEFT JOIN employees em ON e.employeeID = e.employeeID
-        WHERE e.mail = ? AND r.role = 'Grupphandledare'";
+//* Om lägga till handläggare till gruppen Kolla om group_handler är Grupphandläggare
+if (isset($_POST['group_handler'])) {
+    $sql = "SELECT 
+            *
+            FROM 
+                employee_roles er
+            JOIN 
+                roles r ON er.roleID = r.roleID
+            JOIN 
+                employees em ON er.employeeID = em.employeeID
+            WHERE 
+                em.mail = ? AND r.role = 'Grupphandledare'";
 
-//* bind parametrar till sql
-$stmt = $db->prepare($sql);
-$stmt->bind_param("s", $mail);
+    //* Bind & prepare statement
+    $prepare = mysqli_prepare($db, $sql);
+    mysqli_stmt_bind_param($prepare, 's', $group_handler);
+    
+    //* Execute sql
+    mysqli_stmt_execute($prepare);
+    $resultat = mysqli_stmt_get_result($prepare);
 
-//* Execute sql
-$stmt->execute();
-
-//* Check if result has rows
-if (!$stmt->num_rows > 0) {
-    //! Meddela fel
-    $out->error = ["$mail är ingen grupphandledare"];
-    echo skickaJSON($out, 400);
-    exit();
-} else {
-   echo "grupphandledare";
+    //* Check if result has rows
+    if (!$resultat->num_rows > 0) {
+        //! Meddela fel
+        $out->error = ["$group_handler är ingen grupphandledare"];
+        echo skickaJSON($out, 400);
+        exit();
+    } else {
+        echo "grupphandledare ";
+    }
 }
 
-//* Kolla om grupp redan finns i DB
-// TODO: fix variabelnamn från copy / paste
-$sql = $db->prepare("SELECT * FROM employees WHERE Mail = '$mail'");
-$sql->execute();
-$resultat = mysqli_stmt_get_result($sql);
+// //* Kolla om grupp redan finns i DB
+// // TODO: fix variabelnamn från copy / paste
+// $sql = $db->prepare("SELECT * FROM employees WHERE Mail = '$mail'");
+// $sql->execute();
+// $resultat = mysqli_stmt_get_result($sql);
 
-if ($resultat->num_rows > 0) {
-    //* Meddela att användaren redan finns i DB
-    $out->meddelande = ["$mail finns redan"];
-    echo skickaJSON($out, 200);
-    exit();
-}
+// if ($resultat->num_rows > 0) {
+//     //* Meddela att användaren redan finns i DB
+//     $out->meddelande = ["$mail finns redan"];
+//     echo skickaJSON($out, 200);
+//     exit();
+// }
 
-//* Lägg till ny grupp i DB table groups
-// TODO: fix variabelnamn från copy / paste och insert array?
-$sql = $db->prepare("INSERT INTO employees (Mail) VALUES ('$mail')");
+// //* Lägg till ny grupp i DB table groups
+// // TODO: fix variabelnamn från copy / paste och insert array?
+// $sql = $db->prepare("INSERT INTO employees (Mail) VALUES ('$mail')");
 
-if ($sql->execute()) {
-     $nyID = $db->insert_id;     
-     $out->meddelande = ["Spara lyckades för $mail med ID $nyID"];
-     #$out->id = $nyID;
-} else {
-    //! Meddela fel
-    $fel = $db->error;
-    $out = new stdClass();
-    $out->error = ["Fel vid spara", " $fel"];
-    echo skickaJSON($out, 400);
-    exit();
-}
+// if ($sql->execute()) {
+//     $nyID = $db->insert_id;     
+//     $out->meddelande = ["Spara lyckades för $mail med ID $nyID"];
+//     #$out->id = $nyID;
+// } else {
+//     //! Meddela fel
+//     $fel = $db->error;
+//     $out = new stdClass();
+//     $out->error = ["Fel vid spara", " $fel"];
+//     echo skickaJSON($out, 400);
+//     exit();
+// }
 
-// TODO: Lägg till primär grupphandläggare i DB table group_handlers
+// // TODO: Lägg till primär grupphandläggare i DB table group_handlers
 
-//* Skicka tillbaka json med svar om ok spara och avsluta
-echo skickaJSON($out, 201);
-exit();
+// //* Skicka tillbaka json med svar om ok spara och avsluta
+// echo skickaJSON($out, 201);
+// exit();
