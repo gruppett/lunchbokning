@@ -1,9 +1,10 @@
 <?php
 /**
- * ? api för att lägga till en användare om den inte finns samt ge den en roll
- * @param POST['name'] required, array?
+ * ? api för att lägga till en grupp
+ * @param POST['email'] required, array?
  * @param POST['count'] required, array?
  * @param POST['vegetarians'] required, array?
+ * @param POST['group_handler'] array?
  * * Beskrivning av block
  * ! Felhantering
  * TODO: Att göra / Ideer
@@ -12,7 +13,7 @@
 declare(strict_types=1);
 require_once("functions.php");
 
-//* Kontroll för indata array
+//* Array för indata error kontroll
 $error = [];
 
 //* Kontrollera om anrops metod är POST
@@ -24,30 +25,59 @@ if ($_SERVER['REQUEST_METHOD'] !== "POST") {
     exit();
 }
 
-//* Kolla om metod är POST med name
-if (!isset($_POST['name'])) {
-    $error[] = "Bad indata. Name saknas";
-}
-
-//* Kolla om metod är POST med vegetarians
-if (!isset($_POST['group_handler'])) {
-    $error[] = "Bad indata. Antal vegetarian saknas saknas";
+//* Kolla om metod är POST med email
+if (!isset($_POST['email'])) {
+    $error[] = "Bad indata. email saknas";
+} else {
+    //* Filtrera, sanitize strängar och kolla att mail inte är tom.
+    $mail = trim(filter_input(INPUT_POST, "mail", FILTER_SANITIZE_EMAIL));
+    if ($mail === "") {        
+        $error[] = "Bad indata, Mail får inte vara tom"; 
+    }
+    
+    //* Kolla om metod är POST med group_handler annars lägg email som group_handler
+    if (!isset($_POST['group_handler'])) {
+        $group_handler =  $_POST['email'];
+    }
 }
 
 //* Kolla om metod är POST med count
 if (!isset($_POST['count'])) {
     $error[] = "Bad indata. Antal saknas";
+} else {
+    //* Filtrera, sanitize strängar och kolla att count inte är tom.
+    $count = trim(filter_input(INPUT_POST, "count", FILTER_SANITIZE_NUMBER_INT));
+    if ($count === "") {        
+        $error[] = "Bad indata, Antal får inte vara tom"; 
+    }
 }
 
 //* Kolla om metod är POST med vegetarians
-if (!isset($_POST['vegetarians'])) {
+if (!isset($_POST['vegetarian'])) {
     $error[] = "Bad indata. Antal vegetarian saknas saknas";
+} else {
+    //* Filtrera, sanitize strängar och kolla att count inte är tom.
+    $vegetarian = trim(filter_input(INPUT_POST, "vegetarian", FILTER_SANITIZE_NUMBER_INT));
+    if ($vegetarian === "") {        
+        $error[] = "Bad indata, Antal vegetarian får inte vara tom"; 
+    }
+}
+
+//* If group_handler post exists, check if empty and filter string. bind to variable. 
+if (isset($_POST['group_handler'])) {
+    $group_handler = htmlspecialchars($_POST['roles']);
+    if ($group_handler === "") {
+        $error[] = "Bad indata, group_handler får inte vara tom";
+    }
 }
 
 
 // TODO: Ska vi kolla om poster är i array för mass input / update / delete?
 
 // TODO: Sanitize input
+
+
+
 
 //* Ny class för json response
 $out = new stdClass();
@@ -70,6 +100,8 @@ if (!$db = kopplaDB()) {
    exit();
 }
 
+// TODO: Kolla om email är Grupphandläggare
+
 //* Kolla om grupp redan finns i DB
 // TODO: fix variabelnamn från copy / paste
 $sql = $db->prepare("SELECT * FROM employees WHERE Mail = '$mail'");
@@ -84,7 +116,6 @@ if ($resultat->num_rows > 0) {
 }
 
 //* Lägg till ny grupp i DB table groups
-// TODO: Kommentera för att testa array
 // TODO: fix variabelnamn från copy / paste och insert array?
 $sql = $db->prepare("INSERT INTO employees (Mail) VALUES ('$mail')");
 
@@ -102,3 +133,7 @@ if ($sql->execute()) {
 }
 
 // TODO: Lägg till primär grupphandläggare i DB table group_handlers
+
+//* Skicka tillbaka json med svar om ok spara och avsluta
+echo skickaJSON($out, 201);
+exit();
