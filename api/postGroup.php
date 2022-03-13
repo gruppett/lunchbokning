@@ -1,7 +1,7 @@
 <?php
 /**
  * ? api för att lägga till en grupp
- * @param POST['email'] required, array?
+ * @param POST['mail'] required, array?
  * @param POST['count'] required, array?
  * @param POST['vegetarians'] required, array?
  * @param POST['group_handler'] array?
@@ -25,19 +25,27 @@ if ($_SERVER['REQUEST_METHOD'] !== "POST") {
     exit();
 }
 
-//* Kolla om metod är POST med email
-if (!isset($_POST['email'])) {
-    $error[] = "Bad indata. email saknas";
+//* Kolla om metod är POST med mail
+if (!isset($_POST['mail'])) {
+    $error[] = "Bad indata. mail saknas";
 } else {
-    //* Filtrera, sanitize strängar och kolla att mail inte är tom.
-    $mail = trim(filter_input(INPUT_POST, "mail", FILTER_SANITIZE_EMAIL));
-    if ($mail === "") {        
+    //* Filtrera, sanitize strängar och kolla att mail inte är tom. 
+    if ($_POST['mail'] === "") {        
         $error[] = "Bad indata, Mail får inte vara tom"; 
+    } else {
+        $mail = trim(filter_input(INPUT_POST, "mail", FILTER_SANITIZE_EMAIL));
     }
     
-    //* Kolla om metod är POST med group_handler annars lägg email som group_handler
+    //* Kolla om metod är POST med group_handler annars lägg mail som group_handler
     if (!isset($_POST['group_handler'])) {
-        $group_handler =  $_POST['email'];
+        $group_handler =  $_POST['mail'];
+    } else {
+        //* If group_handler post exists, check if empty and filter string. bind to variable. 
+        if ($_POST['group_handler'] === "") {        
+            $error[] = "Bad indata, group_handler får inte vara tom"; 
+        } else{ 
+            $group_handler = htmlspecialchars($_POST['group_handler']);
+        }
     }
 }
 
@@ -46,9 +54,10 @@ if (!isset($_POST['count'])) {
     $error[] = "Bad indata. Antal saknas";
 } else {
     //* Filtrera, sanitize strängar och kolla att count inte är tom.
-    $count = trim(filter_input(INPUT_POST, "count", FILTER_SANITIZE_NUMBER_INT));
-    if ($count === "") {        
-        $error[] = "Bad indata, Antal får inte vara tom"; 
+    if ($_POST['count'] === "") {        
+        $error[] = "Bad indata, Count får inte vara tom"; 
+    } else {
+        $count = trim(filter_input(INPUT_POST, "count", FILTER_SANITIZE_NUMBER_INT));
     }
 }
 
@@ -63,21 +72,18 @@ if (!isset($_POST['vegetarian'])) {
     }
 }
 
-//* If group_handler post exists, check if empty and filter string. bind to variable. 
-if (isset($_POST['group_handler'])) {
-    $group_handler = htmlspecialchars($_POST['roles']);
-    if ($group_handler === "") {
-        $error[] = "Bad indata, group_handler får inte vara tom";
+//* Kolla om method är POST med namn
+if (!isset($_POST['name'])) {
+    $error[] = "Bad indata. Namn saknas";
+} else {
+    //* Filtrera, sanitize strängar och kolla att count inte är tom.
+    if ($_POST['name'] === "") {        
+        $error[] = "Bad indata, Name får inte vara tom"; 
+    } else {
+        $name = htmlspecialchars($_POST['name']);
     }
 }
-
-
 // TODO: Ska vi kolla om poster är i array för mass input / update / delete?
-
-// TODO: Sanitize input
-
-
-
 
 //* Ny class för json response
 $out = new stdClass();
@@ -100,7 +106,30 @@ if (!$db = kopplaDB()) {
    exit();
 }
 
-// TODO: Kolla om email är Grupphandläggare
+//* Kolla om mail är Grupphandläggare
+$sql = "SELECT er.employeeID AS id,
+        r.role
+        FROM employee_roles er
+        LEFT JOIN roles r ON er.roleID = r.roleID
+        LEFT JOIN employees em ON e.employeeID = e.employeeID
+        WHERE e.mail = ? AND r.role = 'Grupphandledare'";
+
+//* bind parametrar till sql
+$stmt = $db->prepare($sql);
+$stmt->bind_param("s", $mail);
+
+//* Execute sql
+$stmt->execute();
+
+//* Check if result has rows
+if (!$stmt->num_rows > 0) {
+    //! Meddela fel
+    $out->error = ["$mail är ingen grupphandledare"];
+    echo skickaJSON($out, 400);
+    exit();
+} else {
+   echo "grupphandledare";
+}
 
 //* Kolla om grupp redan finns i DB
 // TODO: fix variabelnamn från copy / paste
