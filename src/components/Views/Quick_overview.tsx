@@ -1,3 +1,4 @@
+import { render } from "@testing-library/react";
 import React, { useContext, useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
@@ -10,15 +11,15 @@ function Overview() {
   const { user } = useContext(GraphContext);
 
   return (
-    <main className="h-auto m-3">
+    <main className="h-auto m-3" id="main">
       <Calendar
         onChange={onChange}
         value={value}
         className="!w-full"
         minDetail="year"
-        onClickDay={(value, event) => (
-          <Overview_popup x={event.clientX} y={event.clientY} />
-        )}
+        onClickDay={(value, event) =>
+          render(<Overview_popup x={event.clientX} y={event.clientY} />)
+        }
         tileContent={({ date, view }) =>
           view === "month" && date.getDay() === 2 ? (
             <p className="bg-blue-500">{user?.givenName}</p>
