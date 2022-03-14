@@ -140,17 +140,27 @@ if (isset($_POST['group_handler'])) {
 }
 
 // //* Kolla om grupp redan finns i DB
-// // TODO: fix variabelnamn från copy / paste
-// $sql = $db->prepare("SELECT * FROM employees WHERE Mail = '$mail'");
-// $sql->execute();
-// $resultat = mysqli_stmt_get_result($sql);
+// TODO: fix variabelnamn från copy / paste
+$sql = "SELECT 
+        *
+        FROM 
+            groups
+        WHERE 
+            name = ?";
 
-// if ($resultat->num_rows > 0) {
-//     //* Meddela att användaren redan finns i DB
-//     $out->meddelande = ["$mail finns redan"];
-//     echo skickaJSON($out, 200);
-//     exit();
-// }
+
+
+
+$sql = $db->prepare("SELECT * FROM employees WHERE Mail = '$mail'");
+$sql->execute();
+$resultat = mysqli_stmt_get_result($sql);
+
+if ($resultat->num_rows > 0) {
+    //* Meddela att användaren redan finns i DB
+    $out->meddelande = ["$mail finns redan"];
+    echo skickaJSON($out, 200);
+    exit();
+}
 
 // //* Lägg till ny grupp i DB table groups
 // // TODO: fix variabelnamn från copy / paste och insert array?
