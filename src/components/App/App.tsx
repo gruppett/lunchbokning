@@ -12,23 +12,26 @@ import {
 } from "react-router-dom";
 import Nav from '../Nav/Nav';
 
-
 interface GraphContextInterface {
-  user: {
-    businessPhones: []
-    displayName: string
-    givenName: string
-    id: string
-    jobTitle: string
-    mail: string
-    mobilePhone: string
-    officeLocation: string
-    preferredLanguage: string
-    surname: string
-    userPrincipalName: string
-  }
+  user: UserInterface,
   groups: any
 }
+
+interface UserInterface{
+  businessPhones: []
+  displayName: string
+  givenName: string
+  id: string
+  jobTitle: string
+  mail: string
+  mobilePhone: string
+  officeLocation: string
+  preferredLanguage: string
+  surname: string
+  userPrincipalName: string
+}
+
+
 
 export const GraphContext = createContext({} as GraphContextInterface)
 
@@ -36,6 +39,7 @@ function App() {
   const isAuthenticated = useIsAuthenticated();
   const { instance, accounts } = useMsal();
   const [graphData, setGraphData] = useState({} as GraphContextInterface);
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
 
@@ -46,7 +50,7 @@ function App() {
     const request = {
       ...loginRequest,
       account: accounts[0]
-  };
+    };
     
     // Silently acquires an access token which is then attached to a request for Microsoft Graph data
     instance.acquireTokenSilent(request).then(async (response) => {
@@ -57,22 +61,43 @@ function App() {
       });
     });
 
-  }, [instance, accounts, isAuthenticated])
 
-  // for development,
-  // see all groups user is member of in console.log as well as the graph data
-  if (graphData.groups != undefined ) {
-    console.log(graphData)
-    let groups: string[] = [];
-    graphData.groups?.value.forEach((g:any) => {
-      groups.push(g.displayName)
-    });
-    console.log(groups)
-  }
+  }, [])
+
+  useEffect(() => {
+    if(graphData?.user?.mail !== undefined) {
+      let groups: string[] = [];
+      graphData.groups?.value.forEach((g:any) => {
+        groups.push(g.displayName)
+      });
+      console.log(groups)
+      const data = {
+        mail: graphData.user.mail,
+        roles: groups
+      }
+      fetch(process.env.REACT_APP_API_SERVER + "/user/addUserRoles.php", {
+        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        mode: 'no-cors', // no-cors, *cors, same-origin
+        headers: {
+          'Content-Type': 'application/json'
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: JSON.stringify(data) // body data type must match "Content-Type" header
+      })
+      .then(response => response.json)
+      .then(data => console.log(data))
+    }
+    setIsLoading(false)
+  }, [graphData])
+
 
   if (!isAuthenticated) return (
       <SignIn />
   ) 
+
+  if (isLoading) return (
+    <p>Loading</p>
+  )
    
   return (
     <BrowserRouter>
@@ -88,6 +113,7 @@ function App() {
           <Route path="grupper" element={<>Grupper</>}></Route>
           <Route path="externa-grupper" element={<>Externa grupper</>}></Route>
           <Route path="sammanstallning" element={<>Sammanställning</>}></Route>
+          <Route path="installningar" element={<>Inställningar</>}></Route>
           <Route path="*" element={<>404</>}></Route>
         </Routes>
         </div>
