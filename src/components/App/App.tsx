@@ -103,11 +103,11 @@ function App() {
       <GraphContext.Provider value={graphData}>
         <Routes>
           <Route path="/" element={<Page component="Overview" />}></Route>
-          {/*<Route path="personlig" element={<Page component="Personal" />}></Route>
+          *<Route path="personlig" element={<Page component="Personal" />}></Route>
           <Route path="grupper" element={<Page component="Groups" />}></Route>
           <Route path="externa-grupper" element={<Page component="ExternalGroups" />}></Route>
-          <Route path="sammanstallning" element={<Page component="Compilation" />}></Route>*/}
-  <Route path="installningar" element={<Page component="Settings" />}></Route>
+          <Route path="sammanstallning" element={<Page component="Compilation" />}></Route>
+          <Route path="installningar" element={<Page component="Settings" />}></Route>
           <Route path="*" element={<Page component="FourOhFour" />}></Route>
         </Routes>
       </GraphContext.Provider>
