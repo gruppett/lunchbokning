@@ -8,10 +8,16 @@ function handleLogout(instance: any) {
   });
 }
 
-function SignOutButton() {
+interface props {
+  className?: string
+}
+
+function SignOutButton({className} : props) {
   const { instance } = useMsal();
+
+
   return (
-    <button onClick={() => handleLogout(instance)}>Logga ut</button>
+    <button className={className} onClick={() => handleLogout(instance)}>Logga ut</button>
     )
 }
 

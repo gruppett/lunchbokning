@@ -3,14 +3,13 @@ import SignIn from '../SignIn/SignIn';
 import { useIsAuthenticated, useMsal } from "@azure/msal-react";
 import { loginRequest } from '../../authConfig';
 import { callMsGraph } from "../../graph";
-import Header from '../Header/Header';
+import Page from '../Page/Page';
 import {
   BrowserRouter,
   Routes,
   Route,
   Link,
 } from "react-router-dom";
-import Nav from '../Nav/Nav';
 
 interface GraphContextInterface {
   user: UserInterface,
@@ -102,22 +101,15 @@ function App() {
   return (
     <BrowserRouter>
       <GraphContext.Provider value={graphData}>
-        <div className='flex'>
-
-        <Nav></Nav>
-        <div className="flex-grow">
-        <Header></Header>
         <Routes>
-          <Route path="/" element={<>Översikt</>}></Route>
-          <Route path="personlig" element={<>Personligt</>}></Route>
-          <Route path="grupper" element={<>Grupper</>}></Route>
-          <Route path="externa-grupper" element={<>Externa grupper</>}></Route>
-          <Route path="sammanstallning" element={<>Sammanställning</>}></Route>
-          <Route path="installningar" element={<>Inställningar</>}></Route>
-          <Route path="*" element={<>404</>}></Route>
+          <Route path="/" element={<Page component="Overview" />}></Route>
+          {/*<Route path="personlig" element={<Page component="Personal" />}></Route>
+          <Route path="grupper" element={<Page component="Groups" />}></Route>
+          <Route path="externa-grupper" element={<Page component="ExternalGroups" />}></Route>
+          <Route path="sammanstallning" element={<Page component="Compilation" />}></Route>*/}
+  <Route path="installningar" element={<Page component="Settings" />}></Route>
+          <Route path="*" element={<Page component="FourOhFour" />}></Route>
         </Routes>
-        </div>
-        </div>
       </GraphContext.Provider>
     </BrowserRouter>
   );
