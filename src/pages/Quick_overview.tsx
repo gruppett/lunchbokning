@@ -19,7 +19,12 @@ function Overview() {
         minDetail="month"
         onClickDay={(value, event) =>
           ReactDOM.render(
-            <Popup x={event.clientX} y={event.clientY} user={user.mail} />,
+            <Popup
+              x={event.clientX}
+              y={event.clientY}
+              user={user.mail}
+              datetime={value}
+            />,
             document.getElementById("popup")
           )
         }

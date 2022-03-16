@@ -1,31 +1,52 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { unmountComponentAtNode } from "react-dom";
 
-const header = "Content-type: application/json";
 function Overview_popup(props: any) {
-  const url = "http://hjorten:8080/api/booking/getBookings.php";
-  const booking = fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    mode: "no-cors",
-    body: JSON.stringify({
-      id: 1,
-    }),
-  })
-    .then((response) => {
-      if (response.status === 200) {
-        return response.json();
-      } else {
-        throw { status: response.status, message: response.json() };
-      }
-    })
-    .catch(function (error) {
-      console.log(error);
-      alert(error);
-    });
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
+  useEffect(() => {
+    const url = "http://hjorten:8080/api/booking/getBooking.php";
+    const body = "{id: 2}";
+    fetch(url, {
+      body: body,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then(async (response) => {
+        if (await response.ok) {
+          console.log(response.ok);
+          return response.json();
+        } else {
+          console.log(response.json());
+          throw { status: response.status, message: response.json() };
+        }
+      })
+      .then((data) => {
+        setData(data);
+      })
+      .catch((error) => {
+        setError(error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [props.datetime]);
+  if (loading)
+    return (
+      <div>
+        <p>Loading...</p>
+      </div>
+    );
+  if (error)
+    return (
+      <div>
+        <p>Error!</p>
+      </div>
+    );
   return (
     <>
       <div
@@ -34,6 +55,7 @@ function Overview_popup(props: any) {
       >
         <div className={"flex"}>
           <p>{props.user.split(".")[0]}</p>
+          <p>{data}</p>
         </div>
         <div className={"flex"}></div>
       </div>
