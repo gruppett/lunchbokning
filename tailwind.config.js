@@ -3,7 +3,9 @@ module.exports = {
     "./src/**/*.{ts,tsx}"
   ],
   theme: {
-    extend: {},
+    colors: {
+      bg: "#ffffff"
+    },
   },
   plugins: [],
 }
