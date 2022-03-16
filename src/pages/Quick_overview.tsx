@@ -1,9 +1,9 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-import { GraphContext } from "../App/App";
-import "./Calendar/popup";
-import Popup from "./Calendar/popup";
+import { GraphContext } from "../components/App/App";
+import "../components/Calendar/popup";
+import Popup from "../components/Calendar/popup";
 import ReactDOM, { unmountComponentAtNode } from "react-dom";
 
 function Overview() {
@@ -19,7 +19,7 @@ function Overview() {
         minDetail="month"
         onClickDay={(value, event) =>
           ReactDOM.render(
-            <Popup x={event.clientX} y={event.clientY} />,
+            <Popup x={event.clientX} y={event.clientY} user={user.mail} />,
             document.getElementById("popup")
           )
         }
@@ -28,7 +28,7 @@ function Overview() {
         }
         tileContent={({ date, view }) =>
           view === "month" && date.getDay() === 2 ? (
-            <p className="bg-blue-500">{user?.givenName}</p>
+            <p className="bg-blue-500 rounded">{user?.givenName}</p>
           ) : null
         }
       />

@@ -4,7 +4,7 @@ import { loginRequest } from "../../authConfig";
 import { callMsGraph } from "../../graph";
 import SignIn from "../SignIn/SignIn";
 import Header from "../Header/Header";
-import Overview from "../Views/Quick_overview";
+import Overview from "../../pages/Quick_overview";
 
 interface GraphContextInterface {
   user: {
