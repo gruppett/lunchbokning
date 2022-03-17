@@ -52,14 +52,22 @@ function Overview_popup(props: any) {
   return (
     <>
       <div
-        className={"bg-blue-200 absolute p-1 z-20"}
+        className={"bg-blue-200 absolute p-1 z-20 rounded flex w-auto"}
         style={{ left: props.x, top: props.y }}
       >
-        <div className={"flex"}>
-          <p>{props.user.split(".")[0]}</p>
-          <p>{data.Date}</p>
+        <div className={"flex flex-col p-0.5"}>
+          <p className="px-1 m-0.5">{props.user.split(".")[0]}</p>
+          <p className="px-1 m-0.5">{data.Name}</p>
         </div>
-        <div className={"flex"}></div>
+        <div className={"flex flex-col p-0.5 w-auto"}>
+          <button className=" px-1 m-0.5 bg-white rounded">
+            {data.Active ? "Boka" : "Avboka"}
+          </button>
+          <input type="number" name="" id="" className=" rounded m-0.5" />
+          <button className=" px-1 m-0.5 bg-white rounded">
+            {data.Active ? "Boka" : "Avboka"}
+          </button>
+        </div>
       </div>
       <div
         className="absolute !min-w-full !min-h-full top-0 left-0 z-0"

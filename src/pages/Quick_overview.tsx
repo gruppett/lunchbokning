@@ -11,7 +11,7 @@ function Overview() {
   const { user } = useContext(GraphContext);
 
   return (
-    <main className="h-full m-3" id="main">
+    <>
       <Calendar
         onChange={onChange}
         value={value}
@@ -33,12 +33,15 @@ function Overview() {
         }
         tileContent={({ date, view }) =>
           view === "month" && date.getDay() === 2 ? (
-            <p className="bg-blue-500 rounded">{user?.givenName}</p>
+            <>
+              <p className="bg-blue-400 rounded m-1 p-0.5">{user?.givenName}</p>
+              <p className="bg-red-400 rounded m-1 p-0.5">{user?.givenName}</p>
+            </>
           ) : null
         }
       />
       <div id="popup"></div>
-    </main>
+    </>
   );
 }
 

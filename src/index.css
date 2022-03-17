@@ -3,3 +3,7 @@
 @tailwind components;
 
 @tailwind utilities;
+
+.react-calendar__month-view__days__day {
+  min-height: 5.5rem;
+}
