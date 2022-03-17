@@ -2,26 +2,25 @@ import React, { useEffect, useState } from "react";
 import { unmountComponentAtNode } from "react-dom";
 
 function Overview_popup(props: any) {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState(null as any);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    const url = "http://hjorten:8080/api/booking/getBooking.php";
-    const body = "{id: 2}";
+    const url = "http://localhost:8080/api/booking/getBooking.php";
+    const body = '{ "id": 2 }';
     fetch(url, {
       body: body,
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
+      mode: "cors",
     })
-      .then(async (response) => {
-        if (await response.ok) {
-          console.log(response.ok);
+      .then((response) => {
+        if (response.ok) {
           return response.json();
         } else {
-          console.log(response.json());
           throw { status: response.status, message: response.json() };
         }
       })
@@ -29,24 +28,27 @@ function Overview_popup(props: any) {
         setData(data);
       })
       .catch((error) => {
-        setError(error);
+        setError(true);
       })
       .finally(() => {
         setLoading(false);
       });
   }, [props.datetime]);
-  if (loading)
+  if (loading) {
     return (
       <div>
         <p>Loading...</p>
       </div>
     );
-  if (error)
+  }
+  if (error) {
     return (
       <div>
         <p>Error!</p>
       </div>
     );
+  }
+  console.log(data);
   return (
     <>
       <div
@@ -55,7 +57,7 @@ function Overview_popup(props: any) {
       >
         <div className={"flex"}>
           <p>{props.user.split(".")[0]}</p>
-          <p>{data}</p>
+          <p>{data.Date}</p>
         </div>
         <div className={"flex"}></div>
       </div>
