@@ -6,6 +6,10 @@ module.exports = {
     colors: {
       bg: "#ffffff"
     },
+    extends: {
+    },
   },
-  plugins: [],
+  plugins: [
+    require("tailwindcss-animate"),
+  ],
 }
