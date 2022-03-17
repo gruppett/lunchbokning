@@ -1,17 +1,24 @@
-import React from 'react'
+import React, { MouseEvent } from 'react'
 import { useMsal } from "@azure/msal-react";
 
 
-function handleLogout(instance: any) {
+function handleLogout(instance: any, e: MouseEvent) {
+  e.preventDefault()
   instance.logoutRedirect().catch((e: any) => {
     console.error(e);
   });
 }
 
-function SignOutButton() {
+interface props {
+  className?: string,
+  withIcon?: boolean
+
+}
+
+function SignOutButton({className} : props) {
   const { instance } = useMsal();
   return (
-    <button onClick={() => handleLogout(instance)}>Logga ut</button>
+    <a className={className} href="#" onClick={(e) => handleLogout(instance, e)}>Logga ut</a>
     )
 }
 

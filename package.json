@@ -15,6 +15,7 @@
     "react": "^17.0.2",
     "react-calendar": "^3.7.0",
     "react-dom": "^17.0.2",
+    "react-router-dom": "^6.2.2",
     "react-scripts": "5.0.0",
     "typescript": "^4.6.2",
     "web-vitals": "^0.2.4",
@@ -59,6 +60,7 @@
     "@types/react-calendar": "^3.5.0",
     "autoprefixer": "^10.4.2",
     "postcss": "^8.4.8",
-    "tailwindcss": "^3.0.23"
+    "tailwindcss": "^3.0.23",
+    "tailwindcss-animate": "^1.0.5"
   }
 }
