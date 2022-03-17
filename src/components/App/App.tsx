@@ -10,6 +10,7 @@ import {
   Route,
   Link,
 } from "react-router-dom";
+import Spinner from '../Spinner/Spinner';
 
 interface GraphContextInterface {
   user: UserInterface,
@@ -41,7 +42,6 @@ function App() {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-
     if (!isAuthenticated) {
       return
     }
@@ -60,8 +60,7 @@ function App() {
       });
     });
 
-
-  }, [])
+  }, [isAuthenticated])
 
   useEffect(() => {
     if(graphData?.user?.mail !== undefined) {
@@ -86,8 +85,15 @@ function App() {
       .then(response => response.json)
       .then(data => console.log(data))
     }
-    setIsLoading(false)
   }, [graphData])
+
+  useEffect(() => {
+    if(graphData?.user?.mail !== undefined) {
+      console.log(graphData.user.mail)
+      setIsLoading(false)
+    }
+  }, [graphData])
+  
 
 
   if (!isAuthenticated) return (
@@ -95,7 +101,9 @@ function App() {
   ) 
 
   if (isLoading) return (
-    <p>Loading</p>
+    <div className='h-screen'>
+      <Spinner />
+    </div>
   )
    
   return (
