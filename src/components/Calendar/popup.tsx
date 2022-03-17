@@ -52,7 +52,7 @@ function Overview_popup(props: any) {
   return (
     <>
       <div
-        className={"bg-blue-200 absolute p-1 z-20 rounded flex w-auto"}
+        className={"bg-blue-200 absolute p-1 z-20 rounded flex w-"}
         style={{ left: props.x, top: props.y }}
       >
         <div className={"flex flex-col p-0.5"}>
