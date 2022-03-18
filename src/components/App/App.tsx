@@ -3,7 +3,7 @@ import { useIsAuthenticated, useMsal } from "@azure/msal-react";
 import { loginRequest } from "../../authConfig";
 import { callMsGraph } from "../../graph";
 import Page from "../Page/Page";
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Spinner from "../Spinner/Spinner";
 import SignIn from "../SignIn/SignIn";
 
@@ -59,7 +59,7 @@ function App() {
           );
         });
       });
-  }, [isAuthenticated]);
+  }, [isAuthenticated, accounts, instance]);
 
   useEffect(() => {
     if (graphData?.user?.mail !== undefined) {
