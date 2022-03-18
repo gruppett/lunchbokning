@@ -45,7 +45,7 @@ function Page({component}:props) {
   return (
     <>
     <div className='flex h-screen'>
-    <nav className={`absolute z-50 animate-in slide-in-from-left-full sm:animate-none w-full h-full sm:w-auto sm:h-auto sm:relative bg-bg flex flex-col ${navState} sm:flex`}>
+    <nav className={`absolute z-50 animate-in slide-in-from-left-full sm:animate-none w-full h-full sm:w-auto sm:h-auto sm:relative bg-white flex flex-col ${navState} sm:flex`}>
       <a className='flex sm:hidden items-center p-3 gap-3' href='#' onClick={(e) => toggleNavState(e)}>
         <span className="material-icons-outlined text-2xl">
           close

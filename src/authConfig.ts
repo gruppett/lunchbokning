@@ -1,14 +1,26 @@
-export const msalConfig = {
+export const msalConfigDev = {
   auth: {
     clientId: "8093d559-a89b-4018-b31d-01f801f8dd9c",
     authority: "https://login.microsoftonline.com/b044c43f-1079-452b-ab8b-739063671654", // This is a URL (e.g. https://login.microsoftonline.com/{your tenant ID})
     redirectUri: "http://localhost:3000",
   },
-  cache: {
+    cache: {
     cacheLocation: "sessionStorage", // This configures where your cache will be stored
     storeAuthStateInCookie: false, // Set this to "true" if you are having issues on IE11 or Edge
   }
-};
+}
+
+export const msalConfigProd = {
+  auth: {
+    clientId: "058eefea-1f47-44ba-a60f-09fc5dc0f235",
+    authority: "https://login.microsoftonline.com/b044c43f-1079-452b-ab8b-739063671654", // This is a URL (e.g. https://login.microsoftonline.com/{your tenant ID})
+    redirectUri: "https://hjorten-lunchbokning.herokuapp.com/",
+    },
+    cache: {
+      cacheLocation: "sessionStorage", // This configures where your cache will be stored
+      storeAuthStateInCookie: false, // Set this to "true" if you are having issues on IE11 or Edge
+    }
+}
 
 // Add scopes here for ID token to be used at Microsoft identity platform endpoints.
 export const loginRequest = {

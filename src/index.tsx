@@ -7,11 +7,18 @@ import reportWebVitals from "./reportWebVitals";
 
 import { PublicClientApplication } from "@azure/msal-browser";
 import { MsalProvider } from "@azure/msal-react";
-import { msalConfig } from "./authConfig";
+import { msalConfigDev, msalConfigProd } from "./authConfig";
 
 //console.log(process.env)
+let msalInstance
+console.log(process.env.NODE_ENV)
 
-const msalInstance = new PublicClientApplication(msalConfig);
+if(process.env.NODE_ENV == "production") {
+  msalInstance = new PublicClientApplication(msalConfigProd);
+} else {
+  msalInstance = new PublicClientApplication(msalConfigDev);
+}
+
 
 ReactDOM.render(
   <React.StrictMode>
