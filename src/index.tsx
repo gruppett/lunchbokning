@@ -10,15 +10,14 @@ import { MsalProvider } from "@azure/msal-react";
 import { msalConfigDev, msalConfigProd } from "./authConfig";
 
 //console.log(process.env)
-let msalInstance
-console.log(process.env.NODE_ENV)
+let msalInstance;
+console.log(process.env.NODE_ENV);
 
-if(process.env.NODE_ENV == "production") {
+if (process.env.NODE_ENV === "production") {
   msalInstance = new PublicClientApplication(msalConfigProd);
 } else {
   msalInstance = new PublicClientApplication(msalConfigDev);
 }
-
 
 ReactDOM.render(
   <React.StrictMode>

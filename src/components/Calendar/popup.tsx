@@ -7,7 +7,8 @@ function Overview_popup(props: any) {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    const url = "http://localhost:8080/api/booking/getBooking.php";
+    const url =
+      process.env.REACT_APP_API_SERVER + "/api/booking/getBooking.php";
     const body = '{ "id": 2 }';
     fetch(url, {
       body: body,
@@ -21,7 +22,7 @@ function Overview_popup(props: any) {
         if (response.ok) {
           return response.json();
         } else {
-          throw { status: response.status, message: response.json() };
+          throw new Error(response.json().toString());
         }
       })
       .then((data) => {
@@ -34,36 +35,38 @@ function Overview_popup(props: any) {
         setLoading(false);
       });
   }, [props.datetime]);
-  if (loading) {
+  if (loading || error) {
     return (
-      <div>
-        <p>Loading...</p>
+      <div
+        className={"bg-blue-200 absolute p-1 z-20 rounded flex"}
+        style={{ left: props.x, top: props.y }}
+      >
+        <p>{loading ? "Loading..." : "Error"}</p>
       </div>
     );
   }
-  if (error) {
-    return (
-      <div>
-        <p>Error!</p>
-      </div>
-    );
-  }
-  console.log(data);
   return (
     <>
       <div
-        className={"bg-blue-200 absolute p-1 z-20 rounded flex w-"}
+        className={
+          "bg-gradient-to-b from-blue-200 to-blue-300 absolute p-1 z-20 rounded flex"
+        }
         style={{ left: props.x, top: props.y }}
       >
         <div className={"flex flex-col p-0.5"}>
-          <p className="px-1 m-0.5">{props.user.split(".")[0]}</p>
-          <p className="px-1 m-0.5">{data.Name}</p>
+          <p className="px-1 m-0.5 underline">{props.user.split(".")[0]}:</p>
+          <p className="px-1 m-0.5 underline">{data.Name}:</p>
         </div>
-        <div className={"flex flex-col p-0.5 w-auto"}>
+        <div className={"flex flex-col p-0.5 w-auto"} style={{ width: "7rem" }}>
           <button className=" px-1 m-0.5 bg-white rounded">
             {data.Active ? "Boka" : "Avboka"}
           </button>
-          <input type="number" name="" id="" className=" rounded m-0.5" />
+          <input
+            type="number"
+            name=""
+            id=""
+            className=" rounded m-0.5 text-right"
+          />
           <button className=" px-1 m-0.5 bg-white rounded">
             {data.Active ? "Boka" : "Avboka"}
           </button>
