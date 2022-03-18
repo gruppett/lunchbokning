@@ -72,7 +72,7 @@ function App() {
         mail: graphData.user.mail,
         roles: groups,
       };
-      fetch(process.env.REACT_APP_API_SERVER + "/user/addUserRoles.php", {
+      fetch(process.env.REACT_APP_API_SERVER + "/api/user/addUserRoles.php", {
         method: "POST", // *GET, POST, PUT, DELETE, etc.
         mode: "no-cors", // no-cors, *cors, same-origin
         headers: {
