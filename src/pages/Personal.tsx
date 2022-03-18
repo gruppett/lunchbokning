@@ -1,8 +1,6 @@
 import React from 'react'
 
-type Props = {}
-
-function Personal({}: Props) {
+function Personal() {
   return (
     <div>Personal</div>
   )

@@ -1,8 +1,6 @@
 import React from 'react'
 
-type Props = {}
-
-function FourOhFour({}: Props) {
+function FourOhFour() {
   return (
     <div>FourOhFour</div>
   )

@@ -1,8 +1,6 @@
 import React from 'react'
 
-type Props = {}
-
-function Compilation({}: Props) {
+function Compilation() {
   return (
     <div>Compilation</div>
   )
