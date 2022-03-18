@@ -22,7 +22,11 @@ function Overview_popup(props: any) {
         if (response.ok) {
           return response.json();
         } else {
-          throw { status: response.status, message: response.json() };
+          throw {
+            name: response.text.toString(),
+            status: response.status,
+            message: response.json().toString(),
+          } as Error;
         }
       })
       .then((data) => {
