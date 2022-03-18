@@ -1,8 +1,6 @@
 import React from 'react'
 
-type Props = {}
-
-function ExternalGroups({}: Props) {
+function ExternalGroups() {
   return (
     <div>ExternalGroups</div>
   )

@@ -1,8 +1,6 @@
 import React from 'react'
 
-type Props = {}
-
-function Groups({}: Props) {
+function Groups() {
   return (
     <div>Groups</div>
   )
