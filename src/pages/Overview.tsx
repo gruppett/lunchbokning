@@ -5,6 +5,7 @@ import { GraphContext } from "../components/App/App";
 import "../components/Calendar/popup";
 import Popup from "../components/Calendar/popup";
 import ReactDOM, { unmountComponentAtNode } from "react-dom";
+import { unmountPopup } from "../helpers/unmountPopup";
 
 function Overview() {
   const [value, onChange] = useState(new Date());
@@ -15,9 +16,22 @@ function Overview() {
       <Calendar
         onChange={onChange}
         value={value}
-        className="!w-full !h-full z-10 relative"
+        className="!w-full !h-full z-0 relative"
         minDetail="month"
-        onClickDay={(value, event) =>
+        onClickDay={(value, event) => {
+          let popupDiv = document.createElement("div");
+          popupDiv.id = "popup";
+          popupDiv.classList.add(
+            "flex",
+            "w-full",
+            "h-full",
+            "absolute",
+            "top-0",
+            "left-0",
+            "justify-center",
+            "items-center"
+          );
+          document.getElementById("root")?.appendChild(popupDiv);
           ReactDOM.render(
             <Popup
               x={event.clientX}
@@ -26,11 +40,9 @@ function Overview() {
               datetime={value}
             />,
             document.getElementById("popup")
-          )
-        }
-        onActiveStartDateChange={() =>
-          unmountComponentAtNode(document.getElementById("popup") as Element)
-        }
+          );
+        }}
+        onActiveStartDateChange={() => unmountPopup()}
         tileContent={({ date, view }) =>
           view === "month" && date.getDay() === 2 ? (
             <>
@@ -40,7 +52,6 @@ function Overview() {
           ) : null
         }
       />
-      <div id="popup"></div>
     </>
   );
 }
