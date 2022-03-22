@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { unmountComponentAtNode } from "react-dom";
 import { unmountPopup } from "../../helpers/unmountPopup";
 
 function Overview_popup(props: any) {
@@ -39,7 +38,6 @@ function Overview_popup(props: any) {
       });
   }, [props.datetime]);
   if (loading || error) {
-    console.log(error);
     return (
       <div
         className={"bg-blue-200 absolute p-1 z-20 rounded flex"}
@@ -49,16 +47,15 @@ function Overview_popup(props: any) {
       </div>
     );
   }
-  console.log(data);
   return (
     <>
       <div
         className={
-          "bg-gradient-to-b from-blue-200 to-blue-300 absolute p-3 z-50 rounded flex"
+          "bg-gradient-to-b from-blue-200 to-blue-300 absolute p-3 z-50 border rounded flex"
         }
       >
         <div className={"flex flex-col p-0.5"}>
-          <p className="p-1 m-1 underline">{props.user.split(".")[0]}:</p>
+          <p className="p-1 m-1 underline">{props.user.mail.split(".")[0]}:</p>
           <p className="m-1 underline">{data.groupName}:</p>
         </div>
         <div className={"flex flex-col p-0.5 w-auto"} style={{ width: "7rem" }}>
