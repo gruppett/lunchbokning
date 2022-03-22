@@ -1,38 +1,32 @@
 import React from 'react'
 import {
   Link,
-  Outlet
+  Location,
+  Outlet,
+  useLocation
 } from "react-router-dom"
+import nav from "../nav.json"
+
+function cleanLocation(location: Location, index: number) {
+  return location.pathname.split("/")[index]
+}
 
 function Settings() {
+  const activeLink = cleanLocation(useLocation(), 2)
 
   return (
     <>
-    <div className='flex gap-3 p-3'>
-      <Link to="grupper" className='flex gap-1'>
-        <span className="material-icons-outlined">
-          groups
-        </span>
-        <span>
-          Grupper
-        </span>
-      </Link>
-      <Link to="anvandare" className='flex gap-1'>
-        <span className="material-icons-outlined">
-          people
-        </span>
-        <span>
-          Användare
-        </span>
-      </Link>
-      <Link to="perioder" className='flex gap-1'>
-        <span className="material-icons-outlined">
-          date_range
-        </span>
-        <span>
-          Perioder
-        </span>
-      </Link>
+    <div className='flex gap-5'>
+      {nav.settings.map((d, i) => (
+        <Link to={d.to} key={i} className={`flex items-center p-3 justify-center flex-grow sm:flex-grow-0 ${activeLink === d.to ? "text-blue-400 bg-slate-50" : ""}`}>
+          <span className='material-icons-outlined'>
+            {d.icon}
+          </span>
+          <span className='hidden sm:inline-block'>
+          {d.text}
+          </span>
+        </Link>
+      ))}
     </div>
     <Outlet />
     </>

@@ -25,6 +25,8 @@ const dummyGroupData = [
     handlers: [
       "Mimmy Mansson",
       "Simmy Sansson",
+      "Iimmy Iansson",
+      "Kimmy Kansson",
     ]
   }
 ]
@@ -57,9 +59,9 @@ function SettingsGroups() {
 
 
   return (
-    <div className='flex gap-3 flex-col p-3'>
-    <div className="flex gap-3 items-start">
-      <table className='table-auto text-left border-collapse'>
+    <div className='flex gap-3 flex-col p-3 bg-slate-50 sm:w-max'>
+    <div className="flex gap-3 items-start sm:flex-wrap flex-col sm:flex-row">
+      <table className='table-auto text-left border-collapse bg-white'>
         <thead>
           <tr>
             <th className='border p-1'>Grupp</th>
@@ -80,11 +82,11 @@ function SettingsGroups() {
       <div className='flex flex-col gap-1'>
         <h2>Lägg till / Ändra</h2>
         <label htmlFor="groupName">Namn</label>
-        <input type="text" name="groupName" id="groupName" className='bg-slate-100 p-1'/>
+        <input type="text" name="groupName" id="groupName" className='bg-white p-1'/>
         <label htmlFor="groupCount">Antal</label>
-        <input type="number" name="groupCount" id="groupCount" className='bg-slate-100 p-1'/>
+        <input type="number" name="groupCount" id="groupCount" className='bg-white p-1'/>
         <label htmlFor="groupHandler">Handledare</label>
-        <select name="groupHandler" id="groupHandler" className='bg-slate-100 p-1'>
+        <select name="groupHandler" id="groupHandler" className='bg-white p-1'>
           <option value="">Välj primär handledare</option>
           {dummyHandlerData.map((d, i) => (
             <option value={d.id} key={i}>{d.name}</option>
@@ -97,13 +99,13 @@ function SettingsGroups() {
       ?<div className='flex gap-3 items-start'>
         <table className="table-auto text-left border-collapse">
           <thead>
-            <tr>
+            <tr className='border bg-white'>
               <th colSpan={2}> Handledare för {dummyGroupData[selectedGroup].name}</th>
             </tr>
           </thead>
           <tbody>
             {dummyGroupData[selectedGroup].handlers.map((d, i) => (
-              <tr key={i} className='even:bg-slate-50'>
+              <tr key={i} className='bg-white even:bg-slate-50'>
                 <td className={`border p-1 ${dummyGroupData[selectedGroup].primaryHandler === d ? " font-bold" : ""}`} >{d}</td>
                 {dummyGroupData[selectedGroup].primaryHandler !== d
                 ?
@@ -117,7 +119,7 @@ function SettingsGroups() {
         </table>
         <div className='flex flex-col gap-1'>
           <h2>Lägg till</h2>
-          <select id='handlerName' name='handerName' className="bg-slate-100 p-1">
+          <select id='handlerName' name='handerName' className="bg-white p-1">
             <option value="">Välj handledare</option>
               {dummyHandlerData.map((d, i) => (
                 <option key={i} value={d.name}>{d.name}</option>

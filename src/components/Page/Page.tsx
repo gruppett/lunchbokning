@@ -1,7 +1,7 @@
 import React,{ useContext, useState, useEffect, MouseEvent } from 'react'
 import { GraphContext } from "../App/App"
 import nav from "../../nav.json"
-import { Link, Route, Routes, useLocation } from "react-router-dom"
+import { Link, Location, Route, Routes, useLocation } from "react-router-dom"
 import { useMsal } from "@azure/msal-react";
 import Overview from '../../pages/Overview';
 import Personal from '../../pages/Personal';
@@ -22,11 +22,17 @@ function handleLogout(instance: any, e: MouseEvent) {
   });
 }
 
+function cleanLocation(location: Location, index: number) {
+  return location.pathname.split("/")[index]
+}
+
 function Page() {
   const {user} = useContext(GraphContext)
   const [navState, setNavState] = useState("hidden")
   const location = useLocation()
   const { instance } = useMsal();
+
+  const activeLink = cleanLocation(location, 1)
 
   useEffect(() => {
     setNavState("hidden")
@@ -53,8 +59,8 @@ function Page() {
         </span>
         <span className='sm:hidden text-xl'>Stäng</span>
       </button>
-      {nav.map((n,i) => (
-        <Link to={n.link} key={i} className='flex items-center p-3 gap-3'>
+      {nav.main.map((n,i) => (
+        <Link to={n.link} key={i} className={`flex items-center p-3 gap-3 ${activeLink === n.link ? "text-blue-400" : ""}`}>
         <span className='material-icons-outlined text-2xl'>
           {n.icon}
         </span>
@@ -78,7 +84,7 @@ function Page() {
       <span className='flex-grow text-right sm:text-left'>{user?.mail}</span>
       <button className='hidden sm:inline-block' onClick={(e) => handleLogout(instance, e)}>Logga ut</button>
     </header>
-    <main className='h-full'>
+    <main className='h-full px-3'>
       <Routes>
         <Route path="/" element={<Overview />}/>
         <Route path="personlig" element={<Personal />}/>
