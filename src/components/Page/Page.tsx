@@ -1,9 +1,18 @@
-import React,{ useContext, useState, useEffect, Suspense, MouseEvent } from 'react'
+import React,{ useContext, useState, useEffect, MouseEvent } from 'react'
 import { GraphContext } from "../App/App"
 import nav from "../../nav.json"
-import { Link, useLocation } from "react-router-dom"
+import { Link, Route, Routes, useLocation } from "react-router-dom"
 import { useMsal } from "@azure/msal-react";
-import Spinner from '../Spinner/Spinner';
+import Overview from '../../pages/Overview';
+import Personal from '../../pages/Personal';
+import Groups from '../../pages/Groups';
+import ExternalGroups from '../../pages/ExternalGroups';
+import Compilation from '../../pages/Compilation';
+import Settings from '../../pages/Settings';
+import FourOhFour from '../../pages/FourOhFour';
+import SettingsGroups from '../../pages/settings/SettingsGroups';
+import SettingsUsers from '../../pages/settings/SettingsUsers';
+import SettingsPeriods from '../../pages/settings/SettingsPeriods';
 
 
 function handleLogout(instance: any, e: MouseEvent) {
@@ -13,11 +22,7 @@ function handleLogout(instance: any, e: MouseEvent) {
   });
 }
 
-interface props {
-  component: string
-}
-
-function Page({component}:props) {
+function Page() {
   const {user} = useContext(GraphContext)
   const [navState, setNavState] = useState("hidden")
   const location = useLocation()
@@ -37,9 +42,6 @@ function Page({component}:props) {
       setNavState("")
     }
   }
-
-  const Component = React.lazy(() => import(`../../pages/${component}`))
-
 
   return (
     <>
@@ -77,9 +79,20 @@ function Page({component}:props) {
       <button className='hidden sm:inline-block' onClick={(e) => handleLogout(instance, e)}>Logga ut</button>
     </header>
     <main className='p-3 h-full'>
-    <Suspense fallback={<Spinner />}>
-        <Component />
-      </Suspense>
+      <Routes>
+        <Route path="/" element={<Overview />}/>
+        <Route path="personlig" element={<Personal />}/>
+        <Route path="grupper" element={<Groups />}/>
+        <Route path="externa-grupper" element={<ExternalGroups />}/>
+        <Route path="sammanstallning" element={<Compilation />}/>
+        <Route path="installningar" element={<Settings />}>
+          <Route path="grupper" element={<SettingsGroups />} />
+          <Route path="anvandare" element={<SettingsUsers />} />
+          <Route path="perioder" element={<SettingsPeriods />} />
+        </Route>
+        <Route path="*" element={<FourOhFour />}/>
+        
+      </Routes>
       </main>
     </div>
     </div>

@@ -3,7 +3,7 @@ import { useIsAuthenticated, useMsal } from "@azure/msal-react";
 import { loginRequest } from "../../authConfig";
 import { callMsGraph } from "../../graph";
 import Page from "../Page/Page";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import Spinner from "../Spinner/Spinner";
 import SignIn from "../SignIn/SignIn";
 
@@ -62,6 +62,7 @@ function App() {
   }, [isAuthenticated, accounts, instance]);
 
   useEffect(() => {
+    /*
     if (graphData?.user?.mail !== undefined) {
       let groups: string[] = [];
       graphData.groups?.value.forEach((g: any) => {
@@ -72,7 +73,7 @@ function App() {
         mail: graphData.user.mail,
         roles: groups,
       };
-      fetch(process.env.REACT_APP_API_SERVER + "/api/user/addUserRoles.php", {
+      fetch(process.env.REACT_APP_API_SERVER + "/api/user/getUser.php", {
         method: "POST", // *GET, POST, PUT, DELETE, etc.
         mode: "no-cors", // no-cors, *cors, same-origin
         headers: {
@@ -84,6 +85,7 @@ function App() {
         .then((response) => response.json)
         .then((data) => console.log(data));
     }
+    */
   }, [graphData]);
 
   useEffect(() => {
@@ -102,30 +104,11 @@ function App() {
       </div>
     );
 
+  console.log(graphData)  
   return (
     <BrowserRouter>
       <GraphContext.Provider value={graphData}>
-        <Routes>
-          <Route path="/" element={<Page component="Overview" />}></Route>*
-          <Route
-            path="personlig"
-            element={<Page component="Personal" />}
-          ></Route>
-          <Route path="grupper" element={<Page component="Groups" />}></Route>
-          <Route
-            path="externa-grupper"
-            element={<Page component="ExternalGroups" />}
-          ></Route>
-          <Route
-            path="sammanstallning"
-            element={<Page component="Compilation" />}
-          ></Route>
-          <Route
-            path="installningar"
-            element={<Page component="Settings" />}
-          ></Route>
-          <Route path="*" element={<Page component="FourOhFour" />}></Route>
-        </Routes>
+        <Page></Page>
       </GraphContext.Provider>
     </BrowserRouter>
   );
