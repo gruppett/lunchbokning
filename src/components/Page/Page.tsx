@@ -78,7 +78,7 @@ function Page() {
       <span className='flex-grow text-right sm:text-left'>{user?.mail}</span>
       <button className='hidden sm:inline-block' onClick={(e) => handleLogout(instance, e)}>Logga ut</button>
     </header>
-    <main className='p-3 h-full'>
+    <main className='h-full'>
       <Routes>
         <Route path="/" element={<Overview />}/>
         <Route path="personlig" element={<Personal />}/>

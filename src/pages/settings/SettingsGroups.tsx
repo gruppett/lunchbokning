@@ -57,7 +57,7 @@ function SettingsGroups() {
 
 
   return (
-    <div className='flex gap-3 flex-col'>
+    <div className='flex gap-3 flex-col p-3'>
     <div className="flex gap-3 items-start">
       <table className='table-auto text-left border-collapse'>
         <thead>
