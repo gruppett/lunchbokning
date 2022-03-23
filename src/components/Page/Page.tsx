@@ -60,14 +60,14 @@ function Page() {
         <span className='sm:hidden text-xl'>Stäng</span>
       </button>
       {nav.main.map((n,i) => (
-        <Link to={n.link} key={i} className={`flex items-center p-3 gap-3 ${activeLink === n.link ? "text-blue-400" : ""}`}>
+        <Link to={n.link} key={i} className={`flex items-center p-3 gap-3 ${activeLink === n.link  || (activeLink === "" && n.link === "/") ? "text-blue-400" : ""}`}>
         <span className='material-icons-outlined text-2xl'>
           {n.icon}
         </span>
         <span className='sm:hidden text-xl'>{n.text}</span>
         </Link>
       ))}
-      <button className='flex sm:hidden items-center p-3 gap-3' onClick={(e) => handleLogout(instance, e)}>
+      <button className='flex sm:hidden items-center p-3 gap-3' onClick={(e) => handleLogout(instance, e)}> 
       <span className="material-icons-outlined text-2xl">
           logout
         </span>
@@ -92,6 +92,7 @@ function Page() {
         <Route path="externa-grupper" element={<ExternalGroups />}/>
         <Route path="sammanstallning" element={<Compilation />}/>
         <Route path="installningar" element={<Settings />}>
+          <Route index element={<SettingsGroups />} />
           <Route path="grupper" element={<SettingsGroups />} />
           <Route path="anvandare" element={<SettingsUsers />} />
           <Route path="perioder" element={<SettingsPeriods />} />
