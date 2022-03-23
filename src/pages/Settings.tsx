@@ -18,7 +18,7 @@ function Settings() {
     <>
     <div className='flex gap-5'>
       {nav.settings.map((d, i) => (
-        <Link to={d.to} key={i} className={`flex items-center p-3 justify-center flex-grow sm:flex-grow-0 ${activeLink === d.to ? "text-blue-400 bg-slate-50" : ""}`}>
+        <Link to={d.to} key={i} className={`flex items-center p-3 justify-center flex-grow sm:flex-grow-0 ${activeLink === d.to || (activeLink===undefined && d.to === "grupper") ? "text-blue-400 bg-slate-50" : ""}`}>
           <span className='material-icons-outlined'>
             {d.icon}
           </span>
