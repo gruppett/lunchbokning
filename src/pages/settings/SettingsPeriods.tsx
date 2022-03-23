@@ -37,6 +37,7 @@ function SettingsPeriods() {
     setIsPeriodSelected(true)
   }
 
+  
 
   return (
     <div className='flex gap-3 p-3 bg-slate-50 sm:w-max flex-col'>
@@ -53,7 +54,7 @@ function SettingsPeriods() {
             </thead>
             <tbody>
               {dummyPeriodData.map((d, i) => (
-                <tr className="bg-white even:bg-slate-50 cursor-pointer hover:bg-slate-100" onClick={() => selectPeriod(i)}>
+                <tr className="bg-white even:bg-slate-50 cursor-pointer hover:bg-slate-100" onClick={() => selectPeriod(i)} key={i}>
                   <td className='p-1 border'>{d.name}</td>
                   <td className='p-1 border'>{d.to}</td>
                   <td className='p-1 border'>{d.from}</td>
@@ -75,7 +76,7 @@ function SettingsPeriods() {
       </div>
       {isPeriodSelected
       ? <div className='min-content'>
-      <button className='px-3 py-1 bg-red-500 hover:bg-opacity-60'>Radera period</button>
+      <button className='px-3 py-1 bg-red-500 hover:bg-opacity-60'>Radera period {selectedPeriod}</button>
     </div>
       :<p>Välj en period för att radera den.</p>}
     </div>
