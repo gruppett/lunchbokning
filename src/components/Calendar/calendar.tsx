@@ -20,6 +20,10 @@ function HjortenCalendar(props: any) {
   const [personalLoading, setPersonalLoading] = useState(true);
   const [personalError, setPersonalError] = useState(false);
 
+  const [groupData, setGroupData] = useState(null as any);
+  const [groupLoading, setGroupLoading] = useState(true);
+  const [groupError, setGroupError] = useState(false);
+
   useEffect(() => {
     const url =
       process.env.REACT_APP_API_SERVER + "/api/booking/getBookings.php";
@@ -52,6 +56,39 @@ function HjortenCalendar(props: any) {
         setPersonalLoading(false);
       });
   }, []);
+
+  /*useEffect(() => {
+    const url =
+      process.env.REACT_APP_API_SERVER + "/api/booking/getBookings.php";
+    const body = '{ "employeeEmail": ' + '"admin@mail.com"' + " }";
+
+    fetch(url, {
+      body: body,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      mode: "cors",
+    })
+      .then((response) => {
+        if (response.ok) {
+          setPersonalError(false);
+          return response.json();
+        } else {
+          console.log(response);
+          throw new Error(response.json().toString());
+        }
+      })
+      .then((data) => {
+        setPersonalData(data);
+      })
+      .catch((error) => {
+        setPersonalError(true);
+      })
+      .finally(() => {
+        setPersonalLoading(false);
+      });
+  }, []);*/
 
   useEffect(() => {
     const url = process.env.REACT_APP_API_SERVER + "/api/date/getExclude.php";

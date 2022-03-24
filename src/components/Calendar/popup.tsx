@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { unmountPopup } from "../../helpers/unmountPopup";
+import Spinner from "../Spinner/Spinner";
 
 function Overview_popup(props: any) {
   const [data, setData] = useState(null as any);
@@ -82,6 +83,7 @@ function Overview_popup(props: any) {
         });
     } else {
       setLoading(false);
+      setData({ groupName: "DAT19", active: false, count: "13" });
     }
   }, [props.datetime]);
 
@@ -93,9 +95,7 @@ function Overview_popup(props: any) {
         }
         onClick={() => unmountPopup()}
       >
-        <p className="text-lg text-red-700">
-          {loading ? "Loading..." : "Error"}
-        </p>
+        {loading ? <Spinner /> : <p className="text-lg text-red-700">Error</p>}
       </div>
     );
   }
@@ -116,16 +116,17 @@ function Overview_popup(props: any) {
             style={{ width: "7rem" }}
           >
             <button className=" p-0.5 m-1 bg-white rounded">
-              {data.Active ? "Boka" : "Avboka"}
+              {data.active ? "Avboka" : "Boka"}
             </button>
             <input
               type="number"
               name=""
               id=""
               className=" rounded m-1 text-right"
+              defaultValue={data.count}
             />
             <button className=" p-0.5 m-1 bg-white rounded">
-              {data.Active ? "Boka" : "Avboka"}
+              {data.active ? "Avboka" : "Boka"}
             </button>
           </div>
         </div>
