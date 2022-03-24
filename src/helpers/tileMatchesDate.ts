@@ -1,7 +1,8 @@
 import moment from "moment";
 
-export function tile_Matchesdate(tileDate: Date, fetch: Array<Object>, view: String) {
-    if (
+export function tile_Matchesdate(tileDate: Date, fetch: any, view: String) {
+  if(fetch.ok) {  
+  if (
     view === "month" &&
     fetch
       .map((booking: any) => {
@@ -10,5 +11,5 @@ export function tile_Matchesdate(tileDate: Date, fetch: Array<Object>, view: Str
       .find((x: any) => x === moment(tileDate).format("YYYY-MM-DD"))
     ) {
         return true;
-    }
-}
+    } else {return false}
+}}

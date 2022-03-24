@@ -1,53 +1,60 @@
 import React, { useEffect, useState } from "react";
 import { unmountPopup } from "../../helpers/unmountPopup";
 import Spinner from "../Spinner/Spinner";
+import { tileHasBooking } from "../../helpers/tileHasBooking";
+import { getIdFromProp } from "../../helpers/getBookingIdFromProp";
+import moment from "moment";
 
 function Overview_popup(props: any) {
   const [data, setData] = useState(null as any);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  function tileHasBooking(prop: any) {
-    if (
-      prop.path
-        .find((x: any) => x.tagName === "BUTTON")
-        .classList.value.split(" ")
-        .map((x: any) => {
-          if (x.includes("booking_nr")) {
-            return x;
-          } else {
-            return null;
-          }
-        })
-        .filter((x: any) => {
-          if (x !== null) {
-            return x;
-          }
-        })[0] !== undefined
-    ) {
-      return true;
-    }
-  }
+  const [servingSelect, setServingSelect] = useState(1);
 
-  function getIdFromProp(prop: any) {
-    if (tileHasBooking(prop)) {
-      return prop.path
-        .find((x: any) => x.tagName === "BUTTON")
-        .classList.value.split(" ")
-        .map((x: any) => {
-          if (x.includes("booking_nr")) {
-            return x;
-          } else {
-            return null;
-          }
-        })
-        .filter((x: any) => {
-          if (x !== null) {
-            return x;
-          }
-        })[0]
-        .split("booking_nr")[1];
-    }
+  function postBooking(
+    date: String,
+    servingID: Number,
+    employeeID: Number,
+    groupID: Number = 1,
+    count: Number = 1,
+    diet: Number = 0
+  ) {
+    const body = {
+      date: date,
+      groupID: groupID,
+      count: count,
+      diet: diet,
+      employeeID: employeeID,
+      servingID: servingID,
+    };
+    const url =
+      process.env.REACT_APP_API_SERVER + "/api/booking/postBooking.php";
+    fetch(url, {
+      body: JSON.stringify(body),
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      mode: "cors",
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          console.log(response);
+          throw response.json();
+        }
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        return error;
+      })
+      .then((error) => {
+        console.log(error);
+      });
   }
 
   useEffect(() => {
@@ -93,7 +100,7 @@ function Overview_popup(props: any) {
         className={
           "bg-gradient-to-b from-blue-200 to-blue-300 absolute p-1 z-50 border border-blue-500 rounded flex cursor-pointer"
         }
-        onClick={() => unmountPopup()}
+        onClick={unmountPopup}
       >
         {loading ? <Spinner /> : <p className="text-lg text-red-700">Error</p>}
       </div>
@@ -106,28 +113,49 @@ function Overview_popup(props: any) {
           "bg-gradient-to-b from-blue-200 to-blue-300 absolute p-1 z-50 border border-blue-500 rounded flex items-start"
         }
       >
-        <div className="flex m-3">
-          <div className={"flex flex-col p-0.5"}>
+        <div className="flex flex-col m-3 w-40">
+          <div className={"flex p-0.5"}>
             <p className="p-0.5 m-1">{props.user.mail.split(".")[0]}:</p>
-            <p className="m-1">{data.groupName}:</p>
+            <div className="flex flex-col w-full">
+              <select
+                id="servingSelect"
+                className="p-0.5 m-1 bg-white rounded text-right"
+                onChange={(e) => {
+                  setServingSelect(e.target.value as any);
+                  console.log("Hej");
+                }}
+              >
+                <option value="1">10:45</option>
+                <option value="2">11:40</option>
+              </select>
+              <button
+                className="p-0.5 m-1 bg-white rounded"
+                onClick={() =>
+                  postBooking(
+                    moment(props.datetime).format("YYYY-MM-DD"),
+                    servingSelect,
+                    props.appUser.employeeID
+                  )
+                }
+              >
+                {data.active ? "Avboka" : "Boka"}
+              </button>
+            </div>
           </div>
-          <div
-            className={"flex flex-col p-0.5 w-auto"}
-            style={{ width: "7rem" }}
-          >
-            <button className=" p-0.5 m-1 bg-white rounded">
-              {data.active ? "Avboka" : "Boka"}
-            </button>
-            <input
-              type="number"
-              name=""
-              id=""
-              className=" rounded m-1 text-right"
-              defaultValue={data.count}
-            />
-            <button className=" p-0.5 m-1 bg-white rounded">
-              {data.active ? "Avboka" : "Boka"}
-            </button>
+          <div className={"flex p-0.5"}>
+            <p className="m-1">{data.groupName}:</p>
+            <div className="flex flex-col">
+              <input
+                type="number"
+                id="groupCount"
+                style={{ maxWidth: "-webkit-fill-available" }}
+                className="p-0.5 rounded m-1 text-right w-full box-border"
+                defaultValue={data.count}
+              />
+              <button className=" p-0.5 m-1 bg-white rounded">
+                {data.active ? "Avboka" : "Boka"}
+              </button>
+            </div>
           </div>
         </div>
         <span

@@ -20,6 +20,10 @@ function HjortenCalendar(props: any) {
   const [personalLoading, setPersonalLoading] = useState(true);
   const [personalError, setPersonalError] = useState(false);
 
+  const [appUser, setAppUser] = useState(null as any);
+  const [appUserLoading, setAppUserLoading] = useState(null as any);
+  const [appUserError, setAppUserError] = useState(null as any);
+
   const [groupData, setGroupData] = useState(null as any);
   const [groupLoading, setGroupLoading] = useState(true);
   const [groupError, setGroupError] = useState(false);
@@ -27,7 +31,7 @@ function HjortenCalendar(props: any) {
   useEffect(() => {
     const url =
       process.env.REACT_APP_API_SERVER + "/api/booking/getBookings.php";
-    const body = '{ "employeeEmail": ' + '"admin@mail.com"' + " }";
+    const body = '{ "employeeEmail": "' + user.mail + '"}';
 
     fetch(url, {
       body: body,
@@ -42,15 +46,20 @@ function HjortenCalendar(props: any) {
           setPersonalError(false);
           return response.json();
         } else {
-          console.log(response);
-          throw new Error(response.json().toString());
+          setPersonalData({ ok: false });
+          //console.log(response.json());
+          throw response.json();
         }
       })
       .then((data) => {
         setPersonalData(data);
       })
       .catch((error) => {
-        setPersonalError(true);
+        setPersonalError(error);
+        return error;
+      })
+      .then((error) => {
+        console.error(error.error[0]);
       })
       .finally(() => {
         setPersonalLoading(false);
@@ -142,7 +151,12 @@ function HjortenCalendar(props: any) {
           );
           document.getElementById("root")?.appendChild(popupDiv);
           ReactDOM.render(
-            <Popup user={user} datetime={value} booking={event.nativeEvent} />,
+            <Popup
+              user={user}
+              appUser={appUser}
+              datetime={value}
+              booking={event.nativeEvent}
+            />,
             document.getElementById("popup")
           );
           console.log(event.nativeEvent);
