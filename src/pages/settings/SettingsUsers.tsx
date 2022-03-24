@@ -27,10 +27,16 @@ const dummyUserData = [
     mail: "Kimmy.Kansson@gymnasium.ax",
     id: 3,
     roles: [
-      2, 4,
+      2,
     ],
     groups: []
   }
+]
+
+const dummyGroupData = [
+  "DAT32",
+  "MERK32",
+  "SERV32"
 ]
 
 
@@ -74,7 +80,7 @@ function SettingsUsers() {
       </div>
       </div>
       {isUserSelected
-      ?<div className='flex flex-col gap-1'>
+      ?<><div className='flex flex-col gap-1'>
         <h2>{dummyUserData[selectedUser].mail}</h2>
         <div className='flex gap-1 items-baseline'>
           <input type="checkbox" name="userIsAdmin" id="userIsAdmin" checked={dummyUserData[selectedUser].roles.includes(1)}/>
@@ -102,6 +108,36 @@ function SettingsUsers() {
         </div>
         <button className='px-3 py-1 w-min whitespace-nowrap bg-blue-300'>Spara</button>
       </div>
+      <div className="flex gap-3 items-start sm:flex-wrap flex-col sm:flex-row">
+        <table className="table-auto text-left border-collapse">
+          <thead>
+            <tr className='border bg-white'>
+              <th colSpan={2}> Handledare över grupper</th>
+            </tr>
+          </thead>
+          <tbody>
+            {dummyUserData[selectedUser].groups.map((d, i) => (
+              <tr key={i} className='bg-white even:bg-slate-50'>
+                <td className="border p-1">{d}</td>
+                <td className="border p-1">
+                  <span className='material-icons-outlined flex items-center justify-center text-red-500 cursor-pointer hover:text-opacity-60'>highlight_off</span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div className='flex flex-col gap-1'>
+          <h2>Lägg till</h2>
+          <select id='handlerName' name='handerName' className="bg-white p-1">
+            <option value="">Välj Grupp</option>
+              {dummyGroupData.map((d, i) => (
+                <option key={i} value={d}>{d}</option>
+              ))}
+          </select>
+          <button className='px-3 py-1 w-min whitespace-nowrap bg-blue-300'>Lägg till</button>
+        </div>
+      </div>
+      </>
       :<></>}
     </div>
   )
