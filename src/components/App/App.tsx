@@ -3,9 +3,10 @@ import { useIsAuthenticated, useMsal } from "@azure/msal-react";
 import { loginRequest } from "../../authConfig";
 import { callMsGraph } from "../../graph";
 import Page from "../Page/Page";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import Spinner from "../Spinner/Spinner";
 import SignIn from "../SignIn/SignIn";
+import SignOutButton from "../SignOutButton/SignOutButton";
 
 interface GraphContextInterface {
   user: UserInterface;
@@ -26,6 +27,8 @@ interface UserInterface {
   userPrincipalName: string;
 }
 
+const allowedGroups = ["M365-DAT19Projektgrupp1", "ayg-personal-s1", "ayg-larare-s1"]
+
 export const GraphContext = createContext({} as GraphContextInterface);
 
 function App() {
@@ -33,6 +36,8 @@ function App() {
   const { instance, accounts } = useMsal();
   const [graphData, setGraphData] = useState({} as GraphContextInterface);
   const [isLoading, setIsLoading] = useState(true);
+  const [test, setTest] = useState({} as any)
+  const [isUnprivileged, setIsUnprivileged] = useState(false)
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -67,24 +72,37 @@ function App() {
       graphData.groups?.value.forEach((g: any) => {
         groups.push(g.displayName);
       });
-      console.log(groups);
+      console.log(groups)
+      let isOk = false
+      allowedGroups.forEach(element => {
+        if (groups.includes(element)) {
+          isOk = true
+        }
+      });
+      if (!isOk) {
+        setIsUnprivileged(true)
+        return
+      }
+
       const data = {
-        mail: graphData.user.mail,
+        employeeEmail: graphData.user.mail,
         roles: groups,
       };
-      fetch(process.env.REACT_APP_API_SERVER + "/api/user/addUserRoles.php", {
+      fetch(process.env.REACT_APP_API_SERVER + "/api/user/getLogin.php", {
         method: "POST", // *GET, POST, PUT, DELETE, etc.
-        mode: "no-cors", // no-cors, *cors, same-origin
+        mode: "cors", // no-cors, *cors, same-origin
         headers: {
           "Content-Type": "application/json",
           // 'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: JSON.stringify(data), // body data type must match "Content-Type" header
       })
-        .then((response) => response.json)
-        .then((data) => console.log(data));
+        .then((response) => response.json())
+        .then(data => setTest(data));
     }
   }, [graphData]);
+
+  
 
   useEffect(() => {
     if (graphData?.user?.mail !== undefined) {
@@ -95,6 +113,11 @@ function App() {
 
   if (!isAuthenticated) return <SignIn />;
 
+  if(isUnprivileged) return (<div className="flex justify-center gap-3 items-center h-full flex-col">
+    <h1>Du har inte tillgång till lunchbokningen</h1>
+    <SignOutButton />
+  </div>);
+
   if (isLoading)
     return (
       <div className="h-screen">
@@ -102,30 +125,11 @@ function App() {
       </div>
     );
 
+  console.log(test)  
   return (
     <BrowserRouter>
       <GraphContext.Provider value={graphData}>
-        <Routes>
-          <Route path="/" element={<Page component="Overview" />}></Route>*
-          <Route
-            path="personlig"
-            element={<Page component="Personal" />}
-          ></Route>
-          <Route path="grupper" element={<Page component="Groups" />}></Route>
-          <Route
-            path="externa-grupper"
-            element={<Page component="ExternalGroups" />}
-          ></Route>
-          <Route
-            path="sammanstallning"
-            element={<Page component="Compilation" />}
-          ></Route>
-          <Route
-            path="installningar"
-            element={<Page component="Settings" />}
-          ></Route>
-          <Route path="*" element={<Page component="FourOhFour" />}></Route>
-        </Routes>
+        <Page></Page>
       </GraphContext.Provider>
     </BrowserRouter>
   );

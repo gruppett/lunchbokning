@@ -1,38 +1,57 @@
-[
-  {
-    "icon": "calendar_month",
-    "link": "/",
-    "text": "Översikt",
-    "component": "Overview"
-  },
-  {
-    "icon": "person",
-    "link": "/personlig",
-    "text": "Personligt",
-    "component": "Personal"
-  },
-  {
-    "icon": "groups",
-    "link": "/grupper",
-    "text": "Grupper",
-    "component": "Groups"
-  },
-  {
-    "icon": "supervisor_account",
-    "link": "/externa-grupper",
-    "text": "Externa grupper",
-    "component": "ExternalGroups"
-  },
-  {
-    "icon": "restaurant",
-    "link": "/sammanstallning",
-    "text": "Sammanställning",
-    "component": "Compilation"
-  },
-  {
-    "icon": "settings",
-    "link": "/installningar",
-    "text": "Inställningar",
-    "component": "Settings"
-  }
-]
+{
+  "main": [
+    {
+      "icon": "calendar_month",
+      "link": "/",
+      "text": "Översikt",
+      "component": "Overview"
+    },
+    {
+      "icon": "person",
+      "link": "personlig",
+      "text": "Personlig",
+      "component": "Personal"
+    },
+    {
+      "icon": "groups",
+      "link": "grupper",
+      "text": "Grupper",
+      "component": "Groups"
+    },
+    {
+      "icon": "supervisor_account",
+      "link": "externa-grupper",
+      "text": "Externa grupper",
+      "component": "ExternalGroups"
+    },
+    {
+      "icon": "restaurant",
+      "link": "sammanstallning",
+      "text": "Sammanställning",
+      "component": "Compilation"
+    },
+    {
+      "icon": "settings",
+      "link": "installningar",
+      "text": "Inställningar",
+      "component": "Settings"
+    }
+  ],
+  "settings": [
+    {
+      "icon": "groups",
+      "to": "grupper",
+      "text": "Grupper"
+    },
+    {
+      "icon": "people",
+      "to": "anvandare",
+      "text": "Användare"
+    },
+    {
+      "icon": "date_range",
+      "to": "perioder",
+      "text": "Perioder"
+    }
+  ]
+}
