@@ -27,7 +27,7 @@ interface UserInterface {
   userPrincipalName: string;
 }
 
-const allowedGroups = ["M365-DAT19Projektgrupp1"]
+const allowedGroups = ["M365-DAT19Projektgrupp1", "ayg-personal-s1", "ayg-larare-s1"]
 
 export const GraphContext = createContext({} as GraphContextInterface);
 
