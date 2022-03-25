@@ -14,20 +14,20 @@ function HjortenCalendar(props: any) {
 
   const [excludeDates, setExcludeDates] = useState(null as any);
   const [excludeDatesLoading, setExcludeDatesLoading] = useState(true);
-  const [excludeDatesError, setExcludeDatesError] = useState(false);
+  const [excludeDatesError, setExcludeDatesError] = useState(false as any);
 
   const [personalData, setPersonalData] = useState(null as any);
   const [personalLoading, setPersonalLoading] = useState(true);
-  const [personalError, setPersonalError] = useState(false);
+  const [personalError, setPersonalError] = useState(false as any);
 
-  const [appUser, setAppUser] = useState(null as any);
+  /*  const [appUser, setAppUser] = useState(null as any);
   const [appUserLoading, setAppUserLoading] = useState(null as any);
   const [appUserError, setAppUserError] = useState(null as any);
-
-  const [groupData, setGroupData] = useState(null as any);
+*/
+  /*const [groupData, setGroupData] = useState(null as any);
   const [groupLoading, setGroupLoading] = useState(true);
   const [groupError, setGroupError] = useState(false);
-
+*/
   useEffect(() => {
     const url =
       process.env.REACT_APP_API_SERVER + "/api/booking/getBookings.php";
@@ -47,7 +47,6 @@ function HjortenCalendar(props: any) {
           return response.json();
         } else {
           setPersonalData({ ok: false });
-          //console.log(response.json());
           throw response.json();
         }
       })
@@ -55,16 +54,15 @@ function HjortenCalendar(props: any) {
         setPersonalData(data);
       })
       .catch((error) => {
-        setPersonalError(error);
         return error;
       })
       .then((error) => {
-        console.error(error.error[0]);
+        setPersonalError(error);
       })
       .finally(() => {
         setPersonalLoading(false);
       });
-  }, []);
+  }, [user.mail]);
 
   /*useEffect(() => {
     const url =
@@ -111,14 +109,17 @@ function HjortenCalendar(props: any) {
           return response.json();
         } else {
           console.log(response);
-          throw new Error(response.json().toString());
+          throw response.json();
         }
       })
       .then((data) => {
         setExcludeDates(data);
       })
       .catch((error) => {
-        setExcludeDatesError(true);
+        return error;
+      })
+      .then((error) => {
+        setExcludeDatesError(error);
       })
       .finally(() => {
         setExcludeDatesLoading(false);
@@ -128,7 +129,7 @@ function HjortenCalendar(props: any) {
   if (personalLoading || excludeDatesLoading) {
     return <Spinner />;
   }
-
+  console.log(personalError, excludeDatesError);
   return (
     <>
       <Calendar
@@ -153,7 +154,7 @@ function HjortenCalendar(props: any) {
           ReactDOM.render(
             <Popup
               user={user}
-              appUser={appUser}
+              //appUser={appUser}
               datetime={value}
               booking={event.nativeEvent}
             />,

@@ -92,7 +92,7 @@ function Overview_popup(props: any) {
       setLoading(false);
       setData({ groupName: "DAT19", active: false, count: "13" });
     }
-  }, [props.datetime]);
+  }, [props.datetime, props.booking]);
 
   if (loading || error) {
     return (
