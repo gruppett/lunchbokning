@@ -12,11 +12,9 @@ export function getIdFromProp(prop: any) {
             return null;
           }
         })
-        .filter((x: any) => {
-          if (x !== null) {
-            return x;
-          }
-        })[0]
+        .filter((x: any) =>
+          x !== null
+        )[0]
         .split("booking_nr")[1];
     }
   }

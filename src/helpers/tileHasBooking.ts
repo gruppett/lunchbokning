@@ -10,11 +10,7 @@ export function tileHasBooking(prop: any) {
             return null;
           }
         })
-        .filter((x: any) => {
-          if (x !== null) {
-            return x;
-          }
-        })[0] !== undefined
+        .filter((x: any) => x !== null)[0] !== undefined
     ) {
       return true;
     }
