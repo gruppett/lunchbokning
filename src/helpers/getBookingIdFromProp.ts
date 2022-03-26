@@ -2,7 +2,7 @@ import { tileHasBooking } from "./tileHasBooking";
 
 export function getIdFromProp(prop: any) {
     if (tileHasBooking(prop)) {
-      return prop.path
+      let booking_nr = prop.path
         .find((x: any) => x.tagName === "BUTTON")
         .classList.value.split(" ")
         .map((x: any) => {
@@ -14,7 +14,9 @@ export function getIdFromProp(prop: any) {
         })
         .filter((x: any) =>
           x !== null
-        )[0]
-        .split("booking_nr")[1];
+        ).map((x: any) => 
+          x.split("booking_nr")
+        )
+      return booking_nr
     }
   }

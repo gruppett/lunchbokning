@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Key, useEffect, useState } from "react";
 import { unmountPopup } from "../../helpers/unmountPopup";
 import Spinner from "../Spinner/Spinner";
 import { tileHasBooking } from "../../helpers/tileHasBooking";
@@ -47,13 +47,13 @@ function Overview_popup(props: any) {
         }
       })
       .then((data) => {
-        console.log(data);
+        props.setBooking(data);
       })
       .catch((error) => {
         return error;
       })
       .then((error) => {
-        console.log(error);
+        if (error) console.log(error);
       });
   }
 
@@ -76,14 +76,17 @@ function Overview_popup(props: any) {
             return response.json();
           } else {
             console.log(response);
-            throw new Error(response.json().toString());
+            throw response.json();
           }
         })
         .then((data) => {
           setData(data);
         })
         .catch((error) => {
-          setError(true);
+          return error;
+        })
+        .then((error) => {
+          setError(error);
         })
         .finally(() => {
           setLoading(false);
@@ -122,41 +125,44 @@ function Overview_popup(props: any) {
                 className="p-0.5 m-1 bg-white rounded text-right"
                 onChange={(e) => {
                   setServingSelect(e.target.value as any);
-                  console.log("Hej");
                 }}
+                defaultValue="2"
               >
                 <option value="1">10:45</option>
                 <option value="2">11:40</option>
               </select>
               <button
                 className="p-0.5 m-1 bg-white rounded"
-                onClick={() =>
+                onClick={() => {
                   postBooking(
                     moment(props.datetime).format("YYYY-MM-DD"),
                     servingSelect,
-                    props.appUser.employeeID
-                  )
-                }
+                    props.appUser.id
+                  );
+                  unmountPopup();
+                }}
               >
                 {data.active ? "Avboka" : "Boka"}
               </button>
             </div>
           </div>
-          <div className={"flex p-0.5"}>
-            <p className="m-1">{data.groupName}:</p>
-            <div className="flex flex-col">
-              <input
-                type="number"
-                id="groupCount"
-                style={{ maxWidth: "-webkit-fill-available" }}
-                className="p-0.5 rounded m-1 text-right w-full box-border"
-                defaultValue={data.count}
-              />
-              <button className=" p-0.5 m-1 bg-white rounded">
-                {data.active ? "Avboka" : "Boka"}
-              </button>
+          {props.group !== null ? (
+            <div className={"flex p-0.5"}>
+              <p className="m-1">{props.group.groupName}:</p>
+              <div className="flex flex-col">
+                <input
+                  type="number"
+                  id="groupCount"
+                  style={{ maxWidth: "-webkit-fill-available" }}
+                  className="p-0.5 rounded m-1 text-right w-full box-border"
+                  defaultValue={data.count}
+                />
+                <button className=" p-0.5 m-1 bg-white rounded">
+                  {data.active ? "Avboka" : "Boka"}
+                </button>
+              </div>
             </div>
-          </div>
+          ) : null}
         </div>
         <span
           className="material-icons-outlined text-sm p-1 cursor-pointer"

@@ -1,9 +1,9 @@
 import moment from "moment";
 
 export function tile_Matchesdate(tileDate: Date, fetch: any, view: String) {
-  if(fetch.ok) {  
+  if (fetch !== null) {
   if (
-    view === "month" &&
+    (view === "month") &&
     fetch
       .map((booking: any) => {
         return booking.date;
