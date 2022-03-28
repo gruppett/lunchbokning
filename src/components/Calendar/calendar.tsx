@@ -5,9 +5,8 @@ import { GraphContext } from "../App/App";
 import Popup from "./popup";
 import ReactDOM from "react-dom";
 import Spinner from "../Spinner/Spinner";
-import moment from "moment";
 import { tile_Matchesdate } from "../../helpers/tileMatchesDate";
-import { group } from "console";
+import { BookingClassNames } from "../../helpers/tileClassNameBooking";
 
 function HjortenCalendar(props: any) {
   const [value, onChange] = useState(new Date());
@@ -105,7 +104,7 @@ function HjortenCalendar(props: any) {
   }, [user.mail]);
 
   useEffect(() => {
-    const url = process.env.REACT_APP_API_SERVER + "/api/date/getExclude.php";
+    const url = process.env.REACT_APP_API_SERVER + "/api/date/getExcludes.php";
     fetch(url, {
       method: "GET",
       mode: "cors",
@@ -137,7 +136,7 @@ function HjortenCalendar(props: any) {
     const url =
       process.env.REACT_APP_API_SERVER + "/api/user/getPrimGroups.php";
     const body = '{ "employeeEmail": "' + user.mail + '"}';
-
+    console.log(user.mail);
     fetch(url, {
       body: body,
       method: "POST",
@@ -155,7 +154,6 @@ function HjortenCalendar(props: any) {
         }
       })
       .then((data) => {
-        console.log(data);
         setGroupData(data);
       })
       .catch((error) => {
@@ -170,52 +168,58 @@ function HjortenCalendar(props: any) {
   }, [user.mail]);
 
   useEffect(() => {
-    const url =
-      process.env.REACT_APP_API_SERVER + "/api/booking/getBookings.php";
-    const body = '{ "groupID": "' + groupData.groupID + '"}';
-
-    fetch(url, {
-      body: body,
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      mode: "cors",
-    })
-      .then((response) => {
-        if (response.ok) {
-          setGroupBookingError(false);
-          return response.json();
-        } else {
-          throw response.json();
-        }
+    if (groupData !== null) {
+      const url =
+        process.env.REACT_APP_API_SERVER + "/api/booking/getBookings.php";
+      const body = '{ "groupID": "' + groupData.groupID + '"}';
+      fetch(url, {
+        body: body,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        mode: "cors",
       })
-      .then((data) => {
-        setGroupBookingData(data);
-      })
-      .catch((error) => {
-        return error;
-      })
-      .then((error) => {
-        setGroupBookingError(error);
-      })
-      .finally(() => {
-        setGroupBookingLoading(false);
-      });
-  }, [user.mail, bookingID]);
-
-  console.log(groupBookingData);
+        .then((response) => {
+          if (response.ok) {
+            setGroupBookingError(false);
+            return response.json();
+          } else {
+            throw response.json();
+          }
+        })
+        .then((data) => {
+          setGroupBookingData(data);
+        })
+        .catch((error) => {
+          return error;
+        })
+        .then((error) => {
+          setGroupBookingError(error);
+        })
+        .finally(() => {
+          setGroupBookingLoading(false);
+        });
+    }
+  }, [groupData, groupLoading]);
 
   if (
     personalLoading ||
     excludeDatesLoading ||
     appUserLoading ||
-    groupLoading
+    groupLoading ||
+    groupBookingLoading
   ) {
     return <Spinner />;
   }
 
-  const errors = [personalError, appUserError, excludeDatesError, groupError];
+  const errors = [
+    personalError,
+    appUserError,
+    excludeDatesError,
+    groupError,
+    groupBookingError,
+  ];
   errors.forEach((x, index) => {
     let processingError;
     switch (index) {
@@ -230,6 +234,10 @@ function HjortenCalendar(props: any) {
         break;
       case 3:
         processingError = "Group error";
+        break;
+      case 4:
+        processingError = "Group booking error";
+        break;
     }
     if (x !== undefined) console.log(processingError + ":" + x);
   });
@@ -269,56 +277,23 @@ function HjortenCalendar(props: any) {
           console.log(event.nativeEvent);
         }}
         tileContent={({ date, view }) => {
-          if (
-            tile_Matchesdate(date, personalData, view) ||
-            tile_Matchesdate(date, groupData, view)
-          ) {
-            return (
-              <>
+          return (
+            <>
+              {tile_Matchesdate(date, personalData, view) ? (
                 <p className="bg-gradient-to-tr from-blue-400 to-blue-200 rounded p-1">
                   {user.givenName}
                 </p>
-              </>
-            );
-          } else {
-            return null;
-          }
+              ) : null}
+              {tile_Matchesdate(date, groupBookingData, view) ? (
+                <p className="bg-gradient-to-tr from-red-400 to-red-200 rounded p-1">
+                  {groupData.groupName}
+                </p>
+              ) : null}
+            </>
+          );
         }}
         tileClassName={({ date, view }) => {
-          if (tile_Matchesdate(date, personalData, view)) {
-            return personalData
-              .map((booking: any) => {
-                return [booking.date, booking.active];
-              })
-              .find((x: any) => x[0] === moment(date).format("YYYY-MM-DD"))[1]
-              .toString() === "1"
-              ? "booking_nr" +
-                  personalData
-                    .map((booking: any) => {
-                      return [booking.date, booking.bookingID];
-                    })
-                    .find(
-                      (x: any) => x[0] === moment(date).format("YYYY-MM-DD")
-                    )[1]
-              : null;
-          }
-          if (tile_Matchesdate(date, personalData, view)) {
-            return personalData
-              .map((booking: any) => {
-                return [booking.date, booking.active];
-              })
-              .find((x: any) => x[0] === moment(date).format("YYYY-MM-DD"))[1]
-              .toString() === "1"
-              ? "booking_nr" +
-                  personalData
-                    .map((booking: any) => {
-                      return [booking.date, booking.bookingID];
-                    })
-                    .find(
-                      (x: any) => x[0] === moment(date).format("YYYY-MM-DD")
-                    )[1]
-              : null;
-          }
+          return BookingClassNames(date, view, personalData, groupBookingData);
         }}
         tileDisabled={({ date, view }) => {
           if (tile_Matchesdate(date, excludeDates, view)) {
