@@ -6,11 +6,17 @@ import Page from "../Page/Page";
 import { BrowserRouter } from "react-router-dom";
 import Spinner from "../Spinner/Spinner";
 import SignIn from "../SignIn/SignIn";
-import SignOutButton from "../SignOutButton/SignOutButton";
 
 interface GraphContextInterface {
   user: UserInterface;
   groups: any;
+}
+
+interface ApiUserContextInterface {
+  employeeID: number,
+  employeeEmail: string,
+  diet: number,
+  roles: number[]
 }
 
 interface UserInterface {
@@ -30,14 +36,21 @@ interface UserInterface {
 const allowedGroups = ["M365-DAT19Projektgrupp1", "ayg-personal-s1", "ayg-larare-s1"]
 
 export const GraphContext = createContext({} as GraphContextInterface);
+export const UserContext = createContext({} as ApiUserContextInterface)
+
+function handleLogout(instance: any) {
+  instance.logoutRedirect().catch((e: any) => {
+    console.error(e);
+  });
+}
 
 function App() {
   const isAuthenticated = useIsAuthenticated();
   const { instance, accounts } = useMsal();
   const [graphData, setGraphData] = useState({} as GraphContextInterface);
   const [isLoading, setIsLoading] = useState(true);
-  const [test, setTest] = useState({} as any)
   const [isUnprivileged, setIsUnprivileged] = useState(false)
+  const [userData, setUserData] = useState({} as ApiUserContextInterface)
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -98,7 +111,7 @@ function App() {
         body: JSON.stringify(data), // body data type must match "Content-Type" header
       })
         .then((response) => response.json())
-        .then(data => setTest(data));
+        .then(data => setUserData(data));
     }
   }, [graphData]);
 
@@ -106,7 +119,6 @@ function App() {
 
   useEffect(() => {
     if (graphData?.user?.mail !== undefined) {
-      console.log(graphData.user.mail);
       setIsLoading(false);
     }
   }, [graphData]);
@@ -115,7 +127,7 @@ function App() {
 
   if(isUnprivileged) return (<div className="flex justify-center gap-3 items-center h-full flex-col">
     <h1>Du har inte tillgång till lunchbokningen</h1>
-    <SignOutButton />
+    <button onClick={() => handleLogout(instance)}></button>
   </div>);
 
   if (isLoading)
@@ -124,12 +136,12 @@ function App() {
         <Spinner />
       </div>
     );
-
-  console.log(test)  
   return (
     <BrowserRouter>
       <GraphContext.Provider value={graphData}>
-        <Page></Page>
+        <UserContext.Provider value={userData}>
+          <Page></Page>
+        </UserContext.Provider>
       </GraphContext.Provider>
     </BrowserRouter>
   );

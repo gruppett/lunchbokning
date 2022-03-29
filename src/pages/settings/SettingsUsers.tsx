@@ -1,54 +1,104 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
+import Spinner from '../../components/Spinner/Spinner'
 import UserRoles from '../../components/UserRoles/UserRoles'
 
-const dummyUserData = [
+
+const roleCheckboxes = [
   {
-    mail: "Jimmy.Jansson@gymnasium.ax",
-    id: 1,
-    roles: [
-      1, 2, 3, 4,
-    ],
-    groups: [
-      "DAT32",
-      "MERK32"
-    ]
+    id: "userIsAdmin",
+    label: "Är adminstratör",
+    icon: "local_police"
   },
   {
-    mail: "Simmy.Sansson@gymnasium.ax",
-    id: 2,
-    roles: [
-      2, 3, 4,
-    ],
-    groups: [
-      "MERK32"
-    ]
+    id: "userIsHallTeacher",
+    label: "Är salslärare",
+    icon: "table_restaurant"  
   },
   {
-    mail: "Kimmy.Kansson@gymnasium.ax",
-    id: 3,
-    roles: [
-      2,
-    ],
-    groups: []
+    id: "userIsKitchenTeacher",
+    label: "Är kökslärare",
+    icon: "soup_kitchen"
   }
 ]
-
-const dummyGroupData = [
-  "DAT32",
-  "MERK32",
-  "SERV32"
-]
-
-
 
 function SettingsUsers() {
   const [selectedUser, setSelectedUser] = useState(-1)
   const [isUserSelected, setIsUserSelected] = useState(false)
-  function selectUser (id: number) {
+  const [usersData, setUsersData] = useState({} as any)
+  const [groupsData, setGroupsData] = useState({} as any)
+  const [isLoaded, setIsLoaded] = useState(false)
+
+  const [inputRoles, setInputRoles] = useState(
+    new Array(3).fill(false)
+  )
+
+  function handleInputCheckboxesOnChange(position: any) {
+    const updatedCheckedState = inputRoles.map((item, index) =>
+      index === position ? !item : item
+    );
+    setInputRoles(updatedCheckedState);
+  }
+
+  async function selectUser (id: number) {
     setSelectedUser(id)
     setIsUserSelected(true)
   }
 
+
+
+  useEffect(() => {
+    let rolesBool = []
+    for (let i = 0; i < 4; i++) {
+      if (usersData[selectedUser]?.roles.includes(i+1)) {
+        rolesBool.push(true)
+      } else {
+        rolesBool.push(false)
+      }
+    }
+    setInputRoles(rolesBool)
+  }, [selectedUser, usersData])
+  
+
+  useEffect(() => {
+    fetch(process.env.REACT_APP_API_SERVER + "/api/user/getUsers.php", {
+      method: "POST", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, *cors, same-origin
+      headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      }
+    })
+      .then((response) => response.json())
+      .then(data => {
+        setUsersData(data)
+      });
+      fetch(process.env.REACT_APP_API_SERVER + "/api/groups/getGroups.php", {
+        method: "POST", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, *cors, same-origin
+        headers: {
+          "Content-Type": "application/json",
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+        }
+      })
+        .then((response) => response.json())
+        .then(data => {
+          setGroupsData(data)
+          setIsLoaded(true)
+        });
+  }, [])
+
+  if (!isLoaded) {
+    return <Spinner />
+  }
+
+  /*
+
+  TODO: Remove entries in groupsData if they are in usersData.groups
+
+  console.log(groupsData)
+  console.log(usersData)
+
+*/
 
   return (
     <div className='flex gap-3 flex-col p-3 bg-slate-50 sm:w-max'>
@@ -63,10 +113,10 @@ function SettingsUsers() {
             </tr>
           </thead>
           <tbody>
-            {dummyUserData.map((d, i) => (
-              <tr key={i} className="cursor-pointer bg-white hover:bg-slate-100 even:bg-slate-50" onClick={() => selectUser(i)}>
-                <td className='p-1 border'>{d.mail}</td>
-                <UserRoles roles={d.roles}></UserRoles>
+            {usersData.map((i:any, key:any) => (
+              <tr key={key} className="cursor-pointer bg-white hover:bg-slate-100 even:bg-slate-50" onClick={() => selectUser(key)}>
+                <td className='p-1 border'>{i.email}</td>
+                <UserRoles roles={i.roles}></UserRoles>
               </tr>
             ))}
           </tbody>
@@ -81,31 +131,17 @@ function SettingsUsers() {
       </div>
       {isUserSelected
       ?<><div className='flex flex-col gap-1'>
-        <h2>{dummyUserData[selectedUser].mail}</h2>
-        <div className='flex gap-1 items-baseline'>
-          <input type="checkbox" name="userIsAdmin" id="userIsAdmin" checked={dummyUserData[selectedUser].roles.includes(1)}/>
-          <label htmlFor="userIsAdmin" className='cursor-pointer flex'>Är adminstratör
+        <h2>{usersData[selectedUser]?.email}</h2>
+        {roleCheckboxes.map((i, key) => (
+          <div className='flex gap-1 items-baseline' key={key}>
+          <input type="checkbox" name={i.id} id={i.id} checked={inputRoles[key]} onChange={() => handleInputCheckboxesOnChange(key)}/>
+          <label htmlFor={i.id} className='cursor-pointer flex'>{i.label}
             <span className='material-icons-outlined self.center'>
-              local_police
+              {i.icon}
             </span>
-          </label>
+          </label>  
         </div>
-        <div className='flex gap-1 items-baseline'>
-          <input type="checkbox" name="userIsHallTeacher" id="userIsHallTeacher" checked={dummyUserData[selectedUser].roles.includes(2)}/>
-          <label htmlFor="userIsHallTeacher" className='cursor-pointer flex'>Är salslärare
-            <span className='material-icons-outlined self.center'>
-            table_restaurant
-            </span>
-          </label>
-        </div>
-        <div className='flex gap-1 items-baseline'>
-          <input type="checkbox" name="userIsKitchenTeacher" id="userIsKitchenTeacher" checked={dummyUserData[selectedUser].roles.includes(3)}/>
-          <label htmlFor="userIsKitchenTeacher" className='cursor-pointer flex'>Är köksärare
-            <span className='material-icons-outlined self.center'>
-            soup_kitchen
-            </span>
-          </label>
-        </div>
+          ))}
         <button className='px-3 py-1 w-min whitespace-nowrap bg-blue-300'>Spara</button>
       </div>
       <div className="flex gap-3 items-start sm:flex-wrap flex-col sm:flex-row">
@@ -116,9 +152,9 @@ function SettingsUsers() {
             </tr>
           </thead>
           <tbody>
-            {dummyUserData[selectedUser].groups.map((d, i) => (
-              <tr key={i} className='bg-white even:bg-slate-50'>
-                <td className="border p-1">{d}</td>
+            {usersData[selectedUser].groups?.map((i:any, key:any) => (
+              <tr key={key} className='bg-white even:bg-slate-50'>
+                <td className="border p-1">{i}</td>
                 <td className="border p-1">
                   <span className='material-icons-outlined flex items-center justify-center text-red-500 cursor-pointer hover:text-opacity-60'>highlight_off</span>
                 </td>
@@ -130,8 +166,8 @@ function SettingsUsers() {
           <h2>Lägg till</h2>
           <select id='handlerName' name='handerName' className="bg-white p-1">
             <option value="">Välj Grupp</option>
-              {dummyGroupData.map((d, i) => (
-                <option key={i} value={d}>{d}</option>
+              {groupsData?.map((i:any, key:any) => (
+                <option key={key} value={i.groupID}>{i.name}</option>
               ))}
           </select>
           <button className='px-3 py-1 w-min whitespace-nowrap bg-blue-300'>Lägg till</button>

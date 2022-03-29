@@ -1,35 +1,12 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect, Key} from 'react'
+import Spinner from '../../components/Spinner/Spinner'
 
-const dummyPeriodData = [
-  {
-    name: 1,
-    from: "16.8.2021",
-    to: "6.10.2021",
-  },
-  {
-    name: 2,
-    from: "7.10.2021",
-    to: "30.11.2021",
-  },
-  {
-    name: 3,
-    from: "1.12.2021",
-    to: "8.2.2022",
-  },
-  {
-    name: 4,
-    from: "9.2.2022",
-    to: "7.4.2022",
-  },
-  {
-    name: 5,
-    from: "8.4.2022",
-    to: "	3.6.2022",
-  }
-]
+
 
 function SettingsPeriods() {
+  const [periodData, setPeriodData] = useState({} as any)
   const [selectedPeriod, setSelectedPeriod] = useState(-1)
+  const [isLoaded, setIsLoaded] = useState(false)
   const [isPeriodSelected, setIsPeriodSelected] = useState(false)
 
   function selectPeriod (id: number) {
@@ -37,7 +14,26 @@ function SettingsPeriods() {
     setIsPeriodSelected(true)
   }
 
+
+  useEffect(() => {
+    fetch(process.env.REACT_APP_API_SERVER + "/api/period/getPeriods.php", {
+      method: "GET", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, *cors, same-origin
+      headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      }
+    })
+      .then((response) => response.json())
+      .then(data => {
+        setPeriodData(data)
+        setIsLoaded(true)
+      });
+  }, [])
   
+  if (!isLoaded) {
+    return <Spinner />
+  }
 
   return (
     <div className='flex gap-3 p-3 bg-slate-50 sm:w-max flex-col'>
@@ -53,11 +49,11 @@ function SettingsPeriods() {
               </tr>
             </thead>
             <tbody>
-              {dummyPeriodData.map((d, i) => (
-                <tr className="bg-white even:bg-slate-50 cursor-pointer hover:bg-slate-100" onClick={() => selectPeriod(i)} key={i}>
-                  <td className='p-1 border'>{d.name}</td>
-                  <td className='p-1 border'>{d.to}</td>
-                  <td className='p-1 border'>{d.from}</td>
+              {periodData.map((i: any, key: Key) => (
+                <tr className="bg-white even:bg-slate-50 cursor-pointer hover:bg-slate-100" onClick={() => selectPeriod(key as number)} key={key}>
+                  <td className='p-1 border'>{i.periodName}</td>
+                  <td className='p-1 border'>{i.startDate}</td>
+                  <td className='p-1 border'>{i.endDate}</td>
                 </tr>
               ))}
             </tbody>
@@ -76,7 +72,7 @@ function SettingsPeriods() {
       </div>
       {isPeriodSelected
       ? <div className='min-content'>
-      <button className='px-3 py-1 bg-red-500 hover:bg-opacity-60'>Radera period {selectedPeriod}</button>
+      <button className='px-3 py-1 bg-red-500 hover:bg-opacity-60'>Radera {periodData[selectedPeriod].periodName}</button>
     </div>
       :<p>Välj en period för att radera den.</p>}
     </div>
