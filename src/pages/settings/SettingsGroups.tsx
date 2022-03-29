@@ -65,7 +65,7 @@ function SettingsGroups() {
           </tr>
         </thead>
         <tbody> 
-        {groupData?.map((i: any, key:Key) => (
+        {groupData.map((i: any, key:Key) => (
           <tr key={key} onClick={() => selectGroup(key as number)} className='cursor-pointer hover:bg-slate-100 even:bg-slate-50'>
             <td className='border p-1'>{i.name}</td>
             <td className='border p-1'>{i.count}</td>
