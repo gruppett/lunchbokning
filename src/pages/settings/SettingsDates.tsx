@@ -3,7 +3,7 @@ import Spinner from '../../components/Spinner/Spinner'
 
 
 
-function SettingsPeriods() {
+function SettingsDates() {
   const [periodData, setPeriodData] = useState([{} as any])
   const [selectedPeriod, setSelectedPeriod] = useState(-1)
   const [isLoaded, setIsLoaded] = useState(false)
@@ -79,4 +79,4 @@ function SettingsPeriods() {
   )
 }
 
-export default SettingsPeriods
+export default SettingsDates

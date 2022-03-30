@@ -50,8 +50,8 @@
     },
     {
       "icon": "date_range",
-      "to": "perioder",
-      "text": "Perioder"
+      "to": "datum",
+      "text": "Datum"
     }
   ]
 }

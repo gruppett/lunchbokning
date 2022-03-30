@@ -12,7 +12,7 @@ import Settings from '../../pages/Settings';
 import FourOhFour from '../../pages/FourOhFour';
 import SettingsGroups from '../../pages/settings/SettingsGroups';
 import SettingsUsers from '../../pages/settings/SettingsUsers';
-import SettingsPeriods from '../../pages/settings/SettingsPeriods';
+import SettingsDates from '../../pages/settings/SettingsDates';
 
 
 function handleLogout(instance: any, e: MouseEvent) {
@@ -95,7 +95,7 @@ function Page() {
           <Route index element={<SettingsGroups />} />
           <Route path="grupper" element={<SettingsGroups />} />
           <Route path="anvandare" element={<SettingsUsers />} />
-          <Route path="perioder" element={<SettingsPeriods />} />
+          <Route path="datum" element={<SettingsDates />} />
         </Route>
         <Route path="*" element={<FourOhFour />}/>
         
