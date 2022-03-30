@@ -15,6 +15,9 @@ function Overview_popup(props: any) {
   const [groupBookingError, setGroupBookingError] = useState(false);
 
   const [servingSelect, setServingSelect] = useState(1);
+  const [servingSelectGroup, setServingSelectGroup] = useState(1);
+  const [editBooking, setEditBooking] = useState(false);
+  const [editBookingGroup, setEditBookingGroup] = useState(false);
   const [groupCount, setGroupCount] = useState(props.group.count);
 
   function postBooking(
@@ -200,6 +203,9 @@ function Overview_popup(props: any) {
                   id="servingSelect"
                   className="p-0.5 m-1 bg-white rounded text-right"
                   onChange={(e) => {
+                    setEditBooking(
+                      (e.target.value as any) !== servingSelect ? true : false
+                    );
                     setServingSelect(e.target.value as any);
                   }}
                   defaultValue="2"
@@ -230,7 +236,9 @@ function Overview_popup(props: any) {
                     unmountPopup();
                   }}
                 >
-                  {personalData === null
+                  {editBooking
+                    ? "Ändra"
+                    : personalData === null
                     ? "Boka"
                     : !personalData.active
                     ? "Boka"
@@ -247,6 +255,9 @@ function Overview_popup(props: any) {
                   type="number"
                   id="groupCount"
                   onChange={(e) => {
+                    setEditBookingGroup(
+                      (e.target.value as any) !== servingSelect ? true : false
+                    );
                     setGroupCount(e.target.value);
                   }}
                   style={{ maxWidth: "-webkit-fill-available" }}
@@ -257,13 +268,27 @@ function Overview_popup(props: any) {
                       : groupBookingData.count
                   }
                 />
+                <select
+                  id="servingSelect"
+                  className="p-0.5 m-1 bg-white rounded text-right"
+                  onChange={(e) => {
+                    setEditBookingGroup(
+                      (e.target.value as any) !== servingSelect ? true : false
+                    );
+                    setServingSelectGroup(e.target.value as any);
+                  }}
+                  defaultValue="2"
+                >
+                  <option value="1">10:45</option>
+                  <option value="2">11:40</option>
+                </select>
                 <button
                   className=" p-0.5 m-1 bg-white rounded"
                   onClick={() => {
                     if (groupBookingData === null) {
                       postBooking(
                         moment(props.datetime).format("YYYY-MM-DD"),
-                        servingSelect,
+                        servingSelectGroup,
                         props.appUser.id,
                         props.group.groupID,
                         groupCount,
@@ -272,7 +297,7 @@ function Overview_popup(props: any) {
                     } else if (!groupBookingData.active) {
                       postBooking(
                         moment(props.datetime).format("YYYY-MM-DD"),
-                        servingSelect,
+                        servingSelectGroup,
                         props.appUser.id,
                         props.group.groupID,
                         groupCount,
@@ -286,7 +311,9 @@ function Overview_popup(props: any) {
                     unmountPopup();
                   }}
                 >
-                  {groupBookingData === null
+                  {editBookingGroup
+                    ? "Ändra"
+                    : groupBookingData === null
                     ? "Boka"
                     : !groupBookingData.active
                     ? "Boka"
