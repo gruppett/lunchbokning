@@ -113,7 +113,7 @@ function SettingsUsers() {
             </tr>
           </thead>
           <tbody>
-            {usersData.map((i:any, key:any) => (
+            {usersData?.map((i:any, key:any) => (
               <tr key={key} className="cursor-pointer bg-white hover:bg-slate-100 even:bg-slate-50" onClick={() => selectUser(key)}>
                 <td className='p-1 border'>{i.email}</td>
                 <UserRoles roles={i.roles}></UserRoles>

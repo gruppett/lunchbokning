@@ -116,7 +116,7 @@ function SettingsGroups() {
           <h2>Lägg till</h2>
           <select id='handlerName' name='handerName' className="bg-white p-1">
             <option value="">Välj handledare</option>
-              {userData.map((i:any, key: Key) => (
+              {userData?.map((i:any, key: Key) => (
                 <option key={key} value={i.id}>{mailToName(i.email)}</option>
               ))}
           </select>
