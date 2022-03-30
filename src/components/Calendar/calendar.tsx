@@ -290,6 +290,7 @@ function HjortenCalendar(props: any) {
               booking={event.nativeEvent}
               setBooking={setBookingID}
               group={groupData}
+              view={props.view}
             />,
             document.getElementById("popup")
           );
@@ -319,7 +320,11 @@ function HjortenCalendar(props: any) {
           return BookingClassNames(date, view, personalData, groupBookingData);
         }}
         tileDisabled={({ date, view }) => {
-          if (tile_Matchesdate(date, excludeDates, view)) {
+          if (
+            tile_Matchesdate(date, excludeDates, view) ||
+            date.getDay() === 0 ||
+            date.getDay() === 6
+          ) {
             return true;
           } else {
             return false;
