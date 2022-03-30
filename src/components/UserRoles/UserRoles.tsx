@@ -15,7 +15,7 @@ function UserRoles({roles}: Props) {
   let rolesBool = []
 
   for (let i = 0; i < 4; i++) {
-    if (roles.includes(i+1)) {
+    if (roles?.includes(i+1)) {
       rolesBool.push(true)
     } else {
       rolesBool.push(false)
