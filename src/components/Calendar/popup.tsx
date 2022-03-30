@@ -15,6 +15,7 @@ function Overview_popup(props: any) {
   const [groupBookingError, setGroupBookingError] = useState(false);
 
   const [servingSelect, setServingSelect] = useState(1);
+  const [groupCount, setGroupCount] = useState(props.group.count);
 
   function postBooking(
     date: String,
@@ -209,11 +210,21 @@ function Overview_popup(props: any) {
                 <button
                   className="p-0.5 m-1 bg-white rounded"
                   onClick={() => {
-                    if (!personalData.active) {
+                    if (personalData === null) {
                       postBooking(
                         moment(props.datetime).format("YYYY-MM-DD"),
                         servingSelect,
                         props.appUser.id
+                      );
+                    } else if (!personalData.active) {
+                      postBooking(
+                        moment(props.datetime).format("YYYY-MM-DD"),
+                        servingSelect,
+                        props.appUser.id
+                      );
+                    } else if (personalData.active) {
+                      alert(
+                        "Det går inte ännu att avboka, synd för dig. Vid missad bokning kommer du debiteras för summan av uppskattad missad inkomst."
                       );
                     }
                     unmountPopup();
@@ -235,6 +246,9 @@ function Overview_popup(props: any) {
                 <input
                   type="number"
                   id="groupCount"
+                  onChange={(e) => {
+                    setGroupCount(e.target.value);
+                  }}
                   style={{ maxWidth: "-webkit-fill-available" }}
                   className="p-0.5 rounded m-1 text-right w-full box-border"
                   defaultValue={
@@ -243,12 +257,40 @@ function Overview_popup(props: any) {
                       : groupBookingData.count
                   }
                 />
-                <button className=" p-0.5 m-1 bg-white rounded">
+                <button
+                  className=" p-0.5 m-1 bg-white rounded"
+                  onClick={() => {
+                    if (groupBookingData === null) {
+                      postBooking(
+                        moment(props.datetime).format("YYYY-MM-DD"),
+                        servingSelect,
+                        props.appUser.id,
+                        props.group.groupID,
+                        groupCount,
+                        props.group.diet
+                      );
+                    } else if (!groupBookingData.active) {
+                      postBooking(
+                        moment(props.datetime).format("YYYY-MM-DD"),
+                        servingSelect,
+                        props.appUser.id,
+                        props.group.groupID,
+                        groupCount,
+                        props.group.diet
+                      );
+                    } else if (groupBookingData.active) {
+                      alert(
+                        "Det går inte ännu att avboka, synd för dig. Vid missad bokning kommer du debiteras för summan av uppskattad missad inkomst."
+                      );
+                    }
+                    unmountPopup();
+                  }}
+                >
                   {groupBookingData === null
                     ? "Boka"
-                    : groupBookingData.active
-                    ? "Avboka"
-                    : "Boka"}
+                    : !groupBookingData.active
+                    ? "Boka"
+                    : "Avboka"}
                 </button>
               </div>
             </div>
