@@ -1,4 +1,4 @@
-import React, {useState, useEffect, Key} from 'react'
+import React, {useState, useEffect, Key, useCallback} from 'react'
 import Spinner from '../../components/Spinner/Spinner'
 
 function SettingsDates() {
@@ -21,14 +21,16 @@ function SettingsDates() {
     setIsExcludedSelected(true)
   }
 
-  function sectionLoaded() {
+  const sectionLoaded = useCallback(() => {
+  
     let status = loadStatus
     status[0] ++
     if (status[0] === status[1]) {
       setIsLoaded(true)
     }
     setLoadStatus(status)
-  }
+  }, [loadStatus])
+
 
 
   useEffect(() => {
@@ -45,7 +47,7 @@ function SettingsDates() {
         setPeriodData(data)
         sectionLoaded()
       });
-  }, [])
+  }, [sectionLoaded])
 
   useEffect(() => {
     fetch(process.env.REACT_APP_API_SERVER + "/api/date/getExcludes.php", {
@@ -61,7 +63,7 @@ function SettingsDates() {
         setExcludedData(data)
         sectionLoaded()
       });
-  }, [])
+  }, [sectionLoaded])
   
   if (!isLoaded) {
     return <Spinner />
