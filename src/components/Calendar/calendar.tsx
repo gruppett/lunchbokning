@@ -23,6 +23,7 @@ function HjortenCalendar(props: any) {
   const [appUser, setAppUser] = useState(null as any);
   const [appUserLoading, setAppUserLoading] = useState(null as any);
   const [appUserError, setAppUserError] = useState(null as any);
+  const [appUserDone, setAppUserDone] = useState(false as any);
 
   const [bookingID, setBookingID] = useState(null as any);
 
@@ -35,144 +36,12 @@ function HjortenCalendar(props: any) {
   const [groupBookingError, setGroupBookingError] = useState(false);
 
   useEffect(() => {
-    const url =
-      process.env.REACT_APP_API_SERVER + "/api/booking/getBookings.php";
-    const body = '{ "employeeEmail": "' + user.mail + '"}';
-
-    fetch(url, {
-      body: body,
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      mode: "cors",
-    })
-      .then((response) => {
-        if (response.ok) {
-          setPersonalError(false);
-          return response.json();
-        } else {
-          throw response.json();
-        }
-      })
-      .then((data) => {
-        setPersonalData(data);
-      })
-      .catch((error) => {
-        return error;
-      })
-      .then((error) => {
-        setPersonalError(error);
-      })
-      .finally(() => {
-        setPersonalLoading(false);
-      });
-  }, [user.mail, bookingID]);
-
-  useEffect(() => {
-    const url = process.env.REACT_APP_API_SERVER + "/api/user/getUser.php";
-    const body = '{ "email": "' + user.mail + '" }';
-
-    fetch(url, {
-      body: body,
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      mode: "cors",
-    })
-      .then((response) => {
-        if (response.ok) {
-          setAppUserError(false);
-          return response.json();
-        } else {
-          throw response.json();
-        }
-      })
-      .then((data) => {
-        setAppUser(data);
-      })
-      .catch((error) => {
-        return error;
-      })
-      .then((error) => {
-        setAppUserError(error);
-      })
-      .finally(() => {
-        setAppUserLoading(false);
-      });
-  }, [user.mail]);
-
-  useEffect(() => {
-    const url = process.env.REACT_APP_API_SERVER + "/api/date/getExcludes.php";
-    fetch(url, {
-      method: "GET",
-      mode: "cors",
-    })
-      .then((response) => {
-        if (response.ok) {
-          setExcludeDatesError(false);
-          return response.json();
-        } else {
-          console.log(response);
-          throw response.json();
-        }
-      })
-      .then((data) => {
-        setExcludeDates(data);
-      })
-      .catch((error) => {
-        return error;
-      })
-      .then((error) => {
-        setExcludeDatesError(error);
-      })
-      .finally(() => {
-        setExcludeDatesLoading(false);
-      });
-  }, []);
-
-  useEffect(() => {
-    const url =
-      process.env.REACT_APP_API_SERVER + "/api/user/getPrimGroups.php";
-    const body = '{ "employeeEmail": "' + user.mail + '"}';
-    console.log(user.mail);
-    fetch(url, {
-      body: body,
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      mode: "cors",
-    })
-      .then((response) => {
-        if (response.ok) {
-          setGroupError(false);
-          return response.json();
-        } else {
-          throw response.json();
-        }
-      })
-      .then((data) => {
-        setGroupData(data);
-      })
-      .catch((error) => {
-        return error;
-      })
-      .then((error) => {
-        setGroupError(error);
-      })
-      .finally(() => {
-        setGroupLoading(false);
-      });
-  }, [user.mail]);
-
-  useEffect(() => {
-    if (groupData !== null) {
-      const url =
+    const fetchPersonal = async () => {
+      let url =
         process.env.REACT_APP_API_SERVER + "/api/booking/getBookings.php";
-      const body = '{ "groupID": "' + groupData.groupID + '"}';
-      fetch(url, {
+      let body = '{ "employeeEmail": "' + user.mail + '"}';
+
+      await fetch(url, {
         body: body,
         method: "POST",
         headers: {
@@ -182,26 +51,176 @@ function HjortenCalendar(props: any) {
       })
         .then((response) => {
           if (response.ok) {
-            setGroupBookingError(false);
+            setPersonalError(false);
             return response.json();
           } else {
             throw response.json();
           }
         })
         .then((data) => {
-          setGroupBookingData(data);
+          setPersonalData(data);
         })
         .catch((error) => {
           return error;
         })
         .then((error) => {
-          setGroupBookingError(error);
+          setPersonalError(error);
         })
         .finally(() => {
-          setGroupBookingLoading(false);
+          setPersonalLoading(false);
         });
+
+      url = process.env.REACT_APP_API_SERVER + "/api/user/getUser.php";
+      body = '{ "email": "' + user.mail + '" }';
+
+      await fetch(url, {
+        body: body,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        mode: "cors",
+      })
+        .then((response) => {
+          if (response.ok) {
+            setAppUserError(false);
+            return response.json();
+          } else {
+            throw response.json();
+          }
+        })
+        .then((data) => {
+          setAppUser(data);
+        })
+        .catch((error) => {
+          return error;
+        })
+        .then((error) => {
+          setAppUserError(error);
+        })
+        .finally(() => {
+          setAppUserLoading(false);
+          setAppUserDone(true);
+        });
+    };
+
+    const fetchExcludes = async () => {
+      const url =
+        process.env.REACT_APP_API_SERVER + "/api/date/getExcludes.php";
+      await fetch(url, {
+        method: "GET",
+        mode: "cors",
+      })
+        .then((response) => {
+          if (response.ok) {
+            setExcludeDatesError(false);
+            return response.json();
+          } else {
+            console.log(response);
+            throw response.json();
+          }
+        })
+        .then((data) => {
+          setExcludeDates(data);
+        })
+        .catch((error) => {
+          return error;
+        })
+        .then((error) => {
+          setExcludeDatesError(error);
+        })
+        .finally(() => {
+          setExcludeDatesLoading(false);
+        });
+    };
+
+    const fetchAll = async () => {
+      await fetchPersonal();
+      await fetchExcludes();
+    };
+    fetchAll();
+  }, [user.mail, bookingID]);
+
+  useEffect(() => {
+    const fetchGroup = async () => {
+      const url =
+        process.env.REACT_APP_API_SERVER + "/api/user/getPrimGroups.php";
+      const body = '{ "employeeEmail": "' + user.mail + '"}';
+      if (appUser.roles.includes(4)) {
+        await fetch(url, {
+          body: body,
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          mode: "cors",
+        })
+          .then((response) => {
+            if (response.ok) {
+              setGroupError(false);
+              return response.json();
+            } else {
+              throw response.json();
+            }
+          })
+          .then((data) => {
+            setGroupData(data);
+          })
+          .catch((error) => {
+            return error;
+          })
+          .then((error) => {
+            setGroupError(error);
+          })
+          .finally(() => {
+            setGroupLoading(false);
+          });
+      } else {
+        setGroupLoading(false);
+      }
+    };
+    fetchGroup();
+  }, [appUserDone, appUser, user.mail]);
+
+  useEffect(() => {
+    if (groupData !== null) {
+      if (!groupData.hasOwnProperty("message")) {
+        const url =
+          process.env.REACT_APP_API_SERVER + "/api/booking/getBookings.php";
+        const body = '{ "groupID": "' + groupData.groupID + '"}';
+        fetch(url, {
+          body: body,
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          mode: "cors",
+        })
+          .then((response) => {
+            if (response.ok) {
+              setGroupBookingError(false);
+              return response.json();
+            } else {
+              throw response.json();
+            }
+          })
+          .then((data) => {
+            setGroupBookingData(data);
+          })
+          .catch((error) => {
+            return error;
+          })
+          .then((error) => {
+            setGroupBookingError(error);
+          })
+          .finally(() => {
+            setGroupBookingLoading(false);
+          });
+      }
+    } else {
+      setGroupBookingLoading(false);
     }
-  }, [groupData, groupLoading]);
+  }, [groupData, user.mail]);
 
   if (
     personalLoading ||
@@ -239,7 +258,7 @@ function HjortenCalendar(props: any) {
         processingError = "Group booking error";
         break;
     }
-    if (x !== undefined) console.log(processingError + ":" + x);
+    if (x !== undefined && x !== false) console.log(processingError + ": " + x);
   });
 
   return (
@@ -283,12 +302,16 @@ function HjortenCalendar(props: any) {
                 <p className="bg-gradient-to-tr from-blue-400 to-blue-200 rounded p-1">
                   {user.givenName}
                 </p>
-              ) : null}
+              ) : (
+                <></>
+              )}
               {tile_Matchesdate(date, groupBookingData, view) ? (
                 <p className="bg-gradient-to-tr from-red-400 to-red-200 rounded p-1">
                   {groupData.groupName}
                 </p>
-              ) : null}
+              ) : (
+                <></>
+              )}
             </>
           );
         }}

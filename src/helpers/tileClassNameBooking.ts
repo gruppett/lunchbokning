@@ -25,22 +25,24 @@ export function BookingClassNames(
         : ""
     );
   }
-  if (tile_Matchesdate(date, groupBookingData, view)) {
-    booking_nrClassNames.push(
-      groupBookingData
-        .map((booking: any) => {
-          return [booking.date, booking.active];
-        })
-        .find((x: any) => x[0] === moment(date).format("YYYY-MM-DD"))[1]
-        .toString() === "1"
-        ? "group_booking_nr" +
-            groupBookingData
-              .map((booking: any) => {
-                return [booking.date, booking.bookingID];
-              })
-              .find((x: any) => x[0] === moment(date).format("YYYY-MM-DD"))[1]
-        : ""
-    );
+  if (groupBookingData !== undefined) {
+    if (tile_Matchesdate(date, groupBookingData, view)) {
+      booking_nrClassNames.push(
+        groupBookingData
+          .map((booking: any) => {
+            return [booking.date, booking.active];
+          })
+          .find((x: any) => x[0] === moment(date).format("YYYY-MM-DD"))[1]
+          .toString() === "1"
+          ? "group_booking_nr" +
+              groupBookingData
+                .map((booking: any) => {
+                  return [booking.date, booking.bookingID];
+                })
+                .find((x: any) => x[0] === moment(date).format("YYYY-MM-DD"))[1]
+          : ""
+      );
+    }
   }
   return booking_nrClassNames.filter((booking_nr) => booking_nr !== "");
 }
