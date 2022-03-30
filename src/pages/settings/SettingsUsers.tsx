@@ -24,8 +24,8 @@ const roleCheckboxes = [
 function SettingsUsers() {
   const [selectedUser, setSelectedUser] = useState(-1)
   const [isUserSelected, setIsUserSelected] = useState(false)
-  const [usersData, setUsersData] = useState({} as any)
-  const [groupsData, setGroupsData] = useState({} as any)
+  const [usersData, setUsersData] = useState([{} as any])
+  const [groupsData, setGroupsData] = useState([{} as any])
   const [isLoaded, setIsLoaded] = useState(false)
 
   const [inputRoles, setInputRoles] = useState(

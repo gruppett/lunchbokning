@@ -4,7 +4,7 @@ import Spinner from '../../components/Spinner/Spinner'
 
 
 function SettingsPeriods() {
-  const [periodData, setPeriodData] = useState({} as any)
+  const [periodData, setPeriodData] = useState([{} as any])
   const [selectedPeriod, setSelectedPeriod] = useState(-1)
   const [isLoaded, setIsLoaded] = useState(false)
   const [isPeriodSelected, setIsPeriodSelected] = useState(false)
