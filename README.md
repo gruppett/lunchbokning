@@ -24,4 +24,6 @@ Project_root_folder/.env.local:
 
 `REACT_APP_API_SERVER=http://(API URL):(port)`
 
-### Production settings
+### Production environment
+
+Preliminär "prod" sida: [Herokuapp](https://hjorten-lunchbokning.herokuapp.com)
