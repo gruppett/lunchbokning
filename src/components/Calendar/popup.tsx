@@ -50,7 +50,84 @@ function Overview_popup(props: any) {
         if (response.ok) {
           return response.json();
         } else {
-          console.log(response);
+          throw response.json();
+        }
+      })
+      .then((data) => {
+        props.setBooking(data);
+      })
+      .catch((error) => {
+        return error;
+      })
+      .then((error) => {
+        if (error) console.log(error);
+      });
+  }
+
+  function updateBooking(
+    bookingID: Number,
+    date: String,
+    servingID: Number,
+    employeeID: Number,
+    groupID: Number = 1,
+    count: Number = 1,
+    diet: Number = 0
+  ) {
+    const body = {
+      bookingID: bookingID,
+      date: date,
+      groupID: groupID,
+      count: count,
+      diet: diet,
+      employeeID: employeeID,
+      servingID: servingID,
+    };
+    const url =
+      process.env.REACT_APP_API_SERVER + "/api/booking/updateBooking.php";
+    fetch(url, {
+      body: JSON.stringify(body),
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      mode: "cors",
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw response.json();
+        }
+      })
+      .then((data) => {
+        props.setBooking(data);
+      })
+      .catch((error) => {
+        return error;
+      })
+      .then((error) => {
+        if (error) console.log(error);
+      });
+  }
+
+  function deleteBooking(bookingID: Number) {
+    const body = {
+      bookingID: bookingID,
+    };
+    const url =
+      process.env.REACT_APP_API_SERVER + "/api/booking/deleteBooking.php";
+    fetch(url, {
+      body: JSON.stringify(body),
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      mode: "cors",
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
           throw response.json();
         }
       })
@@ -164,7 +241,13 @@ function Overview_popup(props: any) {
   }, [props.datetime, props.booking, props.view]);
 
   const errors = [personalError, groupBookingError];
-  console.log(errors);
+
+  errors.forEach((error) => {
+    if (error) {
+      console.log(error);
+    }
+  });
+
   if (
     personalLoading ||
     personalError ||
@@ -208,7 +291,9 @@ function Overview_popup(props: any) {
                     );
                     setServingSelect(e.target.value as any);
                   }}
-                  defaultValue="2"
+                  defaultValue={
+                    personalData !== null ? personalData.servingID : "2"
+                  }
                 >
                   <option value="1">10:45</option>
                   <option value="2">11:40</option>
@@ -216,7 +301,14 @@ function Overview_popup(props: any) {
                 <button
                   className="p-0.5 m-1 bg-white rounded"
                   onClick={() => {
-                    if (personalData === null) {
+                    if (editBooking) {
+                      updateBooking(
+                        getIdFromProp(props.booking).personal as Number,
+                        moment(props.datetime).format("YYYY-MM-DD"),
+                        servingSelect,
+                        props.appUser.id
+                      );
+                    } else if (personalData === null) {
                       postBooking(
                         moment(props.datetime).format("YYYY-MM-DD"),
                         servingSelect,
@@ -229,8 +321,8 @@ function Overview_popup(props: any) {
                         props.appUser.id
                       );
                     } else if (personalData.active) {
-                      alert(
-                        "Det går inte ännu att avboka, synd för dig. Vid missad bokning kommer du debiteras för summan av uppskattad missad inkomst."
+                      deleteBooking(
+                        getIdFromProp(props.booking).personal as Number
                       );
                     }
                     unmountPopup();
@@ -285,7 +377,17 @@ function Overview_popup(props: any) {
                 <button
                   className=" p-0.5 m-1 bg-white rounded"
                   onClick={() => {
-                    if (groupBookingData === null) {
+                    if (editBookingGroup) {
+                      updateBooking(
+                        getIdFromProp(props.booking).group as Number,
+                        moment(props.datetime).format("YYYY-MM-DD"),
+                        servingSelectGroup,
+                        props.appUser.id,
+                        props.group.groupID,
+                        groupCount,
+                        props.group.diet
+                      );
+                    } else if (groupBookingData === null) {
                       postBooking(
                         moment(props.datetime).format("YYYY-MM-DD"),
                         servingSelectGroup,
@@ -304,8 +406,8 @@ function Overview_popup(props: any) {
                         props.group.diet
                       );
                     } else if (groupBookingData.active) {
-                      alert(
-                        "Det går inte ännu att avboka, synd för dig. Vid missad bokning kommer du debiteras för summan av uppskattad missad inkomst."
+                      deleteBooking(
+                        getIdFromProp(props.booking).group as Number
                       );
                     }
                     unmountPopup();
