@@ -286,7 +286,9 @@ function Overview_popup(props: any) {
                   id="servingSelect"
                   className="p-0.5 m-1 bg-white rounded text-right"
                   defaultValue={
-                    personalData !== null ? personalData.servingID : "2"
+                    personalData !== null
+                      ? personalData.servingID
+                      : servingSelect
                   }
                   onChange={(e) => {
                     if (personalData !== null) {
@@ -348,6 +350,8 @@ function Overview_popup(props: any) {
                 <input
                   type="number"
                   id="groupCount"
+                  min="1"
+                  max="9999999999"
                   style={{ maxWidth: "-webkit-fill-available" }}
                   className="p-0.5 rounded m-1 text-right w-full box-border"
                   defaultValue={
@@ -356,6 +360,10 @@ function Overview_popup(props: any) {
                       : groupBookingData.count
                   }
                   onChange={(e) => {
+                    if (e.target.value.length > 10) {
+                      e.target.value = e.target.value.slice(0, 10);
+                      alert("Max antal personer är 9999999999");
+                    }
                     if (groupBookingData !== null) {
                       setEditBookingGroup(
                         (e.target.value as any) !== servingSelect ? true : false
@@ -376,7 +384,9 @@ function Overview_popup(props: any) {
                     setServingSelectGroup(e.target.value as any);
                   }}
                   defaultValue={
-                    groupBookingData !== null ? groupBookingData.servingID : "2"
+                    groupBookingData !== null
+                      ? groupBookingData.servingID
+                      : servingSelectGroup
                   }
                 >
                   <option value="1">10:45</option>
