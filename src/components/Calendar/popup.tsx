@@ -392,7 +392,7 @@ function Overview_popup(props: any) {
                         servingSelectGroup,
                         props.appUser.id,
                         props.group.groupID,
-                        document.getElementById("groupCount")?.nodeValue as any,
+                        groupCount,
                         props.group.diet
                       );
                     } else if (groupBookingData === null) {
