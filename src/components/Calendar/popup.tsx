@@ -286,9 +286,11 @@ function Overview_popup(props: any) {
                   id="servingSelect"
                   className="p-0.5 m-1 bg-white rounded text-right"
                   onChange={(e) => {
-                    setEditBooking(
-                      (e.target.value as any) !== servingSelect ? true : false
-                    );
+                    if (personalData !== null) {
+                      setEditBooking(
+                        (e.target.value as any) !== servingSelect ? true : false
+                      );
+                    }
                     setServingSelect(e.target.value as any);
                   }}
                   defaultValue={
@@ -347,9 +349,11 @@ function Overview_popup(props: any) {
                   type="number"
                   id="groupCount"
                   onChange={(e) => {
-                    setEditBookingGroup(
-                      (e.target.value as any) !== servingSelect ? true : false
-                    );
+                    if (groupBookingData !== null) {
+                      setEditBookingGroup(
+                        (e.target.value as any) !== servingSelect ? true : false
+                      );
+                    }
                     setGroupCount(e.target.value);
                   }}
                   style={{ maxWidth: "-webkit-fill-available" }}
@@ -364,9 +368,11 @@ function Overview_popup(props: any) {
                   id="servingSelect"
                   className="p-0.5 m-1 bg-white rounded text-right"
                   onChange={(e) => {
-                    setEditBookingGroup(
-                      (e.target.value as any) !== servingSelect ? true : false
-                    );
+                    if (groupBookingData !== null) {
+                      setEditBookingGroup(
+                        (e.target.value as any) !== servingSelect ? true : false
+                      );
+                    }
                     setServingSelectGroup(e.target.value as any);
                   }}
                   defaultValue="2"
