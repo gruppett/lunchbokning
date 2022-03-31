@@ -285,6 +285,9 @@ function Overview_popup(props: any) {
                 <select
                   id="servingSelect"
                   className="p-0.5 m-1 bg-white rounded text-right"
+                  defaultValue={
+                    personalData !== null ? personalData.servingID : "2"
+                  }
                   onChange={(e) => {
                     if (personalData !== null) {
                       setEditBooking(
@@ -293,9 +296,6 @@ function Overview_popup(props: any) {
                     }
                     setServingSelect(e.target.value as any);
                   }}
-                  defaultValue={
-                    personalData !== null ? personalData.servingID : "2"
-                  }
                 >
                   <option value="1">10:45</option>
                   <option value="2">11:40</option>
@@ -348,6 +348,13 @@ function Overview_popup(props: any) {
                 <input
                   type="number"
                   id="groupCount"
+                  style={{ maxWidth: "-webkit-fill-available" }}
+                  className="p-0.5 rounded m-1 text-right w-full box-border"
+                  defaultValue={
+                    groupBookingData === null
+                      ? props.group.count
+                      : groupBookingData.count
+                  }
                   onChange={(e) => {
                     if (groupBookingData !== null) {
                       setEditBookingGroup(
@@ -356,13 +363,6 @@ function Overview_popup(props: any) {
                     }
                     setGroupCount(e.target.value);
                   }}
-                  style={{ maxWidth: "-webkit-fill-available" }}
-                  className="p-0.5 rounded m-1 text-right w-full box-border"
-                  defaultValue={
-                    groupBookingData === null
-                      ? props.group.count
-                      : groupBookingData.count
-                  }
                 />
                 <select
                   id="servingSelect"
@@ -375,7 +375,9 @@ function Overview_popup(props: any) {
                     }
                     setServingSelectGroup(e.target.value as any);
                   }}
-                  defaultValue="2"
+                  defaultValue={
+                    groupBookingData !== null ? groupBookingData.servingID : "2"
+                  }
                 >
                   <option value="1">10:45</option>
                   <option value="2">11:40</option>
@@ -390,7 +392,7 @@ function Overview_popup(props: any) {
                         servingSelectGroup,
                         props.appUser.id,
                         props.group.groupID,
-                        groupCount,
+                        document.getElementById("groupCount")?.nodeValue as any,
                         props.group.diet
                       );
                     } else if (groupBookingData === null) {
