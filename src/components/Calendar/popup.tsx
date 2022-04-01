@@ -36,8 +36,7 @@ function Overview_popup(props: any) {
       employeeID: employeeID,
       servingID: servingID,
     };
-    const url =
-      process.env.REACT_APP_API_SERVER + "/api/booking/postBooking.php";
+    const url = process.env.REACT_APP_API_SERVER + "booking/postBooking.php";
     fetch(url, {
       body: JSON.stringify(body),
       method: "POST",
@@ -82,8 +81,7 @@ function Overview_popup(props: any) {
       employeeID: employeeID,
       servingID: servingID,
     };
-    const url =
-      process.env.REACT_APP_API_SERVER + "/api/booking/updateBooking.php";
+    const url = process.env.REACT_APP_API_SERVER + "booking/updateBooking.php";
     fetch(url, {
       body: JSON.stringify(body),
       method: "POST",
@@ -114,8 +112,7 @@ function Overview_popup(props: any) {
     const body = {
       bookingID: bookingID,
     };
-    const url =
-      process.env.REACT_APP_API_SERVER + "/api/booking/deleteBooking.php";
+    const url = process.env.REACT_APP_API_SERVER + "booking/deleteBooking.php";
     fetch(url, {
       body: JSON.stringify(body),
       method: "POST",
@@ -143,11 +140,11 @@ function Overview_popup(props: any) {
   }
 
   useEffect(() => {
-    if (props.view === "Overview") {
+    if (props.view === "Overview" || props.view === "Personal") {
       if (tileHasBooking(props.booking)) {
         if (typeof getIdFromProp(props.booking).personal !== "object") {
           const url =
-            process.env.REACT_APP_API_SERVER + "/api/booking/getBooking.php";
+            process.env.REACT_APP_API_SERVER + "booking/getBooking.php";
           const body =
             '{ "id": ' +
             (getIdFromProp(props.booking).personal as Number) +
@@ -197,7 +194,7 @@ function Overview_popup(props: any) {
       if (tileHasBooking(props.booking)) {
         if (typeof getIdFromProp(props.booking).group !== "object") {
           const url =
-            process.env.REACT_APP_API_SERVER + "/api/booking/getBooking.php";
+            process.env.REACT_APP_API_SERVER + "booking/getBooking.php";
           const body =
             '{ "id": ' + (getIdFromProp(props.booking).group as Number) + " }";
           fetch(url, {
@@ -278,7 +275,7 @@ function Overview_popup(props: any) {
         }
       >
         <div className="flex flex-col m-3 w-40">
-          {props.view === "Overview" ? (
+          {props.view === "Overview" || props.view === "Personal" ? (
             <div className={"flex p-0.5"}>
               <p className="p-0.5 m-1">{props.user.mail.split(".")[0]}:</p>
               <div className="flex flex-col w-full">

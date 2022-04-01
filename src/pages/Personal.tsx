@@ -1,9 +1,8 @@
-import React from 'react'
+import React from "react";
+import HjortenCalendar from "../components/Calendar/calendar";
 
 function Personal() {
-  return (
-    <div>Personal</div>
-  )
+  return <HjortenCalendar view="Personal" />;
 }
 
-export default Personal
+export default Personal;

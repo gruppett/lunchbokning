@@ -37,8 +37,7 @@ function HjortenCalendar(props: any) {
 
   useEffect(() => {
     const fetchPersonal = async () => {
-      let url =
-        process.env.REACT_APP_API_SERVER + "/api/booking/getBookings.php";
+      let url = process.env.REACT_APP_API_SERVER + "booking/getBookings.php";
       let body = '{ "employeeEmail": "' + user.mail + '"}';
 
       await fetch(url, {
@@ -70,7 +69,7 @@ function HjortenCalendar(props: any) {
           setPersonalLoading(false);
         });
 
-      url = process.env.REACT_APP_API_SERVER + "/api/user/getUser.php";
+      url = process.env.REACT_APP_API_SERVER + "user/getUser.php";
       body = '{ "email": "' + user.mail + '" }';
 
       await fetch(url, {
@@ -105,8 +104,7 @@ function HjortenCalendar(props: any) {
     };
 
     const fetchExcludes = async () => {
-      const url =
-        process.env.REACT_APP_API_SERVER + "/api/date/getExcludes.php";
+      const url = process.env.REACT_APP_API_SERVER + "date/getExcludes.php";
       await fetch(url, {
         method: "GET",
         mode: "cors",
@@ -143,8 +141,7 @@ function HjortenCalendar(props: any) {
 
   useEffect(() => {
     const fetchGroup = async () => {
-      const url =
-        process.env.REACT_APP_API_SERVER + "/api/user/getPrimGroups.php";
+      const url = process.env.REACT_APP_API_SERVER + "user/getPrimGroups.php";
       const body = '{ "employeeEmail": "' + user.mail + '"}';
       if (appUser !== null) {
         if (appUser.roles.includes(4)) {
@@ -188,7 +185,7 @@ function HjortenCalendar(props: any) {
     if (groupData !== null) {
       if (!groupData.hasOwnProperty("message")) {
         const url =
-          process.env.REACT_APP_API_SERVER + "/api/booking/getBookings.php";
+          process.env.REACT_APP_API_SERVER + "booking/getBookings.php";
         const body = '{ "groupID": "' + groupData.groupID + '"}';
         fetch(url, {
           body: body,
@@ -301,17 +298,25 @@ function HjortenCalendar(props: any) {
         tileContent={({ date, view }) => {
           return (
             <>
-              {tile_Matchesdate(date, personalData, view) ? (
-                <p className="bg-gradient-to-tr from-blue-400 to-blue-200 rounded p-1">
-                  {user.givenName}
-                </p>
+              {props.view === "Overview" || props.view === "Personal" ? (
+                tile_Matchesdate(date, personalData, view) ? (
+                  <p className="bg-gradient-to-tr from-blue-400 to-blue-200 rounded p-1">
+                    {user.givenName}
+                  </p>
+                ) : (
+                  <></>
+                )
               ) : (
                 <></>
               )}
-              {tile_Matchesdate(date, groupBookingData, view) ? (
-                <p className="bg-gradient-to-tr from-red-400 to-red-200 rounded p-1">
-                  {groupData.groupName}
-                </p>
+              {props.view === "Overview" || props.view === "Groups" ? (
+                tile_Matchesdate(date, groupBookingData, view) ? (
+                  <p className="bg-gradient-to-tr from-red-400 to-red-200 rounded p-1">
+                    {groupData.groupName}
+                  </p>
+                ) : (
+                  <></>
+                )
               ) : (
                 <></>
               )}
