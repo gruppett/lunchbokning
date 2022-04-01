@@ -293,7 +293,6 @@ function HjortenCalendar(props: any) {
             />,
             document.getElementById("popup")
           );
-          console.log(event.nativeEvent);
         }}
         tileContent={({ date, view }) => {
           return (

@@ -1,9 +1,11 @@
-import React from 'react'
+import React from "react";
 
 function ExternalGroups() {
   return (
-    <div>ExternalGroups</div>
-  )
+    <div>
+      <p>ExternalGroups</p>
+    </div>
+  );
 }
 
-export default ExternalGroups
+export default ExternalGroups;

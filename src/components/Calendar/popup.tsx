@@ -18,7 +18,9 @@ function Overview_popup(props: any) {
   const [servingSelectGroup, setServingSelectGroup] = useState(1);
   const [editBooking, setEditBooking] = useState(false);
   const [editBookingGroup, setEditBookingGroup] = useState(false);
-  const [groupCount, setGroupCount] = useState(props.group.count);
+  const [groupCount, setGroupCount] = useState(
+    props.group !== null ? props.group.count : null
+  );
 
   function postBooking(
     date: String,
@@ -340,7 +342,7 @@ function Overview_popup(props: any) {
               </div>
             </div>
           ) : null}
-          {props.view === "Overview" ? (
+          {props.view === "Overview" && props.group !== null ? (
             <div className={"flex p-0.5"}>
               <p className="m-1">{props.group.groupName}:</p>
               <div className="flex flex-col">

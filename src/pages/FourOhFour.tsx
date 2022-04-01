@@ -1,9 +1,11 @@
-import React from 'react'
+import React from "react";
 
 function FourOhFour() {
   return (
-    <div>FourOhFour</div>
-  )
+    <div>
+      <p>FourOhFour</p>
+    </div>
+  );
 }
 
-export default FourOhFour
+export default FourOhFour;
