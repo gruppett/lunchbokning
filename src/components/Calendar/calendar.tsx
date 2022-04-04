@@ -146,37 +146,39 @@ function HjortenCalendar(props: any) {
       const url =
         process.env.REACT_APP_API_SERVER + "/api/user/getPrimGroups.php";
       const body = '{ "employeeEmail": "' + user.mail + '"}';
-      if (appUser.roles.includes(4)) {
-        await fetch(url, {
-          body: body,
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          mode: "cors",
-        })
-          .then((response) => {
-            if (response.ok) {
-              setGroupError(false);
-              return response.json();
-            } else {
-              throw response.json();
-            }
+      if (appUser !== null) {
+        if (appUser.roles.includes(4)) {
+          await fetch(url, {
+            body: body,
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            mode: "cors",
           })
-          .then((data) => {
-            setGroupData(data);
-          })
-          .catch((error) => {
-            return error;
-          })
-          .then((error) => {
-            setGroupError(error);
-          })
-          .finally(() => {
-            setGroupLoading(false);
-          });
-      } else {
-        setGroupLoading(false);
+            .then((response) => {
+              if (response.ok) {
+                setGroupError(false);
+                return response.json();
+              } else {
+                throw response.json();
+              }
+            })
+            .then((data) => {
+              setGroupData(data);
+            })
+            .catch((error) => {
+              return error;
+            })
+            .then((error) => {
+              setGroupError(error);
+            })
+            .finally(() => {
+              setGroupLoading(false);
+            });
+        } else {
+          setGroupLoading(false);
+        }
       }
     };
     fetchGroup();
@@ -290,6 +292,7 @@ function HjortenCalendar(props: any) {
               booking={event.nativeEvent}
               setBooking={setBookingID}
               group={groupData}
+              view={props.view}
             />,
             document.getElementById("popup")
           );
@@ -319,7 +322,11 @@ function HjortenCalendar(props: any) {
           return BookingClassNames(date, view, personalData, groupBookingData);
         }}
         tileDisabled={({ date, view }) => {
-          if (tile_Matchesdate(date, excludeDates, view)) {
+          if (
+            tile_Matchesdate(date, excludeDates, view) ||
+            date.getDay() === 0 ||
+            date.getDay() === 6
+          ) {
             return true;
           } else {
             return false;
