@@ -1,4 +1,4 @@
-import React, {useState, useEffect, Key} from 'react'
+import React, {useState, useEffect, Key, useCallback} from 'react'
 import Spinner from '../../components/Spinner/Spinner'
 import { mailToName } from '../../helpers/mailToName'
 
@@ -7,11 +7,25 @@ function SettingsGroups() {
   const [isGroupSelected, setIsGroupSelected] = useState(false)
   const [groupData, setGroupData] = useState([{} as any])
   const [userData, setUserData] = useState([{} as any])
+  const [loadStatus, setLoadStatus] = useState([0, 2])
   const [isLoaded, setIsLoaded] = useState(false)
+  const [groupForm, setGroupForm] = useState({} as any)
+  const [reload, setReload] = useState(0)
+
   function selectGroup (id: number) {
     setSelectedGroup(id)
     setIsGroupSelected(true)
   }
+
+  const sectionLoaded = useCallback(() => {
+  
+    let status = loadStatus
+    status[0] ++
+    if (status[0] === status[1]) {
+      setIsLoaded(true)
+    }
+    setLoadStatus(status)
+  }, [loadStatus])
 
   useEffect(() => {
     fetch(process.env.REACT_APP_API_SERVER + "/api/groups/getGroups.php", {
@@ -25,7 +39,12 @@ function SettingsGroups() {
       .then((response) => response.json())
       .then(data => {
         setGroupData(data)
+        sectionLoaded()
       });
+    }, [reload]);
+
+    useEffect(() => {
+
       fetch(process.env.REACT_APP_API_SERVER + "/api/user/getUsers.php", {
         method: "POST", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, *cors, same-origin
@@ -34,16 +53,47 @@ function SettingsGroups() {
           // 'Content-Type': 'application/x-www-form-urlencoded',
         }
       })
-        .then((response) => response.json())
-        .then(data => {
-          setUserData(data)
-          setIsLoaded(true)
-        });
-  }, [])
+      .then((response) => response.json())
+      .then(data => {
+        setUserData(data)
+        sectionLoaded()
+      });
+    }, [reload])
+
+  function groupHandleChange (event: { target: any }) {
+    const target = event.target
+    const value = target.value
+    const name = target.name
+    const form = groupForm
+    form[name] = value
+    setGroupForm(form)
+  }
+
+  async function groupHandleSubmit (event: any) {
+    const data = {
+      name: groupForm.groupName,
+      count: groupForm.groupCount,
+      diet: groupForm.groupDiet,
+    }
+    event.preventDefault()
+    const response = await fetch(process.env.REACT_APP_API_SERVER + "/api/groups/postGroup.php", {
+      method: "POST", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, *cors, same-origin
+      headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: JSON.stringify(data)
+    })
+    console.log(await response)
+    setReload(reload+1)
+  }
   
   if (!isLoaded) {
     return <Spinner></Spinner>
   }
+
+  console.log(groupData)
 /*
   TODO: Remove entries in userData if they are in groupData.handlers
 
@@ -70,28 +120,30 @@ function SettingsGroups() {
             <td className='border p-1'>{i.name}</td>
             <td className='border p-1'>{i.count}</td>
             <td className='border p-1'>{i.diet}</td>
-            <td className='border p-1'>{i.primHandler}</td>
+            <td className='border p-1'>{i.primaryHandler}</td>
           </tr> 
         ))}
         </tbody>
       </table>
       
         </div>
-      <div className='flex flex-col gap-1'>
+      <form className='flex flex-col gap-1' onSubmit={groupHandleSubmit}>
         <h2>Lägg till / Ändra</h2>
         <label htmlFor="groupName">Namn</label>
-        <input type="text" name="groupName" id="groupName" className='bg-white p-1'/>
+        <input type="text" name="groupName" id="groupName" className='bg-white p-1' onChange={groupHandleChange} required/>
         <label htmlFor="groupCount">Antal</label>
-        <input type="number" name="groupCount" id="groupCount" className='bg-white p-1'/>
+        <input type="number" name="groupCount" id="groupCount" className='bg-white p-1' min={1} onChange={groupHandleChange} required/>
+        <label htmlFor="groupDiet">Diet</label>
+        <input type="number" name="groupDiet" id="groupDiet" className='bg-white p-1'min={0} onChange={groupHandleChange} required/>
         <label htmlFor="groupHandler">Handledare</label>
-        <select name="groupHandler" id="groupHandler" className='bg-white p-1'>
+        <select name="groupHandler" id="groupHandler" className='bg-white p-1' onChange={groupHandleChange} required>
           <option value="">Välj primär handledare</option>
           {userData.map((i:any, key:any) => (
             <option value={i.id} key={key}>{mailToName(i.email)}</option>
           ))}
         </select>
-        <button className='px-3 py-1 w-min bg-blue-300'>Spara</button>
-      </div>
+        <input type="submit" className='px-3 py-1 w-min bg-blue-300' value="Spara"></input>
+      </form>
     </div>
       {isGroupSelected
       ?<div className='flex gap-3 items-start'>
