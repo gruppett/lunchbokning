@@ -4,37 +4,43 @@
       "icon": "calendar_month",
       "link": "/",
       "text": "Översikt",
-      "component": "Overview"
+      "component": "Overview",
+      "permissions": [5]
     },
     {
       "icon": "person",
       "link": "personlig",
       "text": "Personlig",
-      "component": "Personal"
+      "component": "Personal",
+      "permissions": [5]
     },
     {
       "icon": "groups",
       "link": "grupper",
       "text": "Grupper",
-      "component": "Groups"
+      "component": "Groups",
+      "permissions": [4]
     },
     {
       "icon": "supervisor_account",
       "link": "externa-grupper",
       "text": "Externa grupper",
-      "component": "ExternalGroups"
+      "component": "ExternalGroups",
+      "permissions": [5]
     },
     {
       "icon": "restaurant",
       "link": "sammanstallning",
       "text": "Sammanställning",
-      "component": "Compilation"
+      "component": "Compilation",
+      "permissions": [3]
     },
     {
       "icon": "settings",
       "link": "installningar",
       "text": "Inställningar",
-      "component": "Settings"
+      "component": "Settings",
+      "permissions": [1]
     }
   ],
   "settings": [
