@@ -85,7 +85,6 @@ function App() {
       graphData.groups?.value.forEach((g: any) => {
         groups.push(g.displayName);
       });
-      console.log(groups)
       let isOk = false
       allowedGroups.forEach(element => {
         if (groups.includes(element)) {
@@ -130,12 +129,14 @@ function App() {
     <button onClick={() => handleLogout(instance)}></button>
   </div>);
 
-  if (isLoading)
+  if (isLoading) {
+
     return (
       <div className="h-screen">
         <Spinner />
       </div>
     );
+  }
   return (
     <BrowserRouter>
       <GraphContext.Provider value={graphData}>
