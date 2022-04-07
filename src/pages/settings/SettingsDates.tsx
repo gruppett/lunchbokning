@@ -51,6 +51,7 @@ function SettingsDates() {
     } catch (error) {
       console.log(error)
       sectionLoaded()
+      setPeriodData([])
     }
   }, [sectionLoaded])
 
