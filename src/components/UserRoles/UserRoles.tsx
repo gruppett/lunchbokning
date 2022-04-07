@@ -1,7 +1,7 @@
 import React from 'react'
 
 type Props = {
-  roles: number[]
+  roles: number[] | boolean
 }
 
 const icons = [
@@ -12,15 +12,20 @@ const icons = [
 ]
 
 function UserRoles({roles}: Props) {
-  let rolesBool = []
+  let rolesBool: Array<Boolean> = []
 
-  for (let i = 0; i < 4; i++) {
-    if (roles?.includes(i+1)) {
-      rolesBool.push(true)
-    } else {
-      rolesBool.push(false)
+  if (!Array.isArray(roles)) {
+    rolesBool = new Array(4).fill(false)
+  } else {
+    for (let i = 0; i < 4; i++) {
+      if ((roles as Array<number>).includes(i+1)) {
+        rolesBool.push(true)
+      } else {
+        rolesBool.push(false)
+      }
     }
   }
+
 
   return (
     <>

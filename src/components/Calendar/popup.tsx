@@ -111,6 +111,7 @@ function Overview_popup(props: any) {
   function deleteBooking(bookingID: Number) {
     const body = {
       bookingID: bookingID,
+      employeeID: props.appUser.id,
     };
     const url = process.env.REACT_APP_API_SERVER + "booking/deleteBooking.php";
     fetch(url, {
