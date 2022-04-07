@@ -14,7 +14,7 @@ const icons = [
 function UserRoles({roles}: Props) {
   let rolesBool: Array<Boolean> = []
 
-  if (roles as boolean === false) {
+  if (!Array.isArray(roles)) {
     rolesBool = new Array(4).fill(false)
   } else {
     for (let i = 0; i < 4; i++) {
@@ -26,7 +26,6 @@ function UserRoles({roles}: Props) {
     }
   }
 
-  console.log(rolesBool)
 
   return (
     <>
