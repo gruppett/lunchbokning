@@ -41,6 +41,13 @@
       "text": "Inställningar",
       "component": "Settings",
       "permissions": [1]
+    },
+    {
+      "icon": "view_list",
+      "link": "loggar",
+      "text": "Loggar",
+      "component": "Logs",
+      "permissions": [1]
     }
   ],
   "settings": [

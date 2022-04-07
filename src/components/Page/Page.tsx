@@ -13,6 +13,7 @@ import FourOhFour from "../../pages/FourOhFour";
 import SettingsGroups from "../../pages/settings/SettingsGroups";
 import SettingsUsers from "../../pages/settings/SettingsUsers";
 import SettingsDates from "../../pages/settings/SettingsDates";
+import Logs from "../../pages/Logs";
 
 function handleLogout(instance: any, e: MouseEvent) {
   e.preventDefault();
@@ -127,12 +128,15 @@ function Page() {
               :<></>
               }
               {isAllowed([1]) ?
+              <>
               <Route path="installningar" element={<Settings />}>
                 <Route index element={<SettingsGroups />} />
                 <Route path="grupper" element={<SettingsGroups />} />
                 <Route path="anvandare" element={<SettingsUsers />} />
                 <Route path="datum" element={<SettingsDates />} />
               </Route>
+              <Route path="loggar" element={<Logs />}></Route>
+              </>
               :<></>
               }
               <Route path="*" element={<FourOhFour />} />
