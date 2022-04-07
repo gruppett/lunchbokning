@@ -34,6 +34,7 @@ function SettingsDates() {
 
 
   useEffect(() => {
+    try {
     fetch(process.env.REACT_APP_API_SERVER + "period/getPeriods.php", {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
@@ -47,6 +48,10 @@ function SettingsDates() {
         setPeriodData(data)
         sectionLoaded()
       });
+    } catch (error) {
+      console.log(error)
+      sectionLoaded()
+    }
   }, [sectionLoaded])
 
   useEffect(() => {
