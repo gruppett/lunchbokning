@@ -27,10 +27,15 @@ function SettingsUsers() {
   const [usersData, setUsersData] = useState([{} as any])
   const [groupsData, setGroupsData] = useState([{} as any])
   const [isLoaded, setIsLoaded] = useState(false)
+  const [reload, setReload] = useState(0)
 
   const [inputRoles, setInputRoles] = useState(
     new Array(3).fill(false)
   )
+
+  function reloadData () {
+    setReload(reload + 1)
+  }
 
   function handleInputCheckboxesOnChange(position: any) {
     const updatedCheckedState = inputRoles.map((item, index) =>
@@ -42,6 +47,10 @@ function SettingsUsers() {
   async function selectUser (id: number) {
     setSelectedUser(id)
     setIsUserSelected(true)
+  }
+
+  function getSelectedUser () {
+    return usersData.find(x => x.id === selectedUser)
   }
 
 
@@ -85,7 +94,28 @@ function SettingsUsers() {
           setGroupsData(data)
           setIsLoaded(true)
         });
-  }, [])
+  }, [reload])
+
+  async function addUserHandleSubmit(event:any) {
+    event.preventDefault()
+    const data = {
+      email: event.target.elements[0].value + "@gymnasium.ax"
+    }
+    console.log(data)
+    const response = await fetch(process.env.REACT_APP_API_SERVER + "/api/user/postUser.php", {
+      method: "POST", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, *cors, same-origin
+      headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: JSON.stringify(data)
+    })
+    console.log(response)
+    reloadData()
+  }
+
+
 
   if (!isLoaded) {
     return <Spinner />
@@ -114,7 +144,7 @@ function SettingsUsers() {
           </thead>
           <tbody>
             {usersData?.map((i:any, key:any) => (
-              <tr key={key} className="cursor-pointer bg-white hover:bg-slate-100 even:bg-slate-50" onClick={() => selectUser(key)}>
+              <tr key={key} className="cursor-pointer bg-white hover:bg-slate-100 even:bg-slate-50" onClick={() => selectUser(i.id)}>
                 <td className='p-1 border'>{i.email}</td>
                 <UserRoles roles={i.roles}></UserRoles>
               </tr>
@@ -122,16 +152,20 @@ function SettingsUsers() {
           </tbody>
         </table>
       </div>
-      <div className='flex gap-1 flex-col'>
+      <form className='flex gap-1 flex-col' onSubmit={addUserHandleSubmit}>
         <h2>Lägg till</h2>
+        
         <label htmlFor="userMail">E-post</label>
-        <input type="text" name="userMail" id="userMail" className='p-1'/>
-        <button className='px-3 py-1 w-min whitespace-nowrap bg-blue-300'>Lägg till</button>
-      </div>
+        <div className="">
+          <input type="text" name="userMail" id="userMail" className='p-1' required/>
+          <span>@gymnasium.ax</span>
+        </div>
+        <input type="submit" className='px-3 py-1 w-min whitespace-nowrap bg-blue-300' value="Lägg till"></input>
+      </form>
       </div>
       {isUserSelected
       ?<><div className='flex flex-col gap-1'>
-        <h2>{usersData[selectedUser]?.email}</h2>
+        <h2>{getSelectedUser().email}</h2>
         {roleCheckboxes.map((i, key) => (
           <div className='flex gap-1 items-baseline' key={key}>
           <input type="checkbox" name={i.id} id={i.id} checked={inputRoles[key]} onChange={() => handleInputCheckboxesOnChange(key)}/>
@@ -152,7 +186,7 @@ function SettingsUsers() {
             </tr>
           </thead>
           <tbody>
-            {usersData[selectedUser].groups?.map((i:any, key:any) => (
+            {getSelectedUser().groups.map((i:any, key:any) => (
               <tr key={key} className='bg-white even:bg-slate-50'>
                 <td className="border p-1">{i}</td>
                 <td className="border p-1">
@@ -166,7 +200,7 @@ function SettingsUsers() {
           <h2>Lägg till</h2>
           <select id='handlerName' name='handerName' className="bg-white p-1">
             <option value="">Välj Grupp</option>
-              {groupsData?.map((i:any, key:any) => (
+              {getSelectedUser().map((i:any, key:any) => (
                 <option key={key} value={i.groupID}>{i.name}</option>
               ))}
           </select>
