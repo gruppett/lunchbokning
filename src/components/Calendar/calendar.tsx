@@ -178,7 +178,11 @@ function HjortenCalendar(props: any) {
         }
       }
     };
-    fetchGroup();
+    if (props.view !== "Personal") {
+      fetchGroup();
+    } else {
+      setGroupLoading(false);
+    }
   }, [appUserDone, appUser, user.mail]);
 
   useEffect(() => {
