@@ -26,7 +26,6 @@ function UserRoles({roles}: Props) {
     }
   }
 
-  console.log(rolesBool)
 
   return (
     <>

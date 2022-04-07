@@ -40,7 +40,6 @@ function Logs() {
       )
     }
 
-  console.log(logData)
   return (
     <table>
       <thead>
