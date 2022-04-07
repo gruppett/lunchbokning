@@ -113,8 +113,7 @@ function Overview_popup(props: any) {
       bookingID: bookingID,
       employeeID: props.appUser.id,
     };
-    const url =
-      process.env.REACT_APP_API_SERVER + "/api/booking/deleteBooking.php";
+    const url = process.env.REACT_APP_API_SERVER + "booking/deleteBooking.php";
     fetch(url, {
       body: JSON.stringify(body),
       method: "POST",
