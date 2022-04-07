@@ -36,8 +36,7 @@ function Overview_popup(props: any) {
       employeeID: employeeID,
       servingID: servingID,
     };
-    const url =
-      process.env.REACT_APP_API_SERVER + "booking/postBooking.php";
+    const url = process.env.REACT_APP_API_SERVER + "booking/postBooking.php";
     fetch(url, {
       body: JSON.stringify(body),
       method: "POST",
@@ -82,8 +81,7 @@ function Overview_popup(props: any) {
       employeeID: employeeID,
       servingID: servingID,
     };
-    const url =
-      process.env.REACT_APP_API_SERVER + "booking/updateBooking.php";
+    const url = process.env.REACT_APP_API_SERVER + "booking/updateBooking.php";
     fetch(url, {
       body: JSON.stringify(body),
       method: "POST",
@@ -148,7 +146,7 @@ function Overview_popup(props: any) {
       if (tileHasBooking(props.booking)) {
         if (typeof getIdFromProp(props.booking).personal !== "object") {
           const url =
-            process.env.REACT_APP_API_SERVER + "/api/booking/getBooking.php";
+            process.env.REACT_APP_API_SERVER + "booking/getBooking.php";
           const body =
             '{ "id": ' +
             (getIdFromProp(props.booking).personal as Number) +
@@ -198,7 +196,7 @@ function Overview_popup(props: any) {
       if (tileHasBooking(props.booking)) {
         if (typeof getIdFromProp(props.booking).group !== "object") {
           const url =
-            process.env.REACT_APP_API_SERVER + "/api/booking/getBooking.php";
+            process.env.REACT_APP_API_SERVER + "booking/getBooking.php";
           const body =
             '{ "id": ' + (getIdFromProp(props.booking).group as Number) + " }";
           fetch(url, {
