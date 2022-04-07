@@ -38,7 +38,7 @@ function HjortenCalendar(props: any) {
   useEffect(() => {
     const fetchPersonal = async () => {
       let url =
-        process.env.REACT_APP_API_SERVER + "/api/booking/getBookings.php";
+        process.env.REACT_APP_API_SERVER + "booking/getBookings.php";
       let body = '{ "employeeEmail": "' + user.mail + '"}';
 
       await fetch(url, {
@@ -70,7 +70,7 @@ function HjortenCalendar(props: any) {
           setPersonalLoading(false);
         });
 
-      url = process.env.REACT_APP_API_SERVER + "/api/user/getUser.php";
+      url = process.env.REACT_APP_API_SERVER + "user/getUser.php";
       body = '{ "email": "' + user.mail + '" }';
 
       await fetch(url, {
@@ -106,7 +106,7 @@ function HjortenCalendar(props: any) {
 
     const fetchExcludes = async () => {
       const url =
-        process.env.REACT_APP_API_SERVER + "/api/date/getExcludes.php";
+        process.env.REACT_APP_API_SERVER + "date/getExcludes.php";
       await fetch(url, {
         method: "GET",
         mode: "cors",
@@ -144,7 +144,7 @@ function HjortenCalendar(props: any) {
   useEffect(() => {
     const fetchGroup = async () => {
       const url =
-        process.env.REACT_APP_API_SERVER + "/api/user/getPrimGroups.php";
+        process.env.REACT_APP_API_SERVER + "user/getPrimGroups.php";
       const body = '{ "employeeEmail": "' + user.mail + '"}';
       if (appUser !== null) {
         if (appUser.roles.includes(4)) {
@@ -188,7 +188,7 @@ function HjortenCalendar(props: any) {
     if (groupData !== null) {
       if (!groupData.hasOwnProperty("message")) {
         const url =
-          process.env.REACT_APP_API_SERVER + "/api/booking/getBookings.php";
+          process.env.REACT_APP_API_SERVER + "booking/getBookings.php";
         const body = '{ "groupID": "' + groupData.groupID + '"}';
         fetch(url, {
           body: body,

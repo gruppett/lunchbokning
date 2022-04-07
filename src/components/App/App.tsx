@@ -100,7 +100,7 @@ function App() {
         employeeEmail: graphData.user.mail,
         roles: groups,
       };
-      fetch(process.env.REACT_APP_API_SERVER + "/api/user/getLogin.php", {
+      fetch(process.env.REACT_APP_API_SERVER + "user/getLogin.php", {
         method: "POST", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, *cors, same-origin
         headers: {

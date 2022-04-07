@@ -34,7 +34,7 @@ function SettingsDates() {
 
 
   useEffect(() => {
-    fetch(process.env.REACT_APP_API_SERVER + "/api/period/getPeriods.php", {
+    fetch(process.env.REACT_APP_API_SERVER + "period/getPeriods.php", {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
       headers: {
@@ -50,7 +50,7 @@ function SettingsDates() {
   }, [sectionLoaded])
 
   useEffect(() => {
-    fetch(process.env.REACT_APP_API_SERVER + "/api/date/getExcludes.php", {
+    fetch(process.env.REACT_APP_API_SERVER + "date/getExcludes.php", {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
       headers: {

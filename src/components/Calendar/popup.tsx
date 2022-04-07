@@ -37,7 +37,7 @@ function Overview_popup(props: any) {
       servingID: servingID,
     };
     const url =
-      process.env.REACT_APP_API_SERVER + "/api/booking/postBooking.php";
+      process.env.REACT_APP_API_SERVER + "booking/postBooking.php";
     fetch(url, {
       body: JSON.stringify(body),
       method: "POST",
@@ -83,7 +83,7 @@ function Overview_popup(props: any) {
       servingID: servingID,
     };
     const url =
-      process.env.REACT_APP_API_SERVER + "/api/booking/updateBooking.php";
+      process.env.REACT_APP_API_SERVER + "booking/updateBooking.php";
     fetch(url, {
       body: JSON.stringify(body),
       method: "POST",

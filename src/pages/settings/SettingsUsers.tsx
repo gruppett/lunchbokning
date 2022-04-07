@@ -69,7 +69,7 @@ function SettingsUsers() {
   
 
   useEffect(() => {
-    fetch(process.env.REACT_APP_API_SERVER + "/api/user/getUsers.php", {
+    fetch(process.env.REACT_APP_API_SERVER + "user/getUsers.php", {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
       headers: {
@@ -81,7 +81,7 @@ function SettingsUsers() {
       .then(data => {
         setUsersData(data)
       });
-      fetch(process.env.REACT_APP_API_SERVER + "/api/groups/getGroups.php", {
+      fetch(process.env.REACT_APP_API_SERVER + "groups/getGroups.php", {
         method: "POST", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, *cors, same-origin
         headers: {
@@ -102,7 +102,7 @@ function SettingsUsers() {
       email: event.target.elements[0].value + "@gymnasium.ax"
     }
     console.log(data)
-    const response = await fetch(process.env.REACT_APP_API_SERVER + "/api/user/postUser.php", {
+    const response = await fetch(process.env.REACT_APP_API_SERVER + "user/postUser.php", {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
       headers: {
