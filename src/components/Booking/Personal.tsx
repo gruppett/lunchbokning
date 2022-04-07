@@ -1,7 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Spinner from "../Spinner/Spinner";
+import { UserContext } from "../App/App";
 
 function PersonalBooking() {
+  const apiUser = useContext(UserContext);
+  console.log(apiUser);
+
   const [periods, setPeriods] = useState([
     { periodID: -1, periodName: "", startDate: "", endDate: "" },
   ]);
@@ -30,9 +34,9 @@ function PersonalBooking() {
       startDate: dates[0],
       endDate: dates[1],
       groupID: 1,
-      employeeID: 1,
+      employeeID: apiUser.employeeID,
       count: 1,
-      diet: 1,
+      diet: apiUser.diet,
       servingID: servingID,
     };
     fetch(url, {
@@ -85,7 +89,9 @@ function PersonalBooking() {
         });
     };
     fetchPeriods();
-    setPeriodSelect(getPeriodDate(periods[0].periodID.toString()) as any);
+    if (periodSelect.length === 0) {
+      setPeriodSelect(getPeriodDate(periods[0].periodID.toString()) as any);
+    }
   }, []);
 
   if (periodsLoading || periodsError) {
@@ -114,7 +120,7 @@ function PersonalBooking() {
           id="periodSelect"
           className="m-1 my-2"
           onChange={(e) => {
-            setPeriodSelect(getPeriodDate(e.target.value as any) as any);
+            setPeriodSelect(getPeriodDate(e.target.value as string) as any);
           }}
         >
           {periods[0].periodID !== -1 ? (
