@@ -17,7 +17,7 @@ function Logs() {
   }, [loadStatus])
 
   useEffect(() => {
-    fetch(process.env.REACT_APP_API_SERVER + "/api/log/getLogs.php", {
+    fetch(process.env.REACT_APP_API_SERVER + "log/getLogs.php", {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
       headers: {

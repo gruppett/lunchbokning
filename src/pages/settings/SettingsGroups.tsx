@@ -75,7 +75,7 @@ function SettingsGroups() {
   }, [loadStatus])
 
   useEffect(() => {
-    fetch(process.env.REACT_APP_API_SERVER + "/api/groups/getGroups.php", {
+    fetch(process.env.REACT_APP_API_SERVER + "groups/getGroups.php", {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
       headers: {
@@ -91,7 +91,7 @@ function SettingsGroups() {
     }, [reload, sectionLoaded]);
 
     useEffect(() => {
-      fetch(process.env.REACT_APP_API_SERVER + "/api/user/getUsers.php", {
+      fetch(process.env.REACT_APP_API_SERVER + "user/getUsers.php", {
         method: "POST", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, *cors, same-origin
         headers: {
@@ -135,7 +135,7 @@ function SettingsGroups() {
       delete data.employeeID
     }
     if (!isGroupSelected) {
-      const response = await fetch(process.env.REACT_APP_API_SERVER + "/api/groups/postGroup.php", {
+      const response = await fetch(process.env.REACT_APP_API_SERVER + "groups/postGroup.php", {
         method: "POST", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, *cors, same-origin
         headers: {
@@ -151,7 +151,7 @@ function SettingsGroups() {
     let updateData = data
     updateData.groupID = (selectedGroup).toString()
     console.log(data)
-    const response = await fetch(process.env.REACT_APP_API_SERVER + "/api/groups/updateGroup.php", {
+    const response = await fetch(process.env.REACT_APP_API_SERVER + "groups/updateGroup.php", {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
       headers: {
@@ -170,7 +170,7 @@ function SettingsGroups() {
       employeeID: handlerForm,
       groupID: selectedGroup,
     }
-    const response = await fetch(process.env.REACT_APP_API_SERVER + "/api/handler/postHandler.php", {
+    const response = await fetch(process.env.REACT_APP_API_SERVER + "handler/postHandler.php", {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
       headers: {
@@ -190,7 +190,7 @@ function SettingsGroups() {
       employeeID: event.target.elements[0].value,
       groupID: selectedGroup
     }
-    const response = await fetch(process.env.REACT_APP_API_SERVER + "/api/handler/deleteHandler.php", {
+    const response = await fetch(process.env.REACT_APP_API_SERVER + "handler/deleteHandler.php", {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
       headers: {
@@ -210,7 +210,7 @@ function SettingsGroups() {
       groupID: selectedGroup
     }
     resetSelectedGroup()
-    const response = await fetch(process.env.REACT_APP_API_SERVER + "/api/groups/deleteGroup.php", {
+    const response = await fetch(process.env.REACT_APP_API_SERVER + "groups/deleteGroup.php", {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
       headers: {
