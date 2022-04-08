@@ -2,8 +2,8 @@ import React, {useState, useEffect, Key, useCallback} from 'react'
 import Spinner from '../../components/Spinner/Spinner'
 
 function SettingsDates() {
-  const [periodData, setPeriodData] = useState([{} as any] as any)
-  const [excludedData, setExcludedData] = useState([{} as any] as any)
+  const [periodData, setPeriodData] = useState([{}] as Array<any>)
+  const [excludedData, setExcludedData] = useState([{}] as Array<any>)
   const [selectedPeriod, setSelectedPeriod] = useState(-1)
   const [loadStatus, setLoadStatus] = useState([1, 2])
   const [isLoaded, setIsLoaded] = useState(false)
@@ -50,7 +50,7 @@ function SettingsDates() {
       });
     } catch (error) {
       console.log(error)
-      setPeriodData(undefined)
+      setPeriodData([{}])
       sectionLoaded()
     }
   }, [sectionLoaded])
@@ -75,6 +75,8 @@ function SettingsDates() {
     return <Spinner />
   }
 
+  console.log(periodData)
+
   return (
     <div className="flex gap-3 p-3 bg-slate-50 sm:w-max flex-col">
       <div className=''>
@@ -90,7 +92,7 @@ function SettingsDates() {
                 </tr>
               </thead>
               <tbody>
-                {periodData?.map((i: any, key: Key) => (
+                {periodData.map((i: any, key: Key) => (
                   <tr className="bg-white even:bg-slate-50 cursor-pointer hover:bg-slate-100" onClick={() => selectPeriod(key as number)} key={key}>
                     <td className='p-1 border'>{i.periodName}</td>
                     <td className='p-1 border'>{i.startDate}</td>
