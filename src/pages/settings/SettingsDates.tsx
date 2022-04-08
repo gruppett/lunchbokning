@@ -2,8 +2,8 @@ import React, {useState, useEffect, Key, useCallback} from 'react'
 import Spinner from '../../components/Spinner/Spinner'
 
 function SettingsDates() {
-  const [periodData, setPeriodData] = useState([{} as any])
-  const [excludedData, setExcludedData] = useState([{} as any])
+  const [periodData, setPeriodData] = useState([{} as any] as any)
+  const [excludedData, setExcludedData] = useState([{} as any] as any)
   const [selectedPeriod, setSelectedPeriod] = useState(-1)
   const [loadStatus, setLoadStatus] = useState([1, 2])
   const [isLoaded, setIsLoaded] = useState(false)
@@ -50,7 +50,7 @@ function SettingsDates() {
       });
     } catch (error) {
       console.log(error)
-      setPeriodData([])
+      setPeriodData(undefined)
       sectionLoaded()
     }
   }, [sectionLoaded])
