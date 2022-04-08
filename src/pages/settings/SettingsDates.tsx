@@ -2,8 +2,8 @@ import React, {useState, useEffect, Key, useCallback} from 'react'
 import Spinner from '../../components/Spinner/Spinner'
 
 function SettingsDates() {
-  const [periodData, setPeriodData] = useState([{}] as Array<any>)
-  const [excludedData, setExcludedData] = useState([{}] as Array<any>)
+  const [periodData, setPeriodData] = useState([{} as any] as any)
+  const [excludedData, setExcludedData] = useState([{} as any] as any)
   const [selectedPeriod, setSelectedPeriod] = useState(-1)
   const [loadStatus, setLoadStatus] = useState([1, 2])
   const [isLoaded, setIsLoaded] = useState(false)
@@ -34,7 +34,6 @@ function SettingsDates() {
 
 
   useEffect(() => {
-    try {
     fetch(process.env.REACT_APP_API_SERVER + "period/getPeriods.php", {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
@@ -43,20 +42,21 @@ function SettingsDates() {
         // 'Content-Type': 'application/x-www-form-urlencoded',
       }
     })
-      .then(async (response) => {
-        if (response.ok) {
-          return await response.json()
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok.")
         }
+        return response.json()
       })
       .then(data => {
         setPeriodData(data)
         sectionLoaded()
-      });
-    } catch (error) {
-      console.log(error)
-      setPeriodData([{}])
-      sectionLoaded()
-    }
+      })
+      .catch((Error) => {
+        console.log(Error)
+        setPeriodData(false)
+        sectionLoaded()
+      })
   }, [sectionLoaded])
 
   useEffect(() => {
@@ -68,18 +68,26 @@ function SettingsDates() {
         // 'Content-Type': 'application/x-www-form-urlencoded',
       }
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok.")
+        }
+        return response.json()
+      })
       .then(data => {
         setExcludedData(data)
         sectionLoaded()
-      });
+      })
+      .catch((Error) => {
+        console.log(Error)
+        setExcludedData(undefined)
+        sectionLoaded()
+      })
   }, [sectionLoaded])
   
   if (!isLoaded) {
     return <Spinner />
   }
-
-  console.log(periodData)
 
   return (
     <div className="flex gap-3 p-3 bg-slate-50 sm:w-max flex-col">
@@ -96,13 +104,13 @@ function SettingsDates() {
                 </tr>
               </thead>
               <tbody>
-                {periodData.map((i: any, key: Key) => (
+                {periodData ? periodData.map((i: any, key: Key) => (
                   <tr className="bg-white even:bg-slate-50 cursor-pointer hover:bg-slate-100" onClick={() => selectPeriod(key as number)} key={key}>
                     <td className='p-1 border'>{i.periodName}</td>
                     <td className='p-1 border'>{i.startDate}</td>
                     <td className='p-1 border'>{i.endDate}</td>
                   </tr>
-                ))}
+                )): <></>}
               </tbody>
             </table>
           </div>
@@ -135,12 +143,12 @@ function SettingsDates() {
                 </tr>
               </thead>
               <tbody>
-                {excludedData?.map((i: any, key: Key) => (
+                {excludedData ? excludedData.map((i: any, key: Key) => (
                   <tr className="bg-white even:bg-slate-50 cursor-pointer hover:bg-slate-100" onClick={() => selectExcluded(key as number)} key={key}>
                     <td className='p-1 border'>{i.name}</td>
                     <td className='p-1 border'>{i.date}</td>
                   </tr>
-                ))}
+                )) : <></>}
               </tbody>
             </table>
                 </div>
