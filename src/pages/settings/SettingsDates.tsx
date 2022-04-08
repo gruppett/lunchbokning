@@ -43,7 +43,11 @@ function SettingsDates() {
         // 'Content-Type': 'application/x-www-form-urlencoded',
       }
     })
-      .then((response) => response.json())
+      .then(async (response) => {
+        if (response.ok) {
+          return await response.json()
+        }
+      })
       .then(data => {
         setPeriodData(data)
         sectionLoaded()
