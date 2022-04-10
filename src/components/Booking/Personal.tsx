@@ -92,7 +92,7 @@ function PersonalBooking() {
     if (periodSelect.length === 0) {
       setPeriodSelect(getPeriodDate(periods[0].periodID.toString()) as any);
     }
-  }, []);
+  }, [periodSelect.length, periods]);
 
   if (periodsLoading || periodsError) {
     periodsLoading ? <Spinner /> : <script>alert(periodsError)</script>;
