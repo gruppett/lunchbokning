@@ -7,6 +7,7 @@ import { BrowserRouter } from "react-router-dom";
 import Spinner from "../Spinner/Spinner";
 import SignIn from "../SignIn/SignIn";
 
+
 interface GraphContextInterface {
   user: UserInterface;
   groups: any;
