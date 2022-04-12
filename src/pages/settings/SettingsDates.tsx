@@ -296,7 +296,7 @@ function SettingsDates() {
             </table>
           </div>
           <form className='flex flex-col gap-1' name="period" onSubmit={periodHandleSubmit}>
-            <h2>Lägg till / Ändra</h2>
+            <h2>{!isPeriodSelected ? "Lägg till" : `Ändra ${getSelectedPeriod().periodName}`}</h2>
             <label htmlFor="periodName">Namn</label>
             <input type="text" name="name" id="periodName" className='bg-white p-1'value={formData.period.name} onChange={formHandleChange} required/>
             <label htmlFor="periodFrom">Från</label>
@@ -304,6 +304,7 @@ function SettingsDates() {
             <label htmlFor="periodTo">Till</label>
             <input type="date" name="endDate" id="periodTo" className='bg-white p-1'value={formData.period.endDate.toString()} onChange={formHandleChange} required/>
             <input type="submit" className='px-3 py-1 w-min whitespace-nowrap bg-blue-300' value="Spara" />
+            <button type="button" className='px-3 py-1 w-min whitespace-nowrap bg-red-300' onClick={deselectPeriod}>Ångra</button>
           </form>
         </div>
         {isPeriodSelected
@@ -334,17 +335,18 @@ function SettingsDates() {
             </table>
               </div>
               <form className='flex flex-col gap-1' name='excluded' onSubmit={excludedHandleSubmit}>
-            <h2>Lägg till / Ändra</h2>
+              <h2>{!isExcludedSelected ? "Lägg till" : `Ändra ${getSelectedExcluded().name}`}</h2>
             <label htmlFor="excludedName">Namn</label>
             <input type="text" name="name" id="excludedName" className='bg-white p-1'value={formData.excluded.name} onChange={formHandleChange}/>
             <label htmlFor="excludedDate">Datum</label>
             <input type="date" name="date" id="excludedDate" className='bg-white p-1'value={formData.excluded.date.toString()} onChange={formHandleChange}/>
             <input type="submit" className='px-3 py-1 w-min whitespace-nowrap bg-blue-300' value="Spara"/>
+            <button type="button" className='px-3 py-1 w-min whitespace-nowrap bg-red-300' onClick={deselectExcluded}>Ångra</button>
           </form>
         </div>
           {isExcludedSelected
           ? <div className='min-content'>
-          <button className='px-3 py-1 bg-red-500 hover:bg-opacity-60' onClick={deleteExcluded}>Radera {getSelectedExcluded().name}</button>
+          <button type="button" className='px-3 py-1 bg-red-500 hover:bg-opacity-60' onClick={deleteExcluded}>Radera {getSelectedExcluded().name}</button>
         </div>
         :<>Välj ett exkluderad datum för att radera den.</>}
       </div>
