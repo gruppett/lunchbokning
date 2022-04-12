@@ -233,7 +233,7 @@ function SettingsUsers() {
           </div>
           <form onSubmit={rolesAddHandleSubmit} className="">
             <h2>Lägg till roll</h2>
-            <select className='p-1'>
+            <select className='p-1' required>
               <option value="">Välj en roll</option>
               {getUnassignedRoles() && getUnassignedRoles()?.map((i:any, key:any) => (
                 <option key={key} value={i.id}>{i.name}</option>
@@ -250,23 +250,23 @@ function SettingsUsers() {
                 </tr>
               </thead>
               <tbody>
-                {getSelectedUser().groups ? getSelectedUser().groups.map((i: any, key: any) => (
+                {getSelectedUser().groups && getSelectedUser().groups.map((i: any, key: any) => (
                   <tr key={key} className='bg-white even:bg-slate-50'>
                     <td className="border p-1">{i.name}</td>
                     <td className="border p-1">
                       <span className='material-icons-outlined flex items-center justify-center text-red-500 cursor-pointer hover:text-opacity-60'>highlight_off</span>
                     </td>
                   </tr>
-                )) : <></>}
+                ))}
               </tbody>
             </table>
             <div className='flex flex-col gap-1'>
               <h2>Lägg till</h2>
               <select id='handlerName' name='handerName' className="bg-white p-1">
                 <option value="">Välj Grupp</option>
-                {getSelectedUser().groups ? getSelectedUser().groups.map((i: any, key: any) => (
+                {getSelectedUser().groups && getSelectedUser().groups.map((i: any, key: any) => (
                   <option key={key} value={i.groupID}>{i.name}</option>
-                )) : <></>}
+                ))}
               </select>
               <button className='px-3 py-1 w-min whitespace-nowrap bg-blue-300'>Lägg till</button>
             </div>
