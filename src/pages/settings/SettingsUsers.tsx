@@ -2,71 +2,108 @@ import React, {useState, useEffect} from 'react'
 import Spinner from '../../components/Spinner/Spinner'
 import UserRoles from '../../components/UserRoles/UserRoles'
 
-
-const roleCheckboxes = [
+const roles = [
   {
-    id: "userIsAdmin",
-    label: "Är adminstratör",
-    icon: "local_police"
+    id: 1,
+    icon: "local_police",
+    name: "Administrator"
   },
   {
-    id: "userIsHallTeacher",
-    label: "Är salslärare",
-    icon: "table_restaurant"  
+    id: 2,
+    icon: "table_restaurant",
+    name: "Salslärare"
   },
   {
-    id: "userIsKitchenTeacher",
-    label: "Är kökslärare",
-    icon: "soup_kitchen"
+    id: 3,
+    icon: "table_restaurant",
+    name: "Kökslärare"
+  },
+  {
+    id: 4,
+    icon: "supervisor_account",
+    name: "Handledare"
+  },
+  {
+    id: 5,
+    icon: "person",
+    name: "Användare"
   }
 ]
+
 
 function SettingsUsers() {
   const [selectedUser, setSelectedUser] = useState(-1)
   const [isUserSelected, setIsUserSelected] = useState(false)
-  const [usersData, setUsersData] = useState([{} as any])
-  const [_groupsData, setGroupsData] = useState([{} as any])
+  const [usersData, setUsersData] = useState([{} as any]as any)
+  const [groupsData, setGroupsData] = useState([{} as any] as any)
   const [isLoaded, setIsLoaded] = useState(false)
   const [reload, setReload] = useState(0)
 
-  const [inputRoles, setInputRoles] = useState(
-    new Array(3).fill(false)
-  )
 
   function reloadData () {
     setReload(reload + 1)
   }
 
-  function handleInputCheckboxesOnChange(position: any) {
-    const updatedCheckedState = inputRoles.map((item, index) =>
-      index === position ? !item : item
-    );
-    setInputRoles(updatedCheckedState);
-  }
 
   async function selectUser (id: number) {
     setSelectedUser(id)
-    setIsUserSelected(true)
-  }
-
-  function getSelectedUser () {
-    return usersData.find(x => x.id === selectedUser)
-  }
-
-
-
-  useEffect(() => {
     let rolesBool = []
+    const user = usersData.find((x: { id: number }) => x.id === id)
     for (let i = 0; i < 4; i++) {
-      if (usersData[selectedUser]?.roles.includes(i+1)) {
+      if (user.roles && user.roles.includes(i+1)) {
         rolesBool.push(true)
       } else {
         rolesBool.push(false)
       }
     }
-    setInputRoles(rolesBool)
-  }, [selectedUser, usersData])
-  
+    setIsUserSelected(true)
+  }
+
+  function getSelectedUser () {
+    const data =  usersData.find((x: { id: number }) => x.id === selectedUser)
+    return data
+  }
+
+  function getUnassignedRoles () {
+    if (!getSelectedUser().roles) {
+      return roles
+    }
+    const unassignedRoles = roles.filter(x => !getSelectedUser().roles.includes(x.id))
+    return unassignedRoles
+  }
+
+  async function rolesDeleteHandleSubmit (e: any) {
+    e.preventDefault()
+    const data = {
+      employeeID: selectedUser,
+      roleID: e.target[0].value
+    }
+    const response = await fetch(process.env.REACT_APP_API_SERVER + "role/deleteRole.php", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+    console.log(response)
+    reloadData()
+  }
+  async function rolesAddHandleSubmit (e: any) {
+    e.preventDefault()
+    const data = {
+      employeeID: selectedUser,
+      roleID: e.target[0].value
+    }
+    const response = await fetch(process.env.REACT_APP_API_SERVER + "role/postRole.php", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+    console.log(response)
+    reloadData()
+  }
 
   useEffect(() => {
     fetch(process.env.REACT_APP_API_SERVER + "user/getUsers.php", {
@@ -101,7 +138,6 @@ function SettingsUsers() {
     const data = {
       email: event.target.elements[0].value + "@gymnasium.ax"
     }
-    console.log(data)
     const response = await fetch(process.env.REACT_APP_API_SERVER + "user/postUser.php", {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
@@ -115,11 +151,15 @@ function SettingsUsers() {
     reloadData()
   }
 
-
+  function getRole(id: number) {
+    const role = roles.find((x: { id: number }) => x.id === id)
+    return role
+  }
 
   if (!isLoaded) {
     return <Spinner />
   }
+
 
   /*
 
@@ -128,87 +168,111 @@ function SettingsUsers() {
   console.log(groupsData)
   console.log(usersData)
 
-*/
+  */
 
   return (
     <div className='flex gap-3 flex-col p-3 bg-slate-50 sm:w-max'>
       <div className='flex gap-3 items-start sm:flex-wrap flex-col sm:flex-row'>
-      <div>
-        <h2>Användare</h2>
-        <table className='text-left border-collapse'>
-          <thead>
-            <tr className='bg-white'>
-              <th className='p-1 border'>E-post</th>
-              <th colSpan={4} className='p-1 border'>Roller</th>
-            </tr>
-          </thead>
-          <tbody>
-            {usersData?.map((i:any, key:any) => (
-              <tr key={key} className="cursor-pointer bg-white hover:bg-slate-100 even:bg-slate-50" onClick={() => selectUser(i.id)}>
-                <td className='p-1 border'>{i.email}</td>
-                <UserRoles roles={i.roles}></UserRoles>
+        <div>
+          <h2>Användare</h2>
+          <table className='text-left border-collapse'>
+            <thead>
+              <tr className='bg-white'>
+                <th className='p-: border'>E-post</th>
+                <th colSpan={5} className='p-1 border'>Roller</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <form className='flex gap-1 flex-col' onSubmit={addUserHandleSubmit}>
-        <h2>Lägg till</h2>
-        
-        <label htmlFor="userMail">E-post</label>
-        <div className="">
-          <input type="text" name="userMail" id="userMail" className='p-1' required/>
-          <span>@gymnasium.ax</span>
+            </thead>
+            <tbody>
+              {usersData?.map((i:any, key:any) => (
+                <tr key={key} className="cursor-pointer bg-white hover:bg-slate-100 even:bg-slate-50" onClick={() => selectUser(i.id)}>
+                  <td className='p-1 border'>{i.email}</td>
+                  <UserRoles roles={i.roles}></UserRoles>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-        <input type="submit" className='px-3 py-1 w-min whitespace-nowrap bg-blue-300' value="Lägg till"></input>
-      </form>
+        <form className='flex gap-1 flex-col' onSubmit={addUserHandleSubmit}>
+          <h2>Lägg till</h2>
+          
+          <label htmlFor="userMail">E-post</label>
+          <div className="">
+            <input type="text" name="userMail" id="userMail" className='p-1' required/>
+            <span>@gymnasium.ax</span>
+          </div>
+          <input type="submit" className='px-3 py-1 w-min whitespace-nowrap bg-blue-300' value="Lägg till"></input>
+        </form>
       </div>
       {isUserSelected
-      ?<><div className='flex flex-col gap-1'>
-        <h2>{getSelectedUser().email}</h2>
-        {roleCheckboxes.map((i, key) => (
-          <div className='flex gap-1 items-baseline' key={key}>
-          <input type="checkbox" name={i.id} id={i.id} checked={inputRoles[key]} onChange={() => handleInputCheckboxesOnChange(key)}/>
-          <label htmlFor={i.id} className='cursor-pointer flex'>{i.label}
-            <span className='material-icons-outlined self.center'>
-              {i.icon}
-            </span>
-          </label>  
-        </div>
-          ))}
-        <button className='px-3 py-1 w-min whitespace-nowrap bg-blue-300'>Spara</button>
-      </div>
-      <div className="flex gap-3 items-start sm:flex-wrap flex-col sm:flex-row">
-        <table className="table-auto text-left border-collapse">
-          <thead>
-            <tr className='border bg-white'>
-              <th colSpan={2}> Handledare över grupper</th>
-            </tr>
-          </thead>
-          <tbody>
-            {getSelectedUser().groups.map((i:any, key:any) => (
-              <tr key={key} className='bg-white even:bg-slate-50'>
-                <td className="border p-1">{i}</td>
-                <td className="border p-1">
-                  <span className='material-icons-outlined flex items-center justify-center text-red-500 cursor-pointer hover:text-opacity-60'>highlight_off</span>
-                </td>
+      ?<>
+      <div className='flex flex-col gap-1 items-start sm:flex-wrap flex-col sm:flex-row'>
+        <div>
+          <h2>{getSelectedUser().email}</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Roll</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-        <div className='flex flex-col gap-1'>
-          <h2>Lägg till</h2>
-          <select id='handlerName' name='handerName' className="bg-white p-1">
-            <option value="">Välj Grupp</option>
-              {getSelectedUser().map((i:any, key:any) => (
-                <option key={key} value={i.groupID}>{i.name}</option>
+            </thead>
+            <tbody>
+              {getSelectedUser().roles && getSelectedUser().roles.map((i:any, key:any) => (
+                <tr key={key}>
+                  <td>{getRole(i)?.name}</td>
+                  <td>
+                  <form onSubmit={rolesDeleteHandleSubmit}>
+                    <span className='material-icons-outlined flex items-center justify-center text-red-500 hover:text-opacity-60'>
+                      <input type="hidden" name="roleId" id="roleId" value={getRole(i)?.id}/>
+                      <input type="submit" value="highlight_off"/>
+                    </span>
+                  </form>
+                  </td>
+                </tr>
               ))}
-          </select>
-          <button className='px-3 py-1 w-min whitespace-nowrap bg-blue-300'>Lägg till</button>
+            </tbody>
+          </table>
+          </div>
+          <form onSubmit={rolesAddHandleSubmit} className="">
+            <h2>Lägg till roll</h2>
+            <select className='p-1'>
+              <option value="">Välj en roll</option>
+              {getUnassignedRoles() && getUnassignedRoles()?.map((i:any, key:any) => (
+                <option key={key} value={i.id}>{i.name}</option>
+              ))}
+            </select>
+            <input type="submit" value="Lägg till Roll" className='px-3 py-1 w-min whitespace-nowrap bg-blue-300'/>
+          </form>
         </div>
-      </div>
-      </>
-      :<></>}
+        <div className="flex gap-3 items-start sm:flex-wrap flex-col sm:flex-row">
+            <table className="table-auto text-left border-collapse">
+              <thead>
+                <tr className='border bg-white'>
+                  <th colSpan={2}> Handledare över grupper</th>
+                </tr>
+              </thead>
+              <tbody>
+                {getSelectedUser().groups ? getSelectedUser().groups.map((i: any, key: any) => (
+                  <tr key={key} className='bg-white even:bg-slate-50'>
+                    <td className="border p-1">{i.name}</td>
+                    <td className="border p-1">
+                      <span className='material-icons-outlined flex items-center justify-center text-red-500 cursor-pointer hover:text-opacity-60'>highlight_off</span>
+                    </td>
+                  </tr>
+                )) : <></>}
+              </tbody>
+            </table>
+            <div className='flex flex-col gap-1'>
+              <h2>Lägg till</h2>
+              <select id='handlerName' name='handerName' className="bg-white p-1">
+                <option value="">Välj Grupp</option>
+                {getSelectedUser().groups ? getSelectedUser().groups.map((i: any, key: any) => (
+                  <option key={key} value={i.groupID}>{i.name}</option>
+                )) : <></>}
+              </select>
+              <button className='px-3 py-1 w-min whitespace-nowrap bg-blue-300'>Lägg till</button>
+            </div>
+          </div>
+          </>
+        :<></>}
     </div>
   )
 }
