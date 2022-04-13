@@ -1,6 +1,7 @@
-import React, {Key, useEffect, useState} from 'react'
+import React, {Key, useEffect, useState, useRef} from 'react'
 import moment from 'moment'
 import Spinner from '../components/Spinner/Spinner'
+import ReactToPrint from "react-to-print";
 
 
 
@@ -15,6 +16,7 @@ function Compilation() {
     startDate: formatDate(new Date()),
     endDate: moment(formatDate(new Date())).add(7, 'days').format("YYYY-MM-DD")
   })
+  let printRef = useRef(null)
 
   function handleChange(event: any) {
     setIsLoading(true)
@@ -43,11 +45,18 @@ function Compilation() {
       <label htmlFor="startDate">Från</label>
       <input type="date" name='startDate' id='startDate' max={dates.endDate} value={dates.startDate} onChange={handleChange}/>
       <label htmlFor="startDate">Slut</label>
-      
       <input type="date" name='endDate'id='startDate' min={dates.startDate} value={dates.endDate} onChange={handleChange}/>
+      <ReactToPrint 
+        trigger={() => <button>
+            <span className='material-icons-outlined'>
+              print
+            </span>
+          </button>}
+        content={() => printRef.current}
+      />
       {isLoading ?
         <Spinner />
-        :<div>
+        :<div ref={printRef}>
           {daysData.error  ?
            daysData.error.map((error: string, key: Key) => <p key={key}>{error}</p>)
           : daysData?.map((i:any, key:Key) => (
@@ -57,7 +66,7 @@ function Compilation() {
                 <table key={key}>
                   <thead>
                     <tr>
-                      <th>{j.name}</th>
+                      <th colSpan={2}>{j.name}</th>
                     </tr>
                   </thead>
                   <tbody>
