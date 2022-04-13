@@ -52,7 +52,7 @@ function Compilation() {
       <input type="date" name='startDate' id='startDate' max={dates.endDate} value={dates.startDate} onChange={handleChange}/>
       <label htmlFor="startDate">Slut</label>
       
-      <input type="date" name='endDate'id='startDate' min={moment(dates.startDate).add(1, 'd').format(dateFormat)} value={dates.endDate} onChange={handleChange}/>
+      <input type="date" name='endDate'id='startDate' min={dates.startDate} value={dates.endDate} onChange={handleChange}/>
       {isLoading ?
         <Spinner />
         :<div>
