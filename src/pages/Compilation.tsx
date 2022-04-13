@@ -39,7 +39,6 @@ function Compilation() {
     })
   }, [dates])
 
-  console.log(daysData)
   return (
     <>
       <label htmlFor="startDate">Från</label>
