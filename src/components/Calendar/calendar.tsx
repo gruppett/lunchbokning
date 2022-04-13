@@ -183,7 +183,7 @@ function HjortenCalendar(props: any) {
     } else {
       setGroupLoading(false);
     }
-  }, [appUserDone, appUser, user.mail]);
+  }, [appUserDone, appUser, user.mail, props.view]);
 
   useEffect(() => {
     if (groupData !== null) {
