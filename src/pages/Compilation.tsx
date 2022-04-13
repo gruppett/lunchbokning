@@ -4,8 +4,8 @@ import Spinner from '../components/Spinner/Spinner'
 
 
 
-const dateFormat = "YYYY-MM-DD"
 function formatDate(date: Date) {
+  const dateFormat = "YYYY-MM-DD"
   return moment(date).format(dateFormat)
 }
 function Compilation() {
@@ -15,18 +15,11 @@ function Compilation() {
     startDate: formatDate(new Date()),
     endDate: moment(formatDate(new Date())).add(7, 'days').format("YYYY-MM-DD")
   })
-  const [reload, setReload] = useState(0)
-
-  function reloadData () {
-    setReload(reload + 1)
-  }
 
   function handleChange(event: any) {
     setIsLoading(true)
     const {name, value} = event.target
-    console.log(name, value)
     setDates({...dates, [name]: value})
-    reloadData()
   }
 
   useEffect(() => {
@@ -42,10 +35,9 @@ function Compilation() {
       setDaysData(data)
       setIsLoading(false)
     })
-  }, [dates, reload])
+  }, [dates])
 
   console.log(daysData)
-  
   return (
     <>
       <label htmlFor="startDate">Från</label>
@@ -56,7 +48,9 @@ function Compilation() {
       {isLoading ?
         <Spinner />
         :<div>
-          {daysData?.map((i:any, key:Key) => (
+          {daysData.error  ?
+           daysData.error.map((error: string, key: Key) => <p key={key}>{error}</p>)
+          : daysData?.map((i:any, key:Key) => (
             <div key={key}>
               <h2>{i.date}</h2>
               {i.serving.map((j:any, key:Key) => (
