@@ -3,7 +3,20 @@ import moment from 'moment'
 import Spinner from '../components/Spinner/Spinner'
 import ReactToPrint from "react-to-print";
 
-
+const tableGuide = [
+  {
+    title: 'Normal',
+    data: 'normal'
+  },
+  {
+    title: 'Diet',
+    data: 'diet'
+  },
+  {
+    title: 'Total',
+    data: 'total'
+  }
+]
 
 function formatDate(date: Date) {
   const dateFormat = "YYYY-MM-DD"
@@ -39,76 +52,65 @@ function Compilation() {
     })
   }, [dates])
 
+  console.log(daysData)
+
   return (
     <>
+    <div className="flex gap-2 flex-col">
+      <div className="flex gap-1 items-center">
+
       <label htmlFor="startDate">Från</label>
-      <input type="date" name='startDate' id='startDate' max={dates.endDate} value={dates.startDate} onChange={handleChange}/>
-      <label htmlFor="startDate">Slut</label>
-      <input type="date" name='endDate'id='startDate' min={dates.startDate} value={dates.endDate} onChange={handleChange}/>
+      <input type="date" name='startDate' id='startDate' className='p-1 border' max={dates.endDate} value={dates.startDate} onChange={handleChange}/>
+      <label htmlFor="startDate">Till</label>
+      <input type="date" name='endDate'id='startDate' className='p-1 border' min={dates.startDate} value={dates.endDate} onChange={handleChange}/>
       <ReactToPrint 
-        trigger={() => <button>
+        trigger={() => <button className='flex'>
             <span className='material-icons-outlined'>
               print
             </span>
           </button>}
         content={() => printRef.current}
-      />
+        bodyClass={"m-4"}
+        />
+      </div>
       {isLoading ?
         <Spinner />
-        :<div ref={printRef}>
+        :<div ref={printRef} className="grid grid-cols-5 grid-rows-auto gap-2">
           {daysData.error  ?
            daysData.error.map((error: string, key: Key) => <p key={key}>{error}</p>)
-          : daysData?.map((i:any, key:Key) => (
-            <div key={key}>
-              <h2>{i.date}</h2>
-              {i.serving.map((j:any, key:Key) => (
-                <table key={key}>
-                  <thead>
-                    <tr>
-                      <th colSpan={2}>{j.name}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <th>Normal</th>
-                      <td>{j.normal}</td>
-                    </tr>
-                    <tr>
-                      <th>Diet</th>
-                      <td>{j.diet}</td>
-                    </tr>
-                    <tr>
-                      <th>Total</th>
-                      <td>{j.total}</td>
-                    </tr>
-                    <tr>
-                      <th>Grupper</th>
+           : daysData?.map((i:any, key:Key) => (
+             <table key={key}>
+               <tbody>
+                <tr>
+                  <th>
+                    {i.date}
+                  </th>
+                </tr>
+                {i.serving.map((j:any, key:Key) => (
+                  <>
+                  <tr key={key}>
+                    <th>
+                      {j.name}
+                    </th>
+                  </tr>
+                  {tableGuide.map((k:any, key:Key) => (
+                    <tr key={key}>
+                      <th>
+                        {k.title}
+                      </th>
                       <td>
-                        <table>
-                          <thead>
-                            <tr>
-                              <th>Namn</th>
-                              <th>Antal</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {j.groups.map((k:any, key:Key) => (
-                              <tr key={key}>
-                                <td>{k.name}</td>
-                                <td>{k.total}</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
+                        {j[k.data]}
                       </td>
                     </tr>
-                  </tbody>
-                </table>
-              ))}
-            </div>
+                  ))}
+                  </>
+                ))}
+               </tbody>
+             </table>
           ))}
         </div>
       }
+      </div>
     </>
   )
 }

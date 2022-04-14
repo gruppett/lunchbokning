@@ -178,7 +178,7 @@ function SettingsUsers() {
           <table className='text-left border-collapse'>
             <thead>
               <tr className='bg-white'>
-                <th className='p-: border'>E-post</th>
+                <th className='p-1 border'>E-post</th>
                 <th colSpan={5} className='p-1 border'>Roller</th>
               </tr>
             </thead>
