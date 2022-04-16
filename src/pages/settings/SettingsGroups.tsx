@@ -61,6 +61,7 @@ function SettingsGroups() {
     setSelectedGroup(0)
     setIsGroupSelected(false)
   }
+
   function reloadData () {
     setReload(reload + 1)
   }
@@ -329,3 +330,7 @@ function SettingsGroups() {
 }
 
 export default SettingsGroups
+
+function getSelectedUser() {
+  throw new Error('Function not implemented.')
+}

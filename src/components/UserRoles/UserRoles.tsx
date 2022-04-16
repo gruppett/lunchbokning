@@ -8,16 +8,17 @@ const icons = [
   "local_police",
   "table_restaurant",
   "soup_kitchen",
-  "supervisor_account"
+  "supervisor_account",
+  "person"
 ]
 
 function UserRoles({roles}: Props) {
   let rolesBool: Array<Boolean> = []
 
   if (!Array.isArray(roles)) {
-    rolesBool = new Array(4).fill(false)
+    rolesBool = new Array(5).fill(false)
   } else {
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 5; i++) {
       if ((roles as Array<number>).includes(i+1)) {
         rolesBool.push(true)
       } else {
