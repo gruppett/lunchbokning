@@ -36,12 +36,13 @@ function PersonalBooking() {
     const endDateInput = document.getElementById("endDate");
     console.log(startDate, endDate);
     setStartDate(startDate);
+    console.log(startDateInput);
     if (startDateInput !== null) {
-      startDateInput.outerText = startDate;
+      startDateInput.nodeValue = startDate;
     }
     setEndDate(endDate);
     if (endDateInput !== null) {
-      endDateInput.outerText = endDate;
+      endDateInput.nodeValue = endDate;
     }
   }
 
