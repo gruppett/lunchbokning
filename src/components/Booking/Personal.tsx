@@ -1,6 +1,28 @@
 import React, { useState, useEffect, useContext } from "react";
 import Spinner from "../Spinner/Spinner";
 import { UserContext } from "../App/App";
+import moment from "moment";
+
+interface iFormKeys {
+  [key: string]: {
+    [key: string]: string | undefined;
+  };
+}
+
+interface iForm extends iFormKeys {
+  bookingDates: {
+    weekday: string;
+    startDate: string;
+    endDate: string;
+    period: string;
+    serving: string;
+  };
+}
+
+function formatDate(date: Date) {
+  const dateFormat = "YYYY-MM-DD";
+  return moment(date).format(dateFormat);
+}
 
 function PersonalBooking() {
   const apiUser = useContext(UserContext);
@@ -12,13 +34,50 @@ function PersonalBooking() {
   const [periodsError, setPeriodsError] = useState(false);
 
   const [startDate, setStartDate] = useState(
-    document.getElementById("startDate")?.nodeValue
+    moment(new Date()).format("YYYY-MM-DD")
   );
   const [endDate, setEndDate] = useState(
-    document.getElementById("endDate")?.nodeValue
+    moment(new Date()).format("YYYY-MM-DD")
   );
 
   const [weekdaySelect, setWeekdaySelect] = useState(0);
+
+  const [formData, setFormData] = useState({
+    bookingDates: {
+      weekday: "",
+      startDate: formatDate(new Date()),
+      endDate: "",
+      period: "",
+      serving: "",
+    },
+  } as iForm);
+
+  function formHandleChangeInput(e: React.ChangeEvent<HTMLInputElement>) {
+    const form = e.target.parentElement?.parentElement?.attributes.getNamedItem(
+      "name"
+    )?.value as string;
+    const target = e.target;
+    const value = target.value;
+    const name = target.name;
+    const newFormData = formData;
+    newFormData[form][name] = value;
+    setFormData(newFormData);
+  }
+
+  function formHandleChangeSelect(e: React.ChangeEvent<HTMLSelectElement>) {
+    const form = e.target.parentElement?.parentElement?.attributes.getNamedItem(
+      "name"
+    )?.value as string;
+    const target = e.target;
+    const value = target.value;
+    const name = target.name;
+    const newFormData = formData;
+    newFormData[form][name] = value;
+    setFormData(newFormData);
+    if (name === "period") {
+      setDates(getPeriodDate(value) as any);
+    }
+  }
 
   function getPeriodDate(periodID: string): Array<string> | null {
     let theMFID = parseInt(periodID, 10);
@@ -32,18 +91,13 @@ function PersonalBooking() {
   }
 
   function setDates([startDate, endDate]: Array<string>): void {
-    const startDateInput = document.getElementById("startDate");
-    const endDateInput = document.getElementById("endDate");
-    console.log(startDate, endDate);
     setStartDate(startDate);
-    console.log(startDateInput);
-    if (startDateInput !== null) {
-      startDateInput.nodeValue = startDate;
-    }
     setEndDate(endDate);
-    if (endDateInput !== null) {
-      endDateInput.nodeValue = endDate;
-    }
+    const newForm = formData;
+    const dates = [startDate, endDate];
+    newForm.bookingDates.startDate = dates[0];
+    newForm.bookingDates.endDate = dates[1];
+    setFormData(newForm);
   }
 
   function postBooking(servingID: number): void {
@@ -153,12 +207,18 @@ function PersonalBooking() {
 
   return (
     <>
-      <div>
+      <form name="bookingDates">
         <div className="p-1">
           <label htmlFor="weekday" className="m-1 my-2">
             Veckodag:{" "}
           </label>
-          <select name="weekday" id="weekdaySelect" className="m-1 my-2">
+          <select
+            name="weekday"
+            id="weekdaySelect"
+            className="m-1 my-2"
+            defaultValue={formData.bookingDates.weekday}
+            onChange={formHandleChangeSelect}
+          >
             <option value="0">Alla</option>
             <option value="1">Måndag</option>
             <option value="2">Tisdag</option>
@@ -173,9 +233,8 @@ function PersonalBooking() {
             name="period"
             id="periodSelect"
             className="m-1 my-2"
-            onChange={(e) => {
-              setDates(getPeriodDate(e.target.value as string) as any);
-            }}
+            defaultValue={formData.bookingDates.period}
+            onChange={formHandleChangeSelect}
           >
             {periods[0].periodID !== -1 ? (
               periods.map((period: any) => (
@@ -190,13 +249,34 @@ function PersonalBooking() {
           <label htmlFor="serving" className="m-1 my-2">
             Servering:{" "}
           </label>
-          <select name="serving" id="servingSelect" className="m-1 my-2">
-            <option value="0">Alla</option>
+          <select
+            name="serving"
+            id="servingSelect"
+            className="m-1 my-2"
+            defaultValue={formData.bookingDates.serving}
+            onChange={formHandleChangeSelect}
+          >
+            <option value="1">Servering 1</option>
+            <option value="2">Servering 2</option>
           </select>
         </div>
         <div className="p-1">
-          <input type="date" name="startDate" id="startDate" className="mx-1" />
-          <input type="date" name="endDate" id="endDate" className="mx-1" />
+          <input
+            type="date"
+            name="startDate"
+            id="startDate"
+            className="mx-1"
+            value={formData.bookingDates.startDate.toString()}
+            onChange={formHandleChangeInput}
+          />
+          <input
+            type="date"
+            name="endDate"
+            id="endDate"
+            className="mx-1"
+            value={formData.bookingDates.endDate.toString()}
+            onChange={formHandleChangeInput}
+          />
         </div>
         <div className="p-1">
           <button
@@ -218,7 +298,7 @@ function PersonalBooking() {
             Avboka
           </button>
         </div>
-      </div>
+      </form>
       <hr />
     </>
   );
