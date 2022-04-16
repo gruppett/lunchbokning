@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import Spinner from "../Spinner/Spinner";
 import { UserContext } from "../App/App";
 import moment from "moment";
@@ -39,8 +39,6 @@ function PersonalBooking() {
   const [endDate, setEndDate] = useState(
     moment(new Date()).format("YYYY-MM-DD")
   );
-
-  const [weekdaySelect, setWeekdaySelect] = useState(0);
 
   const [formData, setFormData] = useState({
     bookingDates: {
@@ -90,15 +88,18 @@ function PersonalBooking() {
     return [period.startDate, period.endDate];
   }
 
-  function setDates([startDate, endDate]: Array<string>): void {
-    setStartDate(startDate);
-    setEndDate(endDate);
-    const newForm = formData;
-    const dates = [startDate, endDate];
-    newForm.bookingDates.startDate = dates[0];
-    newForm.bookingDates.endDate = dates[1];
-    setFormData(newForm);
-  }
+  const setDates = useCallback(
+    ([startDate, endDate]: Array<string>): void => {
+      setStartDate(startDate);
+      setEndDate(endDate);
+      const newForm = formData;
+      const dates = [startDate, endDate];
+      newForm.bookingDates.startDate = dates[0];
+      newForm.bookingDates.endDate = dates[1];
+      setFormData(newForm);
+    },
+    [formData]
+  );
 
   function postBooking(servingID: number): void {
     const url = process.env.REACT_APP_API_SERVER + "booking/postBooking.php";
@@ -199,7 +200,7 @@ function PersonalBooking() {
     if (periods[0].periodID === -1) {
       fetchPeriods();
     }
-  }, [periods]);
+  }, [periods, setDates]);
 
   if (periodsLoading || periodsError) {
     return periodsLoading ? <Spinner /> : <script>alert(periodsError)</script>;
