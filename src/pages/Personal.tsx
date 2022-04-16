@@ -1,9 +1,14 @@
-import React from 'react'
+import React from "react";
+import HjortenCalendar from "../components/Calendar/calendar";
+import PersonalBooking from "../components/Booking/Personal";
 
 function Personal() {
   return (
-    <div>Personal</div>
-  )
+    <>
+      <PersonalBooking />
+      <HjortenCalendar view="Personal" />
+    </>
+  );
 }
 
-export default Personal
+export default Personal;
