@@ -42,11 +42,11 @@ function PersonalBooking() {
 
   const [formData, setFormData] = useState({
     bookingDates: {
-      weekday: "",
+      weekday: "0",
       startDate: formatDate(new Date()),
       endDate: "",
       period: "",
-      serving: "",
+      serving: "1",
     },
   } as iForm);
 
@@ -101,17 +101,20 @@ function PersonalBooking() {
     [formData]
   );
 
-  function postBooking(servingID: number): void {
+  function postBooking(): void {
     const url = process.env.REACT_APP_API_SERVER + "booking/postBooking.php";
     const data = {
-      startDate: startDate,
-      endDate: endDate,
+      startDate: formData.bookingDates.startDate,
+      endDate: formData.bookingDates.endDate,
       groupID: 1,
       employeeID: apiUser.employeeID,
       count: 1,
       diet: apiUser.diet,
-      servingID: servingID,
-    };
+      servingID: formData.bookingDates.serving,
+    } as any;
+    if (formData.bookingDates.weekday !== "0") {
+      data.wday = formData.bookingDates.weekday;
+    }
     fetch(url, {
       method: "POST",
       headers: {
@@ -140,13 +143,15 @@ function PersonalBooking() {
 
   function deleteBooking(): void {
     const url = process.env.REACT_APP_API_SERVER + "booking/deleteBooking.php";
-    const data = {
-      startDate: startDate,
-      endDate: endDate,
+    let data = {
+      startDate: formData.bookingDates.startDate,
+      endDate: formData.bookingDates.endDate,
       groupID: 1,
       employeeID: apiUser.employeeID,
-    };
-    console.log(data);
+    } as any;
+    if (formData.bookingDates.weekday !== "0") {
+      data.wday = formData.bookingDates.weekday;
+    }
     fetch(url, {
       method: "POST",
       headers: {
@@ -208,7 +213,12 @@ function PersonalBooking() {
 
   return (
     <>
-      <form name="bookingDates">
+      <form
+        name="bookingDates"
+        onSubmit={(e) => {
+          e.preventDefault();
+        }}
+      >
         <div className="p-1">
           <label htmlFor="weekday" className="m-1 my-2">
             Veckodag:{" "}
@@ -282,18 +292,14 @@ function PersonalBooking() {
         <div className="p-1">
           <button
             className="bg-blue-200 p-1 rounded mx-1"
-            onClick={() => {
-              postBooking(1);
-            }}
+            onClick={postBooking}
             disabled={startDate === null || endDate === null ? true : false}
           >
             Boka
           </button>
           <button
             className="bg-red-200 p-1 rounded mx-1"
-            onClick={() => {
-              deleteBooking();
-            }}
+            onClick={deleteBooking}
             disabled={startDate === null || endDate === null ? true : false}
           >
             Avboka
