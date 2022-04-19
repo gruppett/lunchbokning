@@ -342,7 +342,7 @@ function Overview_popup(props: any) {
             </div>
           ) : null}
           {props.view === "Overview" &&
-          props.group.message !== "Inga primära grupper hittades" ? (
+          props.group.message !== "Inga grupper" ? (
             <div className={"flex p-0.5"}>
               <p className="m-1">{props.group.groupName}:</p>
               <div className="flex flex-col">
