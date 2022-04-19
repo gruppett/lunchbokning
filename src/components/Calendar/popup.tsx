@@ -141,7 +141,7 @@ function Overview_popup(props: any) {
   }
 
   useEffect(() => {
-    if (props.view === "Overview") {
+    if (props.view === "Overview" || props.view === "Personal") {
       if (tileHasBooking(props.booking)) {
         if (typeof getIdFromProp(props.booking).personal !== "object") {
           const url =
@@ -276,7 +276,7 @@ function Overview_popup(props: any) {
         }
       >
         <div className="flex flex-col m-3 w-40">
-          {props.view === "Overview" ? (
+          {props.view === "Overview" || props.view === "Personal" ? (
             <div className={"flex p-0.5"}>
               <p className="p-0.5 m-1">{props.user.mail.split(".")[0]}:</p>
               <div className="flex flex-col w-full">
@@ -341,7 +341,8 @@ function Overview_popup(props: any) {
               </div>
             </div>
           ) : null}
-          {props.view === "Overview" ? (
+          {props.view === "Overview" &&
+          props.group.message !== "Inga primära grupper hittades" ? (
             <div className={"flex p-0.5"}>
               <p className="m-1">{props.group.groupName}:</p>
               <div className="flex flex-col">

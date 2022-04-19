@@ -14,10 +14,10 @@ interface GraphContextInterface {
 }
 
 interface ApiUserContextInterface {
-  employeeID: number,
-  employeeEmail: string,
-  diet: number,
-  roles: number[]
+  employeeID: number;
+  employeeEmail: string;
+  diet: number;
+  roles: number[];
 }
 
 interface UserInterface {
@@ -34,10 +34,14 @@ interface UserInterface {
   userPrincipalName: string;
 }
 
-const allowedGroups = ["M365-DAT19Projektgrupp1", "ayg-personal-s1", "ayg-larare-s1"]
+const allowedGroups = [
+  "M365-DAT19Projektgrupp1",
+  "ayg-personal-s1",
+  "ayg-larare-s1",
+];
 
 export const GraphContext = createContext({} as GraphContextInterface);
-export const UserContext = createContext({} as ApiUserContextInterface)
+export const UserContext = createContext({} as ApiUserContextInterface);
 
 function handleLogout(instance: any) {
   instance.logoutRedirect().catch((e: any) => {
@@ -50,8 +54,8 @@ function App() {
   const { instance, accounts } = useMsal();
   const [graphData, setGraphData] = useState({} as GraphContextInterface);
   const [isLoading, setIsLoading] = useState(true);
-  const [isUnprivileged, setIsUnprivileged] = useState(false)
-  const [userData, setUserData] = useState({} as ApiUserContextInterface)
+  const [isUnprivileged, setIsUnprivileged] = useState(false);
+  const [userData, setUserData] = useState({} as ApiUserContextInterface);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -86,15 +90,15 @@ function App() {
       graphData.groups?.value.forEach((g: any) => {
         groups.push(g.displayName);
       });
-      let isOk = false
-      allowedGroups.forEach(element => {
+      let isOk = false;
+      allowedGroups.forEach((element) => {
         if (groups.includes(element)) {
-          isOk = true
+          isOk = true;
         }
       });
       if (!isOk) {
-        setIsUnprivileged(true)
-        return
+        setIsUnprivileged(true);
+        return;
       }
 
       const data = {
@@ -111,11 +115,9 @@ function App() {
         body: JSON.stringify(data), // body data type must match "Content-Type" header
       })
         .then((response) => response.json())
-        .then(data => setUserData(data));
+        .then((data) => setUserData(data));
     }
   }, [graphData]);
-
-  
 
   useEffect(() => {
     if (graphData?.user?.mail !== undefined) {
@@ -125,13 +127,15 @@ function App() {
 
   if (!isAuthenticated) return <SignIn />;
 
-  if(isUnprivileged) return (<div className="flex justify-center gap-3 items-center h-full flex-col">
-    <h1>Du har inte tillgång till lunchbokningen</h1>
-    <button onClick={() => handleLogout(instance)}></button>
-  </div>);
+  if (isUnprivileged)
+    return (
+      <div className="flex justify-center gap-3 items-center h-full flex-col">
+        <h1>Du har inte tillgång till lunchbokningen</h1>
+        <button onClick={() => handleLogout(instance)}></button>
+      </div>
+    );
 
   if (isLoading) {
-
     return (
       <div className="h-screen">
         <Spinner />
