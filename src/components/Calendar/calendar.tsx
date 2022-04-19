@@ -27,9 +27,7 @@ function HjortenCalendar(props: any) {
 
   const [bookingID, setBookingID] = useState(null as any);
 
-  const [groupData, setGroupData] = useState({
-    message: "Inga grupper",
-  } as any);
+  const [groupData, setGroupData] = useState(null as any);
   const [groupLoading, setGroupLoading] = useState(true);
   const [groupError, setGroupError] = useState(false);
 
@@ -170,6 +168,7 @@ function HjortenCalendar(props: any) {
               return error;
             })
             .then((error) => {
+              setGroupData({ message: "Inga grupper" });
               setGroupError(error);
             })
             .finally(() => {

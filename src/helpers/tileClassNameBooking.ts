@@ -15,7 +15,6 @@ export function BookingClassNames(
           return [booking.date, booking.active];
         })
         .find((x: any) => x[0] === moment(date).format("YYYY-MM-DD"))[1]
-        .toString() === "1"
         ? "personal_booking_nr" +
             personalData
               .map((booking: any) => {
