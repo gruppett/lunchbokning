@@ -71,8 +71,22 @@ function SettingsUsers() {
     return unassignedRoles;
   }
 
-  async function rolesDeleteHandleSubmit(e: any) {
-    e.preventDefault();
+  function getAvailableGroups () {
+    if (!getSelectedUser().groups) {
+      return groupsData
+    }
+    let availableGroups: any = []
+
+    groupsData.forEach((group: { handlers: any[] }) => {
+      if (!group.handlers.some((x: { id: number }) => x.id === selectedUser)) {
+        availableGroups.push(group)
+      }
+    });
+    return availableGroups
+  }
+
+  async function rolesDeleteHandleSubmit (e: any) {
+    e.preventDefault()
     const data = {
       employeeID: selectedUser,
       roleID: e.target[0].value,
@@ -168,15 +182,8 @@ function SettingsUsers() {
     return <Spinner />;
   }
 
-  /*
-
-  TODO: Remove entries in groupsData if they are in usersData.groups
-
   console.log(groupsData)
-  console.log(usersData)
 
-  */
-  console.log(groupsData);
   return (
     <div className="flex gap-3 flex-col p-3 bg-slate-50 sm:w-max">
       <div className="flex gap-3 items-start sm:flex-wrap flex-col sm:flex-row">
@@ -307,12 +314,9 @@ function SettingsUsers() {
                 className="bg-white p-1"
               >
                 <option value="">Välj Grupp</option>
-                {getSelectedUser().groups &&
-                  getSelectedUser().groups.map((i: any, key: any) => (
-                    <option key={key} value={i.groupID}>
-                      {i.name}
-                    </option>
-                  ))}
+                {getAvailableGroups().map((i: any, key: any) => (
+                  <option key={key} value={i.groupID}>{i.name}</option>
+                ))}
               </select>
               <button className="px-3 py-1 w-min whitespace-nowrap bg-blue-300">
                 Lägg till
