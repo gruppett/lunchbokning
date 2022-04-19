@@ -5,6 +5,7 @@ import { Link, Location, Route, Routes, useLocation } from "react-router-dom";
 import { useMsal } from "@azure/msal-react";
 import Overview from "../../pages/Overview";
 import Personal from "../../pages/Personal";
+import PersonalSettings from "../../pages/PersonalSettings";
 import Groups from "../../pages/Groups";
 import ExternalGroups from "../../pages/ExternalGroups";
 import Compilation from "../../pages/Compilation";
@@ -104,9 +105,9 @@ function Page() {
                 menu
               </span>
             </button>
-            <span className="flex-grow text-right sm:text-left">
+            <Link to="personlig/installningar" className="grow-0 text-right sm:text-left">
               {user?.mail}
-            </span>
+            </Link>
             <button
               className="hidden sm:inline-block"
               onClick={(e) => handleLogout(instance, e)}
@@ -118,6 +119,7 @@ function Page() {
             <Routes>
               <Route path="/" element={<Overview />} />
               <Route path="personlig" element={<Personal />} />
+              <Route path="personlig/installningar" element={<PersonalSettings />} />
               {isAllowed([4]) ?
               <Route path="grupper" element={<Groups />} />
               :<></>
