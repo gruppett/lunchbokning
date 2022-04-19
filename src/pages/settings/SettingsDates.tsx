@@ -1,14 +1,10 @@
 import React, {useState, useEffect, Key, useCallback} from 'react'
 import Spinner from '../../components/Spinner/Spinner'
 import moment from 'moment'
+import iStringKeys from '../../interfaces/iStringKeys'
 
-interface iFormKeys {
-  [key: string]: {
-    [key: string]: string | undefined
-  }
-}
 
-interface iForm extends iFormKeys {
+interface iForm extends iStringKeys {
   period: {
     name: string,
     endDate: string,
