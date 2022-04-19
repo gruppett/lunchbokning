@@ -211,6 +211,10 @@ function PersonalBooking() {
     return <Spinner />;
   }
 
+  if (periodsError) {
+    console.log(periodsError);
+  }
+
   return (
     <>
       <form
