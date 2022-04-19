@@ -44,7 +44,7 @@ function PersonalBooking() {
     bookingDates: {
       weekday: "0",
       startDate: formatDate(new Date()),
-      endDate: "",
+      endDate: formatDate(new Date()),
       period: "",
       serving: "1",
     },
@@ -207,8 +207,8 @@ function PersonalBooking() {
     }
   }, [periods, setDates]);
 
-  if (periodsLoading || periodsError) {
-    return periodsLoading ? <Spinner /> : <script>alert(periodsError)</script>;
+  if (periodsLoading) {
+    return <Spinner />;
   }
 
   return (
