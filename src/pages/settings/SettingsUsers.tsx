@@ -72,6 +72,20 @@ function SettingsUsers() {
     return unassignedRoles
   }
 
+  function getAvailableGroups () {
+    if (!getSelectedUser().groups) {
+      return groupsData
+    }
+    let availableGroups: any = []
+
+    groupsData.forEach((group: { handlers: any[] }) => {
+      if (!group.handlers.some((x: { id: number }) => x.id === selectedUser)) {
+        availableGroups.push(group)
+      }
+    });
+    return availableGroups
+  }
+
   async function rolesDeleteHandleSubmit (e: any) {
     e.preventDefault()
     const data = {
@@ -160,15 +174,7 @@ function SettingsUsers() {
     return <Spinner />
   }
 
-
-  /*
-
-  TODO: Remove entries in groupsData if they are in usersData.groups
-
   console.log(groupsData)
-  console.log(usersData)
-
-  */
 
   return (
     <div className='flex gap-3 flex-col p-3 bg-slate-50 sm:w-max'>
@@ -264,7 +270,7 @@ function SettingsUsers() {
               <h2>Lägg till</h2>
               <select id='handlerName' name='handerName' className="bg-white p-1">
                 <option value="">Välj Grupp</option>
-                {getSelectedUser().groups && getSelectedUser().groups.map((i: any, key: any) => (
+                {getAvailableGroups().map((i: any, key: any) => (
                   <option key={key} value={i.groupID}>{i.name}</option>
                 ))}
               </select>
