@@ -84,7 +84,7 @@ function SettingsDates() {
     setLoadStatus(status)
   }, [loadStatus])
 
-  function formHandleChange (e: React.ChangeEvent<HTMLInputElement>) {
+  function formHandleChange (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
     const form = e.target.parentElement?.attributes.getNamedItem('name')?.value as string
     const target = e.target
     const value = target.value

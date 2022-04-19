@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Spinner from "../../components/Spinner/Spinner";
 import UserRoles from "../../components/UserRoles/UserRoles";
+import iStringKeys from "../../interfaces/iStringKeys";
 
 const roles = [
   {
@@ -30,6 +31,13 @@ const roles = [
   },
 ];
 
+interface iForm extends iStringKeys {
+  addGroup: {
+    groupId: string;
+  }
+}
+
+
 function SettingsUsers() {
   const [selectedUser, setSelectedUser] = useState(-1);
   const [isUserSelected, setIsUserSelected] = useState(false);
@@ -37,6 +45,24 @@ function SettingsUsers() {
   const [groupsData, setGroupsData] = useState([{} as any] as any);
   const [isLoaded, setIsLoaded] = useState(false);
   const [reload, setReload] = useState(0);
+  const [formData, setFormData] = useState({
+    addGroup: {
+      groupId: "",
+    },
+  } as iForm);
+
+
+  function formHandleChange (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
+    const form = e.target.parentElement?.attributes.getNamedItem('name')?.value as string
+    const target = e.target
+    const value = target.value
+    const name = target.name
+    const newFormData = formData
+    newFormData[form][name] = value
+    console.log(newFormData)
+    setFormData(newFormData)
+    reloadData()
+  }
 
   function reloadData() {
     setReload(reload + 1);
@@ -124,6 +150,30 @@ function SettingsUsers() {
     reloadData();
   }
 
+  async function addGroupSubmit(event: any) {
+    try {
+      event.preventDefault();
+      const data = {
+        employeeID: selectedUser,
+        groupID: formData.addGroup.groupId
+      }
+
+      const response = await fetch(
+        process.env.REACT_APP_API_SERVER + "handler/postHandler.php", {
+          method: "POST",
+          body: JSON.stringify(data),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log(response);
+      reloadData();
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   useEffect(() => {
     fetch(process.env.REACT_APP_API_SERVER + "user/getUsers.php", {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
@@ -181,8 +231,6 @@ function SettingsUsers() {
   if (!isLoaded) {
     return <Spinner />;
   }
-
-  console.log(groupsData)
 
   return (
     <div className="flex gap-3 flex-col p-3 bg-slate-50 sm:w-max">
@@ -306,22 +354,22 @@ function SettingsUsers() {
                   ))}
               </tbody>
             </table>
-            <div className="flex flex-col gap-1">
+            <form className="flex flex-col gap-1" name="addGroup" onSubmit={addGroupSubmit}>
               <h2>Lägg till</h2>
               <select
-                id="handlerName"
-                name="handerName"
+                id="addGroupGroupId"
+                name="groupId"
                 className="bg-white p-1"
+                onChange={formHandleChange}
+                required
               >
                 <option value="">Välj Grupp</option>
                 {getAvailableGroups().map((i: any, key: any) => (
                   <option key={key} value={i.groupID}>{i.name}</option>
                 ))}
               </select>
-              <button className="px-3 py-1 w-min whitespace-nowrap bg-blue-300">
-                Lägg till
-              </button>
-            </div>
+              <input type="submit" className="px-3 py-1 w-min whitespace-nowrap bg-blue-300" value="Lägg till"></input>
+            </form>
           </div>
         </>
       ) : (
