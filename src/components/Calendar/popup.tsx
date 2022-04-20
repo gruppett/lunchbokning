@@ -267,7 +267,7 @@ function Overview_popup(props: any) {
       </div>
     );
   }
-
+  console.log(props.group);
   return (
     <>
       <div
@@ -336,7 +336,7 @@ function Overview_popup(props: any) {
             </div>
           ) : null}
           {props.view === "Overview" &&
-          props.group.message !== "Inga grupper" ? (
+          !props.group.hasOwnProperty("message") ? (
             <div className={"flex p-0.5"}>
               <p className="m-1">{props.group.groupName}:</p>
               <div className="flex flex-col">

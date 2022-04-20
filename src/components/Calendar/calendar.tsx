@@ -168,7 +168,9 @@ function HjortenCalendar(props: any) {
               return error;
             })
             .then((error) => {
-              setGroupData({ message: "Inga grupper" });
+              if (error) {
+                setGroupData({ message: "Inga grupper" });
+              }
               setGroupError(error);
             })
             .finally(() => {
