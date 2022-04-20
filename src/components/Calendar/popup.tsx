@@ -18,7 +18,7 @@ function Overview_popup(props: any) {
   const [servingSelectGroup, setServingSelectGroup] = useState(1);
   const [editBooking, setEditBooking] = useState(false);
   const [editBookingGroup, setEditBookingGroup] = useState(false);
-  const [groupCount, setGroupCount] = useState(1);
+  const [groupCount, setGroupCount] = useState(props.group.count);
 
   function postBooking(
     date: String,
@@ -267,7 +267,7 @@ function Overview_popup(props: any) {
       </div>
     );
   }
-  console.log(props.group);
+
   return (
     <>
       <div
