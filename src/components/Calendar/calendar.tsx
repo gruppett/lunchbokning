@@ -168,6 +168,7 @@ function HjortenCalendar(props: any) {
               return error;
             })
             .then((error) => {
+              setGroupData({ message: "Inga grupper" });
               setGroupError(error);
             })
             .finally(() => {
@@ -261,7 +262,8 @@ function HjortenCalendar(props: any) {
         processingError = "Group booking error";
         break;
     }
-    if (x !== undefined && x !== false) console.log(processingError + ": " + x);
+    if (x !== undefined && x !== false)
+      console.log(processingError + ": " + x.error);
   });
 
   return (
