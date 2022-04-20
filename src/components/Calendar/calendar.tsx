@@ -141,7 +141,8 @@ function HjortenCalendar(props: any) {
   }, [user.mail, bookingID]);
 
   useEffect(() => {
-    if (groupData !== null) {
+    if (groupData !== undefined && groupData !== null) {
+      console.log(groupData);
       if (!groupData.hasOwnProperty("message")) {
         const url =
           process.env.REACT_APP_API_SERVER + "booking/getBookings.php";

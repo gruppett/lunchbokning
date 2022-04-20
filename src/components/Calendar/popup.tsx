@@ -18,7 +18,9 @@ function Overview_popup(props: any) {
   const [servingSelectGroup, setServingSelectGroup] = useState(1);
   const [editBooking, setEditBooking] = useState(false);
   const [editBookingGroup, setEditBookingGroup] = useState(false);
-  const [groupCount, setGroupCount] = useState(props.group.count);
+  const [groupCount, setGroupCount] = useState(
+    props.group !== undefined && props.group !== null ? props.group.count : 0
+  );
 
   function postBooking(
     date: String,
@@ -336,95 +338,102 @@ function Overview_popup(props: any) {
             </div>
           ) : null}
           {props.view === "Overview" &&
-          !props.group.hasOwnProperty("message") ? (
-            <div className={"flex p-0.5"}>
-              <p className="m-1">{props.group.name}:</p>
-              <div className="flex flex-col">
-                <input
-                  type="number"
-                  id="groupCount"
-                  min="1"
-                  max="9999999999"
-                  style={{ maxWidth: "-webkit-fill-available" }}
-                  className="p-0.5 rounded m-1 text-right w-full box-border"
-                  defaultValue={
-                    groupBookingData === null
-                      ? props.group.count
-                      : groupBookingData.count
-                  }
-                  onChange={(e) => {
-                    if (e.target.value.length > 10) {
-                      e.target.value = e.target.value.slice(0, 10);
-                      alert("Max antal personer är 9999999999");
+          props.group !== undefined &&
+          props.group !== null ? (
+            !props.group.hasOwnProperty("message") ? (
+              <div className={"flex p-0.5"}>
+                <p className="m-1">{props.group.name}:</p>
+                <div className="flex flex-col">
+                  <input
+                    type="number"
+                    id="groupCount"
+                    min="1"
+                    max="9999999999"
+                    style={{ maxWidth: "-webkit-fill-available" }}
+                    className="p-0.5 rounded m-1 text-right w-full box-border"
+                    defaultValue={
+                      groupBookingData === null
+                        ? props.group.count
+                        : groupBookingData.count
                     }
-                    if (groupBookingData !== null) {
-                      setEditBookingGroup(
-                        (e.target.value as any) !== servingSelect ? true : false
-                      );
+                    onChange={(e) => {
+                      if (e.target.value.length > 10) {
+                        e.target.value = e.target.value.slice(0, 10);
+                        alert("Max antal personer är 9999999999");
+                      }
+                      if (groupBookingData !== null) {
+                        setEditBookingGroup(
+                          (e.target.value as any) !== servingSelect
+                            ? true
+                            : false
+                        );
+                      }
+                      setGroupCount(e.target.value as any);
+                    }}
+                  />
+                  <select
+                    id="servingSelect"
+                    className="p-0.5 m-1 bg-white rounded text-right"
+                    onChange={(e) => {
+                      if (groupBookingData !== null) {
+                        setEditBookingGroup(
+                          (e.target.value as any) !== servingSelect
+                            ? true
+                            : false
+                        );
+                      }
+                      setServingSelectGroup(e.target.value as any);
+                    }}
+                    defaultValue={
+                      groupBookingData !== null
+                        ? groupBookingData.servingID
+                        : servingSelectGroup
                     }
-                    setGroupCount(e.target.value as any);
-                  }}
-                />
-                <select
-                  id="servingSelect"
-                  className="p-0.5 m-1 bg-white rounded text-right"
-                  onChange={(e) => {
-                    if (groupBookingData !== null) {
-                      setEditBookingGroup(
-                        (e.target.value as any) !== servingSelect ? true : false
-                      );
-                    }
-                    setServingSelectGroup(e.target.value as any);
-                  }}
-                  defaultValue={
-                    groupBookingData !== null
-                      ? groupBookingData.servingID
-                      : servingSelectGroup
-                  }
-                >
-                  <option value="1">10:45</option>
-                  <option value="2">11:40</option>
-                </select>
-                <button
-                  className=" p-0.5 m-1 bg-white rounded"
-                  onClick={() => {
-                    if (editBookingGroup) {
-                      updateBooking(
-                        getIdFromProp(props.booking).group as Number,
-                        moment(props.datetime).format("YYYY-MM-DD"),
-                        servingSelectGroup,
-                        props.appUser.id,
-                        props.group.id,
-                        groupCount,
-                        props.group.diet
-                      );
-                    } else if (groupBookingData === null) {
-                      postBooking(
-                        moment(props.datetime).format("YYYY-MM-DD"),
-                        servingSelectGroup,
-                        props.appUser.id,
-                        props.group.id,
-                        groupCount,
-                        props.group.diet
-                      );
-                    } else if (groupBookingData) {
-                      deleteBooking(
-                        getIdFromProp(props.booking).group as Number
-                      );
-                    }
-                    unmountPopup();
-                  }}
-                >
-                  {editBookingGroup
-                    ? "Ändra"
-                    : groupBookingData === null
-                    ? "Boka"
-                    : !groupBookingData
-                    ? "Boka"
-                    : "Avboka"}
-                </button>
+                  >
+                    <option value="1">10:45</option>
+                    <option value="2">11:40</option>
+                  </select>
+                  <button
+                    className=" p-0.5 m-1 bg-white rounded"
+                    onClick={() => {
+                      if (editBookingGroup) {
+                        updateBooking(
+                          getIdFromProp(props.booking).group as Number,
+                          moment(props.datetime).format("YYYY-MM-DD"),
+                          servingSelectGroup,
+                          props.appUser.id,
+                          props.group.id,
+                          groupCount,
+                          props.group.diet
+                        );
+                      } else if (groupBookingData === null) {
+                        postBooking(
+                          moment(props.datetime).format("YYYY-MM-DD"),
+                          servingSelectGroup,
+                          props.appUser.id,
+                          props.group.id,
+                          groupCount,
+                          props.group.diet
+                        );
+                      } else if (groupBookingData) {
+                        deleteBooking(
+                          getIdFromProp(props.booking).group as Number
+                        );
+                      }
+                      unmountPopup();
+                    }}
+                  >
+                    {editBookingGroup
+                      ? "Ändra"
+                      : groupBookingData === null
+                      ? "Boka"
+                      : !groupBookingData
+                      ? "Boka"
+                      : "Avboka"}
+                  </button>
+                </div>
               </div>
-            </div>
+            ) : null
           ) : null}
         </div>
         <span
