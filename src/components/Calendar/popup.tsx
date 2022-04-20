@@ -316,13 +316,7 @@ function Overview_popup(props: any) {
                         servingSelect,
                         props.appUser.id
                       );
-                    } else if (!personalData.active) {
-                      postBooking(
-                        moment(props.datetime).format("YYYY-MM-DD"),
-                        servingSelect,
-                        props.appUser.id
-                      );
-                    } else if (personalData.active) {
+                    } else if (personalData) {
                       deleteBooking(
                         getIdFromProp(props.booking).personal as Number
                       );
@@ -334,7 +328,7 @@ function Overview_popup(props: any) {
                     ? "Ändra"
                     : personalData === null
                     ? "Boka"
-                    : !personalData.active
+                    : !personalData
                     ? "Boka"
                     : "Avboka"}
                 </button>
@@ -413,16 +407,7 @@ function Overview_popup(props: any) {
                         groupCount,
                         props.group.diet
                       );
-                    } else if (!groupBookingData.active) {
-                      postBooking(
-                        moment(props.datetime).format("YYYY-MM-DD"),
-                        servingSelectGroup,
-                        props.appUser.id,
-                        props.group.groupID,
-                        groupCount,
-                        props.group.diet
-                      );
-                    } else if (groupBookingData.active) {
+                    } else if (groupBookingData) {
                       deleteBooking(
                         getIdFromProp(props.booking).group as Number
                       );
@@ -434,7 +419,7 @@ function Overview_popup(props: any) {
                     ? "Ändra"
                     : groupBookingData === null
                     ? "Boka"
-                    : !groupBookingData.active
+                    : !groupBookingData
                     ? "Boka"
                     : "Avboka"}
                 </button>
