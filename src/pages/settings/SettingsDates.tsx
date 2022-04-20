@@ -13,23 +13,57 @@ interface iForm extends iStringKeys {
   excluded: {
     name: string,
     date: string,
+  },
+  serving: {
+    name: string,
+    startTime: string,
+    endTime: string,
   }
 }
+
+interface iSelected{
+  period: number,
+  excluded: number,
+  serving: number
+}
+
+interface iFetched {
+  serving: any,
+  excluded: any,
+  period: any
+}
+
+interface iFetchHelp {
+  name: keyof iFetched,
+  url: string
+}
+
+const fetchHelp = [
+  {
+    name: 'period',
+    url: 'period/getPeriods.php',
+  } as iFetchHelp,
+  {
+    name: 'excluded',
+    url: 'date/getExcludes.php',
+  } as iFetchHelp,
+  {
+    name: 'serving',
+    url: 'serving/getServings.php',
+  } as iFetchHelp
+]
 
 function formatDate(date: Date) {
   const dateFormat = "YYYY-MM-DD"
   return moment(date).format(dateFormat)
 }
+function formatTime(date: Date){
+  const timeFormat = "HH:mm:ss"
+  return moment(date).startOf("minute").format(timeFormat)
+}
 
 function SettingsDates() {
-  const [periodData, setPeriodData] = useState([{} as any] as any)
-  const [excludedData, setExcludedData] = useState([{} as any] as any)
-  const [selectedPeriod, setSelectedPeriod] = useState(-1)
-  const [loadStatus, setLoadStatus] = useState([1, 2])
-  const [isLoaded, setIsLoaded] = useState(false)
-  const [isPeriodSelected, setIsPeriodSelected] = useState(false)
-  const [selectedExcluded, setSelectedExcluded] = useState(-1)
-  const [isExcludedSelected, setIsExcludedSelected] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [formData, setFormData] = useState({
     period: {
       name: '',
@@ -40,49 +74,84 @@ function SettingsDates() {
       name: '',
       date: formatDate(new Date()),
     },
-  } as iForm)
-  const [reload, setReload] = useState(0)
-
-  function selectPeriod (id: number) {
-    const newForm  = formData
-    const period = periodData.find((x: { periodID: number }) => x.periodID === id)
-    newForm.period.name = period.periodName
-    newForm.period.startDate = period.startDate
-    newForm.period.endDate = period.endDate
-    setFormData(newForm)
-    setSelectedPeriod(id)
-    setIsPeriodSelected(true)
-  }
-  function getSelectedPeriod () {
-    return periodData.find((x: { periodID: number }) => x.periodID === selectedPeriod)
-  }
-  function getSelectedExcluded () {
-    return excludedData.find((x: { id: number }) => x.id === selectedExcluded)
-  }
-
-  function selectExcluded (id: number) {
-    const newForm  = formData
-    const excluded = excludedData.find((x: { id: number }) => x.id === id)
-    newForm.excluded.name = excluded.name
-    newForm.excluded.date = excluded.date
-    setFormData(newForm)
-    setSelectedExcluded(id)
-    setIsExcludedSelected(true)
-  }
-
-  function reloadData () {
-    setReload(reload + 1)
-  }
-
-  const sectionLoaded = useCallback(() => {
-  
-    let status = loadStatus
-    status[0] ++
-    if (status[0] === status[1]) {
-      setIsLoaded(true)
+    serving: {
+      name: '',
+      startTime: formatTime(new Date()),
+      endTime: formatTime(new Date()),
     }
-    setLoadStatus(status)
-  }, [loadStatus])
+  } as iForm)
+  const [selected, setSelected] = useState({
+    period: -1,
+    excluded: -1,
+    serving: -1
+  } as iSelected)
+  const [fetchedData, setFetchedData] = useState({} as iFetched)
+  const [refetch, setRefetch] = useState(0)
+
+  function triggerRefetch() {
+    setRefetch(refetch + 1)
+  }
+
+  function isSelected<K extends keyof typeof selected>(key: K) {
+    return selected[key] > 0 ? true : false
+  }
+  function getSelected<K extends keyof typeof fetchedData>(key: K) {
+    switch (key) {
+      case "period":
+        return fetchedData.period.find((x: { periodID: number }) => x.periodID === selected.period)
+      case "excluded":
+        return fetchedData.excluded.find((x: { id: number }) => x.id === selected.excluded)
+      case "serving":
+        return fetchedData.serving.find((x: { servingID: number }) => x.servingID === selected.serving)
+    }
+  }
+  function select<K extends keyof typeof selected>(key: K, id: number) {
+    const newSelected = selected
+    newSelected[key] = id
+    const newForm: any = formData
+    const selectedData = getSelected(key)
+    switch (key) {
+      case 'period':
+        newForm[key].name = selectedData.periodName
+        newForm[key].startDate = selectedData.startDate
+        newForm[key].endDate = selectedData.endDate
+        break
+      case "excluded":
+        newForm[key].name = selectedData.name
+        newForm[key].date = selectedData.date
+        break
+      case "serving":
+        newForm[key].name = selectedData.servingName
+        newForm[key].startTime = selectedData.startTime
+        newForm[key].endTime = selectedData.endTime
+        break
+    }
+    setFormData({...newForm})
+    setSelected({...newSelected})
+  }
+  function deselect<K extends keyof typeof selected>(key:K) {
+    const newSelected = selected
+    newSelected[key] = -1
+    const newForm: any = formData
+    switch (key) {
+      case 'period':
+        newForm[key].name = ''
+        newForm[key].startDate = formatDate(new Date())
+        newForm[key].endDate = formatDate(new Date())
+        break
+      case "excluded":
+        newForm[key].name = ''
+        newForm[key].date = formatDate(new Date())
+        break
+      case "serving":
+        newForm[key].name = ''
+        newForm[key].startTime = formatTime(new Date())
+        newForm[key].endTime = formatTime(new Date())
+        break
+    }
+    setFormData({...newForm})
+    setSelected({...newSelected})
+  }
 
   function formHandleChange (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
     const form = e.target.parentElement?.attributes.getNamedItem('name')?.value as string
@@ -91,19 +160,14 @@ function SettingsDates() {
     const name = target.name
     const newFormData = formData
     newFormData[form][name] = value
-    setFormData(newFormData)
-    reloadData()
+    setFormData({...newFormData})
   }
 
   async function periodHandleSubmit (e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    const data = {
-      name: formData.period.name,
-      endDate: formData.period.endDate,
-      startDate: formData.period.startDate,
-    }
+    const data:any = formData.period
 
-    if (selectedPeriod === -1) {
+    if (!isSelected('period')) {
       const response = await fetch(process.env.REACT_APP_API_SERVER + "period/postPeriod.php", {
         method: "POST",
         body: JSON.stringify(data),
@@ -111,60 +175,75 @@ function SettingsDates() {
           "Content-Type": "application/json"
         }})
       console.log(response)
-      reloadData()
+      triggerRefetch()
       return
     }
-    const editData = {
-      name: formData.period.name,
-      endDate: formData.period.endDate,
-      startDate: formData.period.startDate,
-      periodID: selectedPeriod
-    }
+    data.periodID = selected.period
     const response = await fetch(process.env.REACT_APP_API_SERVER + "period/updatePeriod.php", {
-      method: "POST",
-      body: JSON.stringify(editData),
-      headers: {
-        "Content-Type": "application/json"
-      }})
-    console.log(response)
-    reloadData()
-  }
-
-  async function excludedHandleSubmit (e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    const data = {
-      name: formData.excluded.name,
-      date: formData.excluded.date,
-    }
-    if (selectedExcluded === -1) {
-    const response = await fetch(process.env.REACT_APP_API_SERVER + "date/postExclude.php", {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
         "Content-Type": "application/json"
       }})
     console.log(response)
-    reloadData()
-    return
+    triggerRefetch()
+  }
+
+  async function excludedHandleSubmit (e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    const data:any = formData.excluded
+    if (!isSelected('excluded')) {
+      const response = await fetch(process.env.REACT_APP_API_SERVER + "date/postExclude.php", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json"
+        }})
+      console.log(response)
+      triggerRefetch()
+      return
     }
-    const editData = {
-      name: formData.excluded.name,
-      date: formData.excluded.date,
-      id: selectedExcluded
-    }
+    data.id = selected.excluded
     const response = await fetch(process.env.REACT_APP_API_SERVER + "period/updatePeriod.php", {
       method: "POST",
-      body: JSON.stringify(editData),
+      body: JSON.stringify(data),
       headers: {
         "Content-Type": "application/json"
       }})
     console.log(response)
-    reloadData()
+    triggerRefetch()
+  }
+
+  function servingHandleSubmit (e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    const data:any = formData.serving
+    data.startTime = moment(data.startTime, "HH:mm").format("HH:mm:ss")
+    data.endTime = moment(data.endTime, "HH:mm").format("HH:mm:ss")
+    if (!isSelected('serving')) {
+      const response = fetch(process.env.REACT_APP_API_SERVER + "serving/postServing.php", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json"
+        }})
+      console.log(response)
+      triggerRefetch()
+      return
+    }
+    data.id = selected.serving
+    const response = fetch(process.env.REACT_APP_API_SERVER + "serving/updateServing.php", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json"
+      }})
+    console.log(response)
+    triggerRefetch()
   }
 
   function deleteExcluded () {
     const data = {
-      id: selectedExcluded
+      id: selected.excluded
     }
     const response = fetch(process.env.REACT_APP_API_SERVER + "date/deleteExclude.php", {
       method: "POST",
@@ -173,13 +252,15 @@ function SettingsDates() {
         "Content-Type": "application/json"
       }})
     console.log(response)
-    deselectExcluded()
-    reloadData()
+    deselect('excluded')
+    triggerRefetch()
   }
+
   function deletePeriod () {
     const data = {
-      periodID: selectedPeriod
+      periodID: selected.period
     }
+    try {
     const response = fetch(process.env.REACT_APP_API_SERVER + "period/deletePeriod.php", {
       method: "POST",
       body: JSON.stringify(data),
@@ -187,85 +268,62 @@ function SettingsDates() {
         "Content-Type": "application/json"
       }})
     console.log(response)
-    deselectPeriod()
-    reloadData()
+    } catch (error) {
+      console.log(error)
+    }
+    deselect("period")
+    triggerRefetch()
   }
 
-  function deselectExcluded () {
-    const newForm = formData
-    newForm.excluded.name = ''
-    newForm.excluded.date = ''
-    setFormData(newForm)
-    setSelectedExcluded(-1)
-    setIsExcludedSelected(false)
-  }
-
-  function deselectPeriod () {
-    const newForm = formData
-    newForm.period.name = ''
-    newForm.period.startDate = ''
-    newForm.period.endDate = ''
-    setFormData(newForm)
-    setSelectedPeriod(-1)
-    setIsPeriodSelected(false)
+  function deleteServing () {
+    const data = {
+      id: selected.serving
+    }
+    try {
+      const repsonse = fetch(process.env.REACT_APP_API_SERVER + "serving/deleteServing.php", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json"
+        }})
+      console.log(repsonse)
+      } catch (error) {
+        console.log(error)
+      }
+    deselect("serving")
+    triggerRefetch()
   }
 
   useEffect(() => {
-    fetch(process.env.REACT_APP_API_SERVER + "period/getPeriods.php", {
-      method: "GET", // *GET, POST, PUT, DELETE, etc.
-      mode: "cors", // no-cors, *cors, same-origin
-      headers: {
-        "Content-Type": "application/json",
-        // 'Content-Type': 'application/x-www-form-urlencoded',
+    (async () => {
+      try {
+        setLoading(true)
+        const results = await Promise.all(fetchHelp.map(i => {
+          return fetch(process.env.REACT_APP_API_SERVER + i.url)
+        }))
+        const data = await Promise.all(results.map((i) => {
+          if (i.ok) {
+            return i.json()
+          }
+          return null
+        }))
+        const newFetchedData = fetchedData
+        data.map((i, key) => {
+          newFetchedData[fetchHelp[key].name] = i
+        })
+        setFetchedData(newFetchedData)
+      } catch (error) {
+        console.log(error)
+      } finally {
+        setLoading(false)
       }
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok.")
-        }
-        return response.json()
-      })
-      .then(data => {
-        setPeriodData(data)
-        sectionLoaded()
-      })
-      .catch((Error) => {
-        console.log(Error)
-        setPeriodData(false)
-        sectionLoaded()
-      })
-  }, [sectionLoaded, reload])
-
-  useEffect(() => {
-    fetch(process.env.REACT_APP_API_SERVER + "date/getExcludes.php", {
-      method: "GET", // *GET, POST, PUT, DELETE, etc.
-      mode: "cors", // no-cors, *cors, same-origin
-      headers: {
-        "Content-Type": "application/json",
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      }
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok.")
-        }
-        return response.json()
-      })
-      .then(data => {
-        setExcludedData(data)
-        sectionLoaded()
-      })
-      .catch((Error) => {
-        console.log(Error)
-        setExcludedData(undefined)
-        sectionLoaded()
-      })
-  }, [sectionLoaded, reload])
+    })()
+  }, [refetch])
   
-  if (!isLoaded) {
+  if (loading) {
     return <Spinner />
   }
-
+  
   return (
     <div className="flex gap-3 p-3 bg-slate-50 sm:w-max flex-col">
       <div className=''>
@@ -281,8 +339,8 @@ function SettingsDates() {
                 </tr>
               </thead>
               <tbody>
-                {periodData ? periodData.map((i: any, key: Key) => (
-                  <tr className="bg-white even:bg-slate-50 cursor-pointer hover:bg-slate-100" onClick={() => selectPeriod(i.periodID as number)} key={key}>
+                {fetchedData.period ? fetchedData.period.map((i: any, key: Key) => (
+                  <tr className="bg-white even:bg-slate-50 cursor-pointer hover:bg-slate-100" onClick={() => select("period",i.periodID as number)} key={key}>
                     <td className='p-1 border'>{i.periodName}</td>
                     <td className='p-1 border'>{i.startDate}</td>
                     <td className='p-1 border'>{i.endDate}</td>
@@ -292,22 +350,24 @@ function SettingsDates() {
             </table>
           </div>
           <form className='flex flex-col gap-1' name="period" onSubmit={periodHandleSubmit}>
-            <h2>{!isPeriodSelected ? "Lägg till" : `Ändra ${getSelectedPeriod().periodName}`}</h2>
+            <h2>{!isSelected("period") ? "Lägg till" : `Ändra ${getSelected("period").periodName}`}</h2>
             <label htmlFor="periodName">Namn</label>
             <input type="text" name="name" id="periodName" className='bg-white p-1'value={formData.period.name} onChange={formHandleChange} required/>
             <label htmlFor="periodFrom">Från</label>
             <input type="date" name="startDate" id="periodFrom" className='bg-white p-1'value={formData.period.startDate.toString()} onChange={formHandleChange} required/>
             <label htmlFor="periodTo">Till</label>
             <input type="date" name="endDate" id="periodTo" className='bg-white p-1'value={formData.period.endDate.toString()} onChange={formHandleChange} required/>
-            <input type="submit" className='px-3 py-1 w-min whitespace-nowrap bg-blue-300' value="Spara" />
-            <button type="button" className='px-3 py-1 w-min whitespace-nowrap bg-red-300' onClick={deselectPeriod}>Ångra</button>
+            <div className="flex gap-1">
+              <input type="submit" className='px-3 py-1 w-min whitespace-nowrap bg-blue-300' value="Spara" />
+              <button type="button" className='px-3 py-1 w-min whitespace-nowrap bg-red-300' onClick={() => deselect("period")}>Ränsa</button>
+            </div>
           </form>
         </div>
-        {isPeriodSelected
+        {isSelected("period")
         ? <div className='min-content'>
-        <button className='px-3 py-1 bg-red-500 hover:bg-opacity-60' onClick={deletePeriod}>Radera {getSelectedPeriod().periodName}</button>
+        <button className='px-3 py-1 bg-red-500 hover:bg-opacity-60' onClick={deletePeriod}>Radera {getSelected("period").periodName}</button>
       </div>
-        :<p>Välj en period för att radera den.</p>}
+        :<p>Välj en period för att hantera den.</p>}
       </div>
       <div className="flex gap-3 items-start sm:flex-wrap flex-col sm:flex-row">
         <div className=''>
@@ -321,8 +381,8 @@ function SettingsDates() {
                 </tr>
               </thead>
               <tbody>
-                {excludedData ? excludedData.map((i: any, key: Key) => (
-                  <tr className="bg-white even:bg-slate-50 cursor-pointer hover:bg-slate-100" onClick={() => selectExcluded(i.id)} key={key}>
+                {fetchedData.excluded ? fetchedData.excluded.map((i: any, key: Key) => (
+                  <tr className="bg-white even:bg-slate-50 cursor-pointer hover:bg-slate-100" onClick={() => select("excluded",i.id)} key={key}>
                     <td className='p-1 border'>{i.name}</td>
                     <td className='p-1 border'>{i.date}</td>
                   </tr>
@@ -331,20 +391,63 @@ function SettingsDates() {
             </table>
               </div>
               <form className='flex flex-col gap-1' name='excluded' onSubmit={excludedHandleSubmit}>
-              <h2>{!isExcludedSelected ? "Lägg till" : `Ändra ${getSelectedExcluded().name}`}</h2>
+              <h2>{!isSelected("excluded") ? "Lägg till" : `Ändra ${getSelected("excluded").name}`}</h2>
             <label htmlFor="excludedName">Namn</label>
             <input type="text" name="name" id="excludedName" className='bg-white p-1'value={formData.excluded.name} onChange={formHandleChange}/>
             <label htmlFor="excludedDate">Datum</label>
             <input type="date" name="date" id="excludedDate" className='bg-white p-1'value={formData.excluded.date.toString()} onChange={formHandleChange}/>
-            <input type="submit" className='px-3 py-1 w-min whitespace-nowrap bg-blue-300' value="Spara"/>
-            <button type="button" className='px-3 py-1 w-min whitespace-nowrap bg-red-300' onClick={deselectExcluded}>Ångra</button>
+            <div className="flex gap-1">
+              <input type="submit" className='px-3 py-1 w-min whitespace-nowrap bg-blue-300' value="Spara"/>
+              <button type="button" className='px-3 py-1 w-min whitespace-nowrap bg-red-300' onClick={() => deselect("excluded")}>Ränsa</button>
+            </div>
           </form>
         </div>
-          {isExcludedSelected
+          {isSelected("excluded")
           ? <div className='min-content'>
-          <button type="button" className='px-3 py-1 bg-red-500 hover:bg-opacity-60' onClick={deleteExcluded}>Radera {getSelectedExcluded().name}</button>
+          <button type="button" className='px-3 py-1 bg-red-500 hover:bg-opacity-60' onClick={deleteExcluded}>Radera {getSelected("excluded").name}</button>
         </div>
-        :<>Välj ett exkluderad datum för att radera den.</>}
+        :<p>Välj ett exkluderad datum för att hantera den.</p>}
+        <div className="flex gap-3 items-start sm:flex-wrap flex-col sm:flex-row">
+        <div className=''>
+        <h2>Dukningar</h2>
+          <table className='table-auto text-left border-collapse'>
+              <thead>
+                <tr className='bg-white'>
+                  <th className='p-1 border'>Namn</th>
+                  <th className='p-1 border'>Start Tid</th>
+                  <th className='p-1 border'>Slut Tid</th>
+                </tr>
+              </thead>
+              <tbody>
+                {fetchedData.serving ? fetchedData.serving.map((i: any, key: Key) => (
+                  <tr className="bg-white even:bg-slate-50 cursor-pointer hover:bg-slate-100" key={key} onClick={() => select("serving", i.servingID)}>
+                    <td className='p-1 border'>{i.servingName}</td>
+                    <td className='p-1 border'>{i.startTime}</td>
+                    <td className='p-1 border'>{i.endTime}</td>
+                  </tr>
+                )) : <></>}
+              </tbody>
+            </table>
+              </div>
+            <form className='flex flex-col gap-1' name='serving' onSubmit={servingHandleSubmit}>
+              <h2>{!isSelected("serving") ? "Lägg till" : `Ändra ${getSelected("serving").servingName}`}</h2>
+              <label htmlFor="servingName">Namn</label>
+              <input type="text" name="name" id="servingName" className='bg-white p-1'value={formData.serving.name} onChange={formHandleChange}/>
+              <label htmlFor="startTime">Start Tid</label>
+              <input type="time" name="startTime" id="startTime" className='bg-white p-1'value={formData.serving.startTime} onChange={formHandleChange}/>
+              <label htmlFor="endTime">Slut Tid</label>
+              <input type="time" name="endTime" id="endTime" className='bg-white p-1'value={formData.serving.endTime} onChange={formHandleChange}/>
+              <div className="flex gap-1">
+                <input type="submit" className='px-3 py-1 w-min whitespace-nowrap bg-blue-300' value="Spara"/>
+                <button type="button" className='px-3 py-1 w-min whitespace-nowrap bg-red-300' onClick={() => deselect("serving")}>Ränsa</button>
+              </div>
+            </form>
+          </div>
+          {isSelected("serving")
+          ? <div className='min-content'>
+          <button type="button" className='px-3 py-1 bg-red-500 hover:bg-opacity-60' onClick={deleteServing}>Radera</button>
+        </div>
+        :<>Välj en servering för att hantera den.</>}
       </div>
   )
 }
