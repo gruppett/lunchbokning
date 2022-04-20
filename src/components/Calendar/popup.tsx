@@ -338,7 +338,7 @@ function Overview_popup(props: any) {
           {props.view === "Overview" &&
           !props.group.hasOwnProperty("message") ? (
             <div className={"flex p-0.5"}>
-              <p className="m-1">{props.group.groupName}:</p>
+              <p className="m-1">{props.group.name}:</p>
               <div className="flex flex-col">
                 <input
                   type="number"
@@ -394,7 +394,7 @@ function Overview_popup(props: any) {
                         moment(props.datetime).format("YYYY-MM-DD"),
                         servingSelectGroup,
                         props.appUser.id,
-                        props.group.groupID,
+                        props.group.id,
                         groupCount,
                         props.group.diet
                       );
@@ -403,7 +403,7 @@ function Overview_popup(props: any) {
                         moment(props.datetime).format("YYYY-MM-DD"),
                         servingSelectGroup,
                         props.appUser.id,
-                        props.group.groupID,
+                        props.group.id,
                         groupCount,
                         props.group.diet
                       );

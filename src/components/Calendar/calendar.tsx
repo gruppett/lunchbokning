@@ -23,7 +23,6 @@ function HjortenCalendar(props: any) {
   const [appUser, setAppUser] = useState(null as any);
   const [appUserLoading, setAppUserLoading] = useState(null as any);
   const [appUserError, setAppUserError] = useState(null as any);
-  const [appUserDone, setAppUserDone] = useState(false as any);
 
   const [bookingID, setBookingID] = useState(null as any);
 
@@ -90,6 +89,9 @@ function HjortenCalendar(props: any) {
         })
         .then((data) => {
           setAppUser(data);
+          setGroupData(data.groups.find((x: any) => x.primary === 1));
+          setGroupError(false);
+          setGroupLoading(false);
         })
         .catch((error) => {
           return error;
@@ -99,7 +101,6 @@ function HjortenCalendar(props: any) {
         })
         .finally(() => {
           setAppUserLoading(false);
-          setAppUserDone(true);
         });
     };
 
@@ -140,60 +141,11 @@ function HjortenCalendar(props: any) {
   }, [user.mail, bookingID]);
 
   useEffect(() => {
-    const fetchGroup = async () => {
-      const url = process.env.REACT_APP_API_SERVER + "user/getPrimGroups.php";
-      const body = '{ "employeeEmail": "' + user.mail + '"}';
-      if (appUser !== null) {
-        if (appUser.roles.includes(4)) {
-          await fetch(url, {
-            body: body,
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            mode: "cors",
-          })
-            .then((response) => {
-              if (response.ok) {
-                setGroupError(false);
-                return response.json();
-              } else {
-                throw response.json();
-              }
-            })
-            .then((data) => {
-              setGroupData(data);
-            })
-            .catch((error) => {
-              return error;
-            })
-            .then((error) => {
-              if (error) {
-                setGroupData({ message: "Inga grupper" });
-              }
-              setGroupError(error);
-            })
-            .finally(() => {
-              setGroupLoading(false);
-            });
-        } else {
-          setGroupLoading(false);
-        }
-      }
-    };
-    if (props.view !== "Personal") {
-      fetchGroup();
-    } else {
-      setGroupLoading(false);
-    }
-  }, [appUserDone, appUser, user.mail, props.view]);
-
-  useEffect(() => {
     if (groupData !== null) {
       if (!groupData.hasOwnProperty("message")) {
         const url =
           process.env.REACT_APP_API_SERVER + "booking/getBookings.php";
-        const body = '{ "groupID": "' + groupData.groupID + '"}';
+        const body = '{ "groupID": "' + groupData.id + '"}';
         fetch(url, {
           body: body,
           method: "POST",
@@ -319,7 +271,7 @@ function HjortenCalendar(props: any) {
               {props.view === "Overview" || props.view === "Groups" ? (
                 tile_Matchesdate(date, groupBookingData, view) ? (
                   <p className="bg-gradient-to-tr from-red-400 to-red-200 rounded p-1">
-                    {groupData.groupName}
+                    {groupData.name}
                   </p>
                 ) : (
                   <></>
