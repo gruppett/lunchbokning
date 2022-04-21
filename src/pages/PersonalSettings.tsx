@@ -90,6 +90,7 @@ function PersonalSettings() {
       roles: userData.roles
     }
     setUserData(user)
+    alert("Lyckades med att ändra personliga inställningar")
   }
 
 
