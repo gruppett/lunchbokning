@@ -108,10 +108,11 @@ function Logs() {
   return (
     
       <DataTable
+        // @ts-ignore
         columns={columns}
         data={logData}
         noHeader
-        //defaultSortField="date"
+        defaultSortField="date"
         defaultSortAsc={false}
         pagination
         highlightOnHover
