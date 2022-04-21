@@ -14,10 +14,15 @@ interface GraphContextInterface {
 }
 
 interface ApiUserContextInterface {
+  servingID: number;
   employeeID: number;
   employeeEmail: string;
   diet: number;
   roles: number[];
+}
+interface ApiUserContextProviderInterface {
+  userData: ApiUserContextInterface;
+  setUserData: Function;
 }
 
 interface UserInterface {
@@ -41,7 +46,7 @@ const allowedGroups = [
 ];
 
 export const GraphContext = createContext({} as GraphContextInterface);
-export const UserContext = createContext({} as ApiUserContextInterface);
+export const UserContext = createContext({} as ApiUserContextProviderInterface);
 
 function handleLogout(instance: any) {
   instance.logoutRedirect().catch((e: any) => {
@@ -145,7 +150,7 @@ function App() {
   return (
     <BrowserRouter>
       <GraphContext.Provider value={graphData}>
-        <UserContext.Provider value={userData}>
+        <UserContext.Provider value={{userData, setUserData}}>
           <Page></Page>
         </UserContext.Provider>
       </GraphContext.Provider>

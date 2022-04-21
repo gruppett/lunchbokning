@@ -25,7 +25,7 @@ function formatDate(date: Date) {
 }
 
 function PersonalBooking() {
-  const apiUser = useContext(UserContext);
+  const {userData} = useContext(UserContext);
 
   const [periods, setPeriods] = useState([
     { periodID: -1, periodName: "", startDate: "", endDate: "" },
@@ -107,9 +107,9 @@ function PersonalBooking() {
       startDate: formData.bookingDates.startDate,
       endDate: formData.bookingDates.endDate,
       groupID: 1,
-      employeeID: apiUser.employeeID,
+      employeeID: userData.employeeID,
       count: 1,
-      diet: apiUser.diet,
+      diet: userData.diet,
       servingID: formData.bookingDates.serving,
     } as any;
     if (formData.bookingDates.weekday !== "0") {
@@ -147,7 +147,7 @@ function PersonalBooking() {
       startDate: formData.bookingDates.startDate,
       endDate: formData.bookingDates.endDate,
       groupID: 1,
-      employeeID: apiUser.employeeID,
+      employeeID: userData.employeeID,
     } as any;
     if (formData.bookingDates.weekday !== "0") {
       data.wday = formData.bookingDates.weekday;

@@ -16,8 +16,7 @@ interface iForm extends iStringKeys {
   },
   serving: {
     name: string,
-    startTime: string,
-    endTime: string,
+    time: string,
   }
 }
 
@@ -76,8 +75,7 @@ function SettingsDates() {
     },
     serving: {
       name: '',
-      startTime: formatTime(new Date()),
-      endTime: formatTime(new Date()),
+      time: formatTime(new Date()),
     }
   } as iForm)
   const [selected, setSelected] = useState({
@@ -122,8 +120,7 @@ function SettingsDates() {
         break
       case "serving":
         newForm[key].name = selectedData.servingName
-        newForm[key].startTime = selectedData.startTime
-        newForm[key].endTime = selectedData.endTime
+        newForm[key].time = selectedData.time
         break
     }
     setFormData({...newForm})
@@ -145,8 +142,7 @@ function SettingsDates() {
         break
       case "serving":
         newForm[key].name = ''
-        newForm[key].startTime = formatTime(new Date())
-        newForm[key].endTime = formatTime(new Date())
+        newForm[key].time = formatTime(new Date())
         break
     }
     setFormData({...newForm})
@@ -414,16 +410,14 @@ function SettingsDates() {
               <thead>
                 <tr className='bg-white'>
                   <th className='p-1 border'>Namn</th>
-                  <th className='p-1 border'>Start Tid</th>
-                  <th className='p-1 border'>Slut Tid</th>
+                  <th className='p-1 border'>Tid</th>
                 </tr>
               </thead>
               <tbody>
                 {fetchedData.serving ? fetchedData.serving.map((i: any, key: Key) => (
                   <tr className="bg-white even:bg-slate-50 cursor-pointer hover:bg-slate-100" key={key} onClick={() => select("serving", i.servingID)}>
                     <td className='p-1 border'>{i.servingName}</td>
-                    <td className='p-1 border'>{i.startTime}</td>
-                    <td className='p-1 border'>{i.endTime}</td>
+                    <td className='p-1 border'>{i.time}</td>
                   </tr>
                 )) : <></>}
               </tbody>
@@ -433,10 +427,8 @@ function SettingsDates() {
               <h2>{!isSelected("serving") ? "Lägg till" : `Ändra ${getSelected("serving").servingName}`}</h2>
               <label htmlFor="servingName">Namn</label>
               <input type="text" name="name" id="servingName" className='bg-white p-1'value={formData.serving.name} onChange={formHandleChange}/>
-              <label htmlFor="startTime">Start Tid</label>
-              <input type="time" name="startTime" id="startTime" className='bg-white p-1'value={formData.serving.startTime} onChange={formHandleChange}/>
-              <label htmlFor="endTime">Slut Tid</label>
-              <input type="time" name="endTime" id="endTime" className='bg-white p-1'value={formData.serving.endTime} onChange={formHandleChange}/>
+              <label htmlFor="servingTime">Tid</label>
+              <input type="time" name="time" id="servingTime" className='bg-white p-1'value={formData.serving.time} onChange={formHandleChange}/>
               <div className="flex gap-1">
                 <input type="submit" className='px-3 py-1 w-min whitespace-nowrap bg-blue-300' value="Spara"/>
                 <button type="button" className='px-3 py-1 w-min whitespace-nowrap bg-red-300' onClick={() => deselect("serving")}>Ränsa</button>

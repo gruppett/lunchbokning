@@ -29,7 +29,7 @@ function cleanLocation(location: Location, index: number) {
 
 function Page() {
   const { user } = useContext(GraphContext);
-  const apiUser = useContext(UserContext);
+  const {userData} = useContext(UserContext);
   const [navState, setNavState] = useState("hidden");
   const location = useLocation();
   const { instance } = useMsal();
@@ -49,12 +49,12 @@ function Page() {
   }
 
   function isAllowed (permissions: Array<number>) {
-    if (apiUser.roles === undefined) {
+    if (userData.roles === undefined) {
       return false
     }
     for (let i = 0; i < permissions.length; i++) {
       const permission = permissions[i];
-      if (apiUser.roles.includes(permission)) {
+      if (userData.roles.includes(permission)) {
         return true
       }
     }
