@@ -174,6 +174,21 @@ function SettingsUsers() {
     }
   }
 
+  function deleteUser() {
+    const data = {
+      employeeID: selectedUser,
+    };
+    fetch(process.env.REACT_APP_API_SERVER + "user/deleteUser.php", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    setIsUserSelected(false);
+    reloadData();
+  }
+
   useEffect(() => {
     fetch(process.env.REACT_APP_API_SERVER + "user/getUsers.php", {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
@@ -282,7 +297,7 @@ function SettingsUsers() {
         </form>
       </div>
       {isUserSelected ? (
-        <>
+        <div className="min-w-min">
           <div className="flex flex-col gap-1 items-start sm:flex-wrap flex-col sm:flex-row">
             <div>
               <h2>{getSelectedUser().email}</h2>
@@ -371,7 +386,8 @@ function SettingsUsers() {
               <input type="submit" className="px-3 py-1 w-min whitespace-nowrap bg-blue-300" value="Lägg till"></input>
             </form>
           </div>
-        </>
+          <button type="button" className='px-3 py-1 bg-red-500 hover:bg-opacity-60' onClick={deleteUser}>Radera {getSelectedUser().email}</button>
+        </div>
       ) : (
         <></>
       )}

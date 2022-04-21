@@ -11,6 +11,7 @@ interface groupFormInterface extends groupFormInterfaceKeys {
   groupCount: string;
   groupDiet: string;
   groupHandler: string;
+  groupServing: string
 }
 interface groupFormSubmitInterface extends groupFormInterfaceKeys {
   name?: string;
@@ -18,6 +19,7 @@ interface groupFormSubmitInterface extends groupFormInterfaceKeys {
   diet?: string;
   employeeID?: string;
   groupID?: string;
+  groupServing?: string;
 }
 
 function SettingsGroups() {
@@ -25,13 +27,15 @@ function SettingsGroups() {
   const [isGroupSelected, setIsGroupSelected] = useState(false);
   const [groupData, setGroupData] = useState([{} as any]);
   const [userData, setUserData] = useState([{} as any]);
-  const [loadStatus, setLoadStatus] = useState([0, 2]);
+  const [servingData, setServingData] = useState([{} as any]);
+  const [loadStatus, setLoadStatus] = useState([0, 3]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [groupForm, setGroupForm] = useState({
     groupName: "",
     groupCount: "",
     groupDiet: "",
     groupHandler: "",
+    groupServing: "",
   } as groupFormInterface);
   const [handlerForm, setHandlerForm] = useState("");
   const [reload, setReload] = useState(0);
@@ -44,6 +48,7 @@ function SettingsGroups() {
       groupDiet: group.diet,
       groupHandler: group.primaryHandler.id || "",
       groupID: group.groupID,
+      groupServing: group.servingID,
     };
     setGroupForm(data);
     setSelectedGroup(group.groupID);
@@ -61,6 +66,7 @@ function SettingsGroups() {
       groupDiet: "",
       groupHandler: "",
       groupID: "",
+      groupServing: "",
     };
     setGroupForm(data);
     setSelectedGroup(0);
@@ -112,6 +118,22 @@ function SettingsGroups() {
       });
   }, [reload, sectionLoaded]);
 
+  useEffect(() => {
+    fetch(process.env.REACT_APP_API_SERVER + "serving/getServings.php", {
+      method: "Get", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, *cors, same-origin
+      headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setServingData(data);
+        sectionLoaded();
+      });
+  }, [reload, sectionLoaded]);
+
   function groupHandleChange(event: { target: any }) {
     const target = event.target;
     const value = target.value;
@@ -135,6 +157,7 @@ function SettingsGroups() {
       count: groupForm.groupCount,
       diet: groupForm.groupDiet,
       employeeID: groupForm.groupHandler,
+      servingID: groupForm.groupServing,
     } as groupFormSubmitInterface;
     if (data.employeeID === "") {
       delete data.employeeID;
@@ -254,6 +277,9 @@ function SettingsGroups() {
   console.log(groupData)
   console.log(userData)
 */
+
+  console.log(groupData);
+
   return (
     <div className="flex gap-3 flex-col p-3 bg-slate-50 sm:w-max">
       <div className="flex gap-3 items-start sm:flex-wrap flex-col sm:flex-row">
@@ -278,7 +304,7 @@ function SettingsGroups() {
                   <td className="border p-1">{i.name}</td>
                   <td className="border p-1">{i.count}</td>
                   <td className="border p-1">{i.diet}</td>
-                  <td className="border p-1">{i.primaryHandler.email}</td>
+                  <td className="border p-1">{i.primaryHandler}</td>
                 </tr>
               ))}
             </tbody>
@@ -334,6 +360,21 @@ function SettingsGroups() {
             {userData.map((i: any, key: any) => (
               <option value={i.id} key={key}>
                 {mailToName(i.email)}
+              </option>
+            ))}
+          </select>
+          Servering
+          <select
+            name="groupServing"
+            id="groupServing"
+            className="bg-white p-1"
+            onChange={groupHandleChange}
+            value={groupForm.groupServing}
+          >
+            <option value="0">Ingen servering</option>
+            {servingData.map((i: any, key: any) => (
+              <option value={i.servingID} key={key}>
+                {i.servingName}
               </option>
             ))}
           </select>
