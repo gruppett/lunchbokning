@@ -12,9 +12,9 @@ export function BookingClassNames(
     booking_nrClassNames.push(
       personalData
         .map((booking: any) => {
-          return [booking.date, booking.active];
+          return [booking.date];
         })
-        .find((x: any) => x[0] === moment(date).format("YYYY-MM-DD"))[1]
+        .find((x: any) => x[0] === moment(date).format("YYYY-MM-DD"))
         ? "personal_booking_nr" +
             personalData
               .map((booking: any) => {
@@ -29,10 +29,9 @@ export function BookingClassNames(
       booking_nrClassNames.push(
         groupBookingData
           .map((booking: any) => {
-            return [booking.date, booking.active];
+            return [booking.date];
           })
-          .find((x: any) => x[0] === moment(date).format("YYYY-MM-DD"))[1]
-          .toString() === "1"
+          .find((x: any) => x[0] === moment(date).format("YYYY-MM-DD"))
           ? "group_booking_nr" +
               groupBookingData
                 .map((booking: any) => {
