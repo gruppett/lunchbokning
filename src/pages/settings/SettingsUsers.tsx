@@ -174,6 +174,23 @@ function SettingsUsers() {
     }
   }
 
+  function deleteHandler(groupID: any) {
+    const data = {
+      groupID: groupID,
+      employeeID: selectedUser
+    }
+    const response = fetch(
+      process.env.REACT_APP_API_SERVER + "handler/deleteHandler.php", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+        }
+      })
+    console.log(response)
+    reloadData();
+  }
+
   function deleteUser() {
     const data = {
       employeeID: selectedUser,
@@ -362,7 +379,7 @@ function SettingsUsers() {
                   getSelectedUser().groups.map((i: any, key: any) => (
                     <tr key={key} className="bg-white even:bg-slate-50">
                       <td className="border p-1">{i.name}</td>
-                      <td className="border p-1">
+                      <td className="border p-1" onClick={() => deleteHandler(i.id)}>
                         <span className="material-icons-outlined flex items-center justify-center text-red-500 cursor-pointer hover:text-opacity-60">
                           highlight_off
                         </span>
