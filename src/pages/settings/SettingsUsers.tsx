@@ -247,6 +247,8 @@ function SettingsUsers() {
     return <Spinner />;
   }
 
+  console.log(usersData);
+
   return (
     <div className="flex gap-3 flex-col p-3 bg-slate-50 sm:w-max">
       <div className="flex gap-3 items-start sm:flex-wrap flex-col sm:flex-row">
