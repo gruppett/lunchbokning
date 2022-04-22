@@ -1,6 +1,5 @@
 import React, { useState, useEffect, Key, useCallback } from "react";
 import Spinner from "../../components/Spinner/Spinner";
-import { mailToName } from "../../helpers/mailToName";
 
 interface groupFormInterfaceKeys {
   [key: string]: string | undefined;
