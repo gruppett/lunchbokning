@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback, Key } from "react";
 import Spinner from "../components/Spinner/Spinner";
-import DataTable from "react-data-table-component";
+import DataTable, { TableColumn } from "react-data-table-component";
 
 function Logs() {
   const [loadStatus, setLoadStatus] = useState([0, 1]);
@@ -16,7 +16,17 @@ function Logs() {
     setLoadStatus(status);
   }, [loadStatus]);
 
-  const columns = [
+  interface DataRow {
+      date: string;
+      employeeName: string;
+      type: string;
+      event: string;
+      groupName: string;
+      count: number;
+      servingName: string;
+  }
+
+  const columns: TableColumn<DataRow>[] = [
     {
       name: "Log Datum",
       selector: (row: { date: string; }) => row.date,
@@ -35,7 +45,7 @@ function Logs() {
     {
       name: "Info",
       selector: (row: { event: string; }) => row.event,
-
+        grow: 4,
       sortable: true
     },
     {
@@ -76,43 +86,14 @@ function Logs() {
     return <Spinner />;
   }
 
-  //   return (
-  //     <table>
-  //       <thead>
-  //         <tr>
-  //           <th>Log Datum</th>
-  //           <th>Användare</th>
-  //           <th>Typ</th>
-  //           <th>Händelse</th>
-  //           <th>Grupp</th>
-  //           <th>Antal</th>
-  //           <th>Dukning</th>
-  //         </tr>
-  //       </thead>
-  //       <tbody>
-  //         {logData.map((i: any, key: Key) => (
-  //           <tr key={key}>
-  //             <td>{i.date}</td>
-  //             <td>{i.employeeName}</td>
-  //             <td>{i.type}</td>
-  //             <td>{i.event}</td>
-  //             <td>{i.groupName}</td>
-  //             <td>{i.count}</td>
-  //             <td>{i.servingName}</td>
-  //           </tr>
-  //         ))}
-  //       </tbody>
-  //     </table>
-  //   );
-  //return <DataTable columns={columns} data={logData} />;
   return (
     
       <DataTable
-        // @ts-ignore
+       
         columns={columns}
         data={logData}
         noHeader
-        defaultSortField="date"
+        defaultSortFieldId={1}
         defaultSortAsc={false}
         pagination
         highlightOnHover
