@@ -1,20 +1,70 @@
-import React, {useEffect, useState, useCallback, Key} from 'react'
-import Spinner from '../components/Spinner/Spinner'
+import React, { useEffect, useState, useCallback, Key } from "react";
+import Spinner from "../components/Spinner/Spinner";
+import DataTable, { TableColumn } from "react-data-table-component";
 
 function Logs() {
-  const [loadStatus, setLoadStatus] = useState([0, 1])
-  const [isLoaded, setIsLoaded] = useState(false)
-  const [logData, setLogData] = useState({} as any)
-
+  const [loadStatus, setLoadStatus] = useState([0, 1]);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [logData, setLogData] = useState({} as any);
 
   const sectionLoaded = useCallback(() => {
-    let status = loadStatus
-    status[0] ++
+    let status = loadStatus;
+    status[0]++;
     if (status[0] === status[1]) {
-      setIsLoaded(true)
+      setIsLoaded(true);
     }
-    setLoadStatus(status)
-  }, [loadStatus])
+    setLoadStatus(status);
+  }, [loadStatus]);
+
+  interface DataRow {
+      date: string;
+      employeeName: string;
+      type: string;
+      event: string;
+      groupName: string;
+      count: number;
+      servingName: string;
+  }
+
+  const columns: TableColumn<DataRow>[] = [
+    {
+      name: "Log Datum",
+      selector: (row: { date: string; }) => row.date,
+      sortable: true
+    },
+    {
+      name: "Användare",
+      selector: (row: { employeeName: string; }) => row.employeeName,
+      sortable: true
+    },
+    {
+      name: "Typ",
+      selector: (row: { type: string; }) => row.type,
+      sortable: true
+    },
+    {
+      name: "Info",
+      selector: (row: { event: string; }) => row.event,
+        grow: 4,
+      sortable: true
+    },
+    {
+      name: "Grupp",
+      selector: (row: { groupName: string; }) => row.groupName,
+
+      sortable: true
+    },
+    {
+      name: "Antal",
+      selector: (row: { count: number; }) => row.count,
+      sortable: true
+    },
+    {
+      name: "Dukning",
+      selector: (row: { servingName: string; }) => row.servingName,
+      sortable: true
+    },
+  ];
 
   useEffect(() => {
     fetch(process.env.REACT_APP_API_SERVER + "log/getLogs.php", {
@@ -23,44 +73,33 @@ function Logs() {
       headers: {
         "Content-Type": "application/json",
         // 'Content-Type': 'application/x-www-form-urlencoded',
-      }
+      },
     })
       .then((response) => response.json())
-      .then(data => {
-        setLogData(data)
-        sectionLoaded()
+      .then((data) => {
+        setLogData(data);
+        sectionLoaded();
       });
-  }, [sectionLoaded])
-  
+  }, [sectionLoaded]);
 
-
-  if(!isLoaded) {
-    return (
-      <Spinner />
-      )
-    }
+  if (!isLoaded) {
+    return <Spinner />;
+  }
 
   return (
-    <table>
-      <thead>
-        <tr>
-          <th>Datum</th>
-          <th>Användare</th>
-          <th>Händelse</th>
-        </tr>
-      </thead>
-      <tbody>
-          {logData.map((i:any, key:Key) => (
-        <tr key={key}>
-          
-            <td>{i.date}</td>
-            <td>{i.employeeName}</td>
-            <td>{i.event}</td>
-        </tr>
-          ))}
-      </tbody>
-    </table>
-  )
+    
+      <DataTable
+       
+        columns={columns}
+        data={logData}
+        noHeader
+        defaultSortFieldId={1}
+        defaultSortAsc={false}
+        pagination
+        highlightOnHover
+      />
+   
+  );
 }
 
-export default Logs
+export default Logs;
