@@ -10,7 +10,7 @@ interface groupFormInterface extends groupFormInterfaceKeys {
   groupCount: string;
   groupDiet: string;
   groupHandler: string;
-  groupServing: string
+  groupServing: string;
 }
 interface groupFormSubmitInterface extends groupFormInterfaceKeys {
   name?: string;
@@ -278,7 +278,7 @@ function SettingsGroups() {
 */
 
   console.log(groupData);
-  console.log(servingData)
+  console.log(servingData);
 
   return (
     <div className="flex gap-3 flex-col p-3 bg-slate-50 sm:w-max">
@@ -306,7 +306,12 @@ function SettingsGroups() {
                   <td className="border p-1">{i.count}</td>
                   <td className="border p-1">{i.diet}</td>
                   <td className="border p-1">{i.primaryHandler.email}</td>
-                  <td className="border p-1">{servingData.find((x) => x.servingID = i.servingID).servingName}</td>
+                  <td className="border p-1">
+                    {
+                      servingData.find((x) => x.servingID === i.servingID)
+                        ?.servingName
+                    }
+                  </td>
                 </tr>
               ))}
             </tbody>
