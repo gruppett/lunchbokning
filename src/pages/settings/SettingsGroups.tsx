@@ -32,8 +32,8 @@ function SettingsGroups() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [groupForm, setGroupForm] = useState({
     groupName: "",
-    groupCount: "",
-    groupDiet: "",
+    groupCount: "1",
+    groupDiet: "0",
     groupHandler: "",
     groupServing: "",
   } as groupFormInterface);
@@ -62,8 +62,8 @@ function SettingsGroups() {
   function resetSelectedGroup() {
     const data = {
       groupName: "",
-      groupCount: "",
-      groupDiet: "",
+      groupCount: "1",
+      groupDiet: "0",
       groupHandler: "",
       groupID: "",
       groupServing: "",
@@ -279,6 +279,7 @@ function SettingsGroups() {
 */
 
   console.log(groupData);
+  console.log(servingData)
 
   return (
     <div className="flex gap-3 flex-col p-3 bg-slate-50 sm:w-max">
@@ -292,6 +293,7 @@ function SettingsGroups() {
                 <th className="border p-1">Antal</th>
                 <th className="border p-1">Diet</th>
                 <th className="border p-1">Primär handledare</th>
+                <th className="border p-1">Dukning</th>
               </tr>
             </thead>
             <tbody>
@@ -304,7 +306,8 @@ function SettingsGroups() {
                   <td className="border p-1">{i.name}</td>
                   <td className="border p-1">{i.count}</td>
                   <td className="border p-1">{i.diet}</td>
-                  <td className="border p-1">{i.primaryHandler}</td>
+                  <td className="border p-1">{i.primaryHandler.email}</td>
+                  <td className="border p-1">{servingData.find((x) => x.servingID = i.servingID).servingName}</td>
                 </tr>
               ))}
             </tbody>
@@ -359,7 +362,7 @@ function SettingsGroups() {
             <option value="">Ingen primär</option>
             {userData.map((i: any, key: any) => (
               <option value={i.id} key={key}>
-                {mailToName(i.email)}
+                {i.email}
               </option>
             ))}
           </select>
@@ -386,7 +389,7 @@ function SettingsGroups() {
           <input
             type="button"
             className="px-3 py-1 w-min bg-red-300"
-            value="Ångra"
+            value="Ränsa"
             onClick={resetSelectedGroup}
           ></input>
         </form>
@@ -409,7 +412,7 @@ function SettingsGroups() {
                         : ""
                     }`}
                   >
-                    {mailToName(i.email)}
+                    {i.email}
                   </td>
                   {getSelectedGroup().primaryHandler.email === i.email ? (
                     <></>
@@ -444,7 +447,7 @@ function SettingsGroups() {
               <option value="">Välj handledare</option>
               {userData?.map((i: any, key: Key) => (
                 <option key={key} value={i.id}>
-                  {mailToName(i.email)}
+                  {i.email}
                 </option>
               ))}
             </select>
