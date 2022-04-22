@@ -124,9 +124,9 @@ function PersonalSettings() {
           return null
         }))
         const newFetchedData = fetchedData
-        data.map((i, key) => {
+        data.map((i, key) => (
           newFetchedData[fetchHelp[key].name] = i
-        })
+        ))
         setFetchedData({...newFetchedData})
       } catch (error) {
         console.log(error)
@@ -134,6 +134,8 @@ function PersonalSettings() {
         setLoading(false)
       }
     })()
+    
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData])
 
 
@@ -145,6 +147,8 @@ function PersonalSettings() {
     newFormData.preferences.diet = userData.diet
     newFormData.preferences.serving = userData.servingID
     setFormData({...newFormData})
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchedData])
   
 

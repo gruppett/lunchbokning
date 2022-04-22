@@ -1,4 +1,4 @@
-import React, {useState, useEffect, Key, useCallback} from 'react'
+import React, {useState, useEffect, Key} from 'react'
 import Spinner from '../../components/Spinner/Spinner'
 import moment from 'moment'
 import iStringKeys from '../../interfaces/iStringKeys'
@@ -304,9 +304,10 @@ function SettingsDates() {
           return null
         }))
         const newFetchedData = fetchedData
-        data.map((i, key) => {
+        data.map((i, key) => (
+
           newFetchedData[fetchHelp[key].name] = i
-        })
+        ))
         setFetchedData(newFetchedData)
       } catch (error) {
         console.log(error)
@@ -314,6 +315,7 @@ function SettingsDates() {
         setLoading(false)
       }
     })()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refetch])
   
   if (loading) {
