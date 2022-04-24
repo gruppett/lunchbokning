@@ -306,7 +306,7 @@ function SettingsGroups() {
                   <td className="border p-1">{i.count}</td>
                   <td className="border p-1">{i.diet}</td>
                   <td className="border p-1">{i.primaryHandler.email}</td>
-                  <td className="border p-1">{servingData.find((x) => x.servingID = i.servingID).servingName}</td>
+                  <td className="border p-1">{servingData.find((x) => x.servingID === i.servingID)?.servingName}</td>
                 </tr>
               ))}
             </tbody>
