@@ -14,6 +14,16 @@ function Overview_popup(props: any) {
   const [groupBookingLoading, setGroupBookingLoading] = useState(true);
   const [groupBookingError, setGroupBookingError] = useState(false);
 
+  const [servings, setServings] = useState([
+    {
+      servingID: -1,
+      servingName: "",
+      time: "",
+    },
+  ]);
+  const [servingsLoading, setServingsLoading] = useState(true);
+  const [servingsError, setServingsError] = useState(false);
+
   const [servingSelect, setServingSelect] = useState(1);
   const [servingSelectGroup, setServingSelectGroup] = useState(1);
   const [editBooking, setEditBooking] = useState(false);
@@ -240,7 +250,32 @@ function Overview_popup(props: any) {
     }
   }, [props.datetime, props.booking, props.view]);
 
-  const errors = [personalError, groupBookingError];
+  useEffect(() => {
+    const fetchServings = () => {
+      const url = process.env.REACT_APP_API_SERVER + "serving/getServings.php";
+      fetch(url)
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw response.json();
+          }
+        })
+        .then((data) => {
+          setServings(data);
+          setServingsLoading(false);
+        })
+        .catch((error) => {
+          return error;
+        })
+        .then((error) => {
+          setServingsError(error);
+        });
+    };
+    fetchServings();
+  }, []);
+
+  const errors = [personalError, groupBookingError, servingsError];
 
   errors.forEach((error) => {
     if (error) {
@@ -252,7 +287,9 @@ function Overview_popup(props: any) {
     personalLoading ||
     personalError ||
     groupBookingLoading ||
-    groupBookingError
+    groupBookingError ||
+    servingsLoading ||
+    servingsError
   ) {
     return (
       <div
@@ -261,7 +298,7 @@ function Overview_popup(props: any) {
         }
         onClick={unmountPopup}
       >
-        {personalLoading || groupBookingLoading ? (
+        {personalLoading || groupBookingLoading || servingsLoading ? (
           <Spinner />
         ) : (
           <p className="text-lg text-red-700">Error</p>
@@ -288,7 +325,7 @@ function Overview_popup(props: any) {
                   defaultValue={
                     personalData !== null
                       ? personalData.servingID
-                      : servingSelect
+                      : props.appUser.servingID
                   }
                   onChange={(e) => {
                     if (personalData !== null) {
@@ -299,8 +336,15 @@ function Overview_popup(props: any) {
                     setServingSelect(e.target.value as any);
                   }}
                 >
-                  <option value="1">10:45</option>
-                  <option value="2">11:40</option>
+                  {servings[0].servingID !== -1 ? (
+                    servings.map((serving: any) => (
+                      <option key={serving.servingID} value={serving.servingID}>
+                        {serving.servingName}
+                      </option>
+                    ))
+                  ) : (
+                    <option value="null">Inga serveringar</option>
+                  )}
                 </select>
                 <button
                   className="p-0.5 m-1 bg-white rounded"
@@ -387,11 +431,21 @@ function Overview_popup(props: any) {
                     defaultValue={
                       groupBookingData !== null
                         ? groupBookingData.servingID
-                        : servingSelectGroup
+                        : props.group.servingID
                     }
                   >
-                    <option value="1">10:45</option>
-                    <option value="2">11:40</option>
+                    {servings[0].servingID !== -1 ? (
+                      servings.map((serving: any) => (
+                        <option
+                          key={serving.servingID}
+                          value={serving.servingID}
+                        >
+                          {serving.servingName}
+                        </option>
+                      ))
+                    ) : (
+                      <option value="null">Inga serveringar</option>
+                    )}
                   </select>
                   <button
                     className=" p-0.5 m-1 bg-white rounded"

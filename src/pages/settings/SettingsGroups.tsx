@@ -10,7 +10,7 @@ interface groupFormInterface extends groupFormInterfaceKeys {
   groupCount: string;
   groupDiet: string;
   groupHandler: string;
-  groupServing: string
+  groupServing: string;
 }
 interface groupFormSubmitInterface extends groupFormInterfaceKeys {
   name?: string;
@@ -278,7 +278,7 @@ function SettingsGroups() {
 */
 
   console.log(groupData);
-  console.log(servingData)
+  console.log(servingData);
 
   return (
     <div className="flex gap-3 flex-col p-3 bg-slate-50 sm:w-max">
