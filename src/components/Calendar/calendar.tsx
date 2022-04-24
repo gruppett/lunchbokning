@@ -89,9 +89,14 @@ function HjortenCalendar(props: any) {
         })
         .then((data) => {
           setAppUser(data);
-          setGroupData(data.groups.find((x: any) => x.primary === 1));
-          setGroupError(false);
-          setGroupLoading(false);
+          console.log(data);
+          if (data.hasOwnProperty("groups")) {
+            setGroupData(data.groups.find((x: any) => x.primary === 1));
+            setGroupError(false);
+            setGroupLoading(false);
+          } else {
+            setGroupLoading(false);
+          }
         })
         .catch((error) => {
           return error;
@@ -138,7 +143,7 @@ function HjortenCalendar(props: any) {
       await fetchExcludes();
     };
     fetchAll();
-  }, [user.mail, bookingID]);
+  }, [user.mail, bookingID, props.bookingID]);
 
   useEffect(() => {
     if (groupData !== undefined && groupData !== null) {

@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import HjortenCalendar from "../components/Calendar/calendar";
 import PersonalBooking from "../components/Booking/Personal";
 
 function Personal() {
+  const [booking, setBooking] = useState(null);
+
   return (
     <>
-      <PersonalBooking />
-      <HjortenCalendar view="Personal" />
+      <PersonalBooking setBooking={setBooking} />
+      <HjortenCalendar view="Personal" bookingID={booking} />
     </>
   );
 }

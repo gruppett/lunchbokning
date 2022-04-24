@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext, useCallback } from "react";
 import Spinner from "../Spinner/Spinner";
 import { UserContext } from "../App/App";
 import moment from "moment";
+import { Link } from "react-router-dom";
 
 interface iFormKeys {
   [key: string]: {
@@ -24,14 +25,24 @@ function formatDate(date: Date) {
   return moment(date).format(dateFormat);
 }
 
-function PersonalBooking() {
-  const {userData} = useContext(UserContext);
+function PersonalBooking(props: any) {
+  const { userData } = useContext(UserContext);
 
   const [periods, setPeriods] = useState([
     { periodID: -1, periodName: "", startDate: "", endDate: "" },
   ]);
   const [periodsLoading, setPeriodsLoading] = useState(true);
   const [periodsError, setPeriodsError] = useState(false);
+
+  const [servings, setServings] = useState([
+    {
+      servingID: -1,
+      servingName: "",
+      time: "",
+    },
+  ]);
+  const [servingsLoading, setServingsLoading] = useState(true);
+  const [servingsError, setServingsError] = useState(false);
 
   const [startDate, setStartDate] = useState(
     moment(new Date()).format("YYYY-MM-DD")
@@ -139,6 +150,7 @@ function PersonalBooking() {
       .then((error) => {
         console.log(error);
       });
+    props.setBooking(data);
   }
 
   function deleteBooking(): void {
@@ -176,12 +188,13 @@ function PersonalBooking() {
       .then((error) => {
         console.log(error);
       });
+    props.setBooking(data);
   }
 
   useEffect(() => {
-    function fetchPeriods() {
+    async function fetchPeriods() {
       const url = process.env.REACT_APP_API_SERVER + "period/getPeriods.php";
-      fetch(url)
+      await fetch(url)
         .then((response) => {
           if (response.ok) {
             return response.json();
@@ -207,110 +220,150 @@ function PersonalBooking() {
     }
   }, [periods, setDates]);
 
-  if (periodsLoading) {
+  useEffect(() => {
+    async function fetchServings() {
+      const url = process.env.REACT_APP_API_SERVER + "serving/getServings.php";
+      await fetch(url)
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw response.json();
+          }
+        })
+        .then((data) => {
+          setServings(data);
+          setServingsLoading(false);
+        })
+        .catch((error) => {
+          return error;
+        })
+        .then((data) => {
+          setServingsError(data);
+          setServingsLoading(false);
+        });
+    }
+    fetchServings();
+  }, []);
+
+  if (periodsLoading || servingsLoading) {
     return <Spinner />;
   }
 
-  if (periodsError) {
+  if (periodsError || servingsError) {
     console.log(periodsError);
+    console.log(servingsError);
   }
 
   return (
     <>
-      <form
-        name="bookingDates"
-        onSubmit={(e) => {
-          e.preventDefault();
-        }}
-      >
-        <div className="p-1">
-          <label htmlFor="weekday" className="m-1 my-2">
-            Veckodag:{" "}
-          </label>
-          <select
-            name="weekday"
-            id="weekdaySelect"
-            className="m-1 my-2"
-            defaultValue={formData.bookingDates.weekday}
-            onChange={formHandleChangeSelect}
-          >
-            <option value="0">Alla</option>
-            <option value="1">Måndag</option>
-            <option value="2">Tisdag</option>
-            <option value="3">Onsdag</option>
-            <option value="4">Torsdag</option>
-            <option value="5">Fredag</option>
-          </select>
-          <label htmlFor="period" className="m-1 my-2">
-            Period:{" "}
-          </label>
-          <select
-            name="period"
-            id="periodSelect"
-            className="m-1 my-2"
-            defaultValue={formData.bookingDates.period}
-            onChange={formHandleChangeSelect}
-          >
-            {periods[0].periodID !== -1 ? (
-              periods.map((period: any) => (
-                <option key={period.periodID} value={period.periodID}>
-                  {period.periodName}
-                </option>
-              ))
-            ) : (
-              <option value="null">Inga perioder</option>
-            )}
-          </select>
-          <label htmlFor="serving" className="m-1 my-2">
-            Servering:{" "}
-          </label>
-          <select
-            name="serving"
-            id="servingSelect"
-            className="m-1 my-2"
-            defaultValue={formData.bookingDates.serving}
-            onChange={formHandleChangeSelect}
-          >
-            <option value="1">Servering 1</option>
-            <option value="2">Servering 2</option>
-          </select>
-        </div>
-        <div className="p-1">
-          <input
-            type="date"
-            name="startDate"
-            id="startDate"
-            className="mx-1"
-            value={formData.bookingDates.startDate.toString()}
-            onChange={formHandleChangeInput}
-          />
-          <input
-            type="date"
-            name="endDate"
-            id="endDate"
-            className="mx-1"
-            value={formData.bookingDates.endDate.toString()}
-            onChange={formHandleChangeInput}
-          />
-        </div>
-        <div className="p-1">
-          <button
-            className="bg-blue-200 p-1 rounded mx-1"
-            onClick={postBooking}
-            disabled={startDate === null || endDate === null ? true : false}
-          >
-            Boka
-          </button>
-          <button
-            className="bg-red-200 p-1 rounded mx-1"
-            onClick={deleteBooking}
-            disabled={startDate === null || endDate === null ? true : false}
-          >
-            Avboka
-          </button>
-        </div>
-      </form>
-      <hr />
+      <div className="flex w-100">
+        <form
+          name="bookingDates"
+          onSubmit={(e) => {
+            e.preventDefault();
+          }}
+        >
+          <div className="p-1">
+            <label htmlFor="weekday" className="m-1 my-2">
+              Veckodag:{" "}
+            </label>
+            <select
+              name="weekday"
+              id="weekdaySelect"
+              className="m-1 my-2"
+              defaultValue={formData.bookingDates.weekday}
+              onChange={formHandleChangeSelect}
+            >
+              <option value="0">Alla</option>
+              <option value="1">Måndag</option>
+              <option value="2">Tisdag</option>
+              <option value="3">Onsdag</option>
+              <option value="4">Torsdag</option>
+              <option value="5">Fredag</option>
+            </select>
+            <label htmlFor="period" className="m-1 my-2">
+              Period:{" "}
+            </label>
+            <select
+              name="period"
+              id="periodSelect"
+              className="m-1 my-2"
+              defaultValue={formData.bookingDates.period}
+              onChange={formHandleChangeSelect}
+            >
+              {periods[0].periodID !== -1 ? (
+                periods.map((period: any) => (
+                  <option key={period.periodID} value={period.periodID}>
+                    {period.periodName}
+                  </option>
+                ))
+              ) : (
+                <option value="null">Inga perioder</option>
+              )}
+            </select>
+            <label htmlFor="serving" className="m-1 my-2">
+              Servering:{" "}
+            </label>
+            <select
+              name="serving"
+              id="servingSelect"
+              className="m-1 my-2"
+              defaultValue={formData.bookingDates.serving}
+              onChange={formHandleChangeSelect}
+            >
+              {servings[0].servingID !== -1 ? (
+                servings.map((serving: any) => (
+                  <option key={serving.servingID} value={serving.servingID}>
+                    {serving.servingName}
+                  </option>
+                ))
+              ) : (
+                <option value="null">Inga serveringar</option>
+              )}
+            </select>
+          </div>
+          <div className="p-1">
+            <input
+              type="date"
+              name="startDate"
+              id="startDate"
+              className="mx-1"
+              value={formData.bookingDates.startDate.toString()}
+              onChange={formHandleChangeInput}
+            />
+            <input
+              type="date"
+              name="endDate"
+              id="endDate"
+              className="mx-1"
+              value={formData.bookingDates.endDate.toString()}
+              onChange={formHandleChangeInput}
+            />
+          </div>
+          <div className="p-1">
+            <button
+              className="bg-blue-200 p-1 rounded mx-1"
+              onClick={postBooking}
+              disabled={startDate === null || endDate === null ? true : false}
+            >
+              Boka
+            </button>
+            <button
+              className="bg-red-200 p-1 rounded mx-1"
+              onClick={deleteBooking}
+              disabled={startDate === null || endDate === null ? true : false}
+            >
+              Avboka
+            </button>
+          </div>
+        </form>
+        <Link to="installningar">
+          <span className="material-icons-outlined right-0 absolute -translate-x-1/2">
+            settings
+          </span>
+        </Link>
+      </div>
     </>
   );
 }
