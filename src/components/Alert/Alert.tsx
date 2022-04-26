@@ -2,7 +2,7 @@ import React, { Key } from 'react'
 
 type Props = {
   error: string[]
-  setError: ({}: any) => void
+  setError: (error: any) => void
 }
 
 function Alert({error, setError}: Props) {
