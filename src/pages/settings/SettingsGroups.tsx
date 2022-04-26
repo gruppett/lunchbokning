@@ -1,5 +1,6 @@
 import React, { useState, useEffect, Key, useCallback } from "react";
 import Spinner from "../../components/Spinner/Spinner";
+import Alert from "../../components/Alert/Alert"
 
 interface groupFormInterfaceKeys {
   [key: string]: string | undefined;
@@ -38,6 +39,7 @@ function SettingsGroups() {
   } as groupFormInterface);
   const [handlerForm, setHandlerForm] = useState("");
   const [reload, setReload] = useState(0);
+  const [error, setError] = useState(false as any);
 
   function selectGroup(id: number) {
     const group = groupData.find((x) => x.groupID === id);
@@ -67,7 +69,7 @@ function SettingsGroups() {
       groupID: "",
       groupServing: "",
     };
-    setGroupForm(data);
+    setGroupForm({...data});
     setSelectedGroup(0);
     setIsGroupSelected(false);
   }
@@ -133,14 +135,27 @@ function SettingsGroups() {
       });
   }, [reload, sectionLoaded]);
 
+  function getAvailableUsers () {
+    if (!getSelectedGroup()?.handlers) {
+      return userData
+    }
+    let availableUsers: any = []
+
+    userData.forEach((user) => {
+      if (!getSelectedGroup()?.handlers.some((x: { id: number }) => x.id === user.id)) {
+        availableUsers.push(user)
+      }
+    });
+    return availableUsers
+  }
+
   function groupHandleChange(event: { target: any }) {
     const target = event.target;
     const value = target.value;
     const name = target.name;
     const form = groupForm;
     form[name] = value;
-    setGroupForm(form);
-    reloadData();
+    setGroupForm({...form});
   }
   function handlerHandleChange(event: { target: any }) {
     const target = event.target;
@@ -175,6 +190,12 @@ function SettingsGroups() {
         }
       );
       console.log(await response);
+      if (!response.ok) {
+        const data = await response.json();
+        console.log(data)
+        setError(data.error);
+      }
+      resetSelectedGroup()
       reloadData();
       return;
     }
@@ -194,6 +215,7 @@ function SettingsGroups() {
       }
     );
     console.log(await response);
+    resetSelectedGroup()
     reloadData();
     return;
   }
@@ -215,6 +237,11 @@ function SettingsGroups() {
         body: JSON.stringify(data),
       }
     );
+    if (!response.ok) {
+      const data = await response.json();
+      console.log(data)
+      setError(data.error);
+    }
     console.log(await response);
     reloadData();
     return;
@@ -238,6 +265,11 @@ function SettingsGroups() {
         body: JSON.stringify(data),
       }
     );
+    if (!response.ok) {
+      const data = await response.json();
+      console.log(data)
+      setError(data.error);
+    }
     console.log(await response);
     reloadData();
     return;
@@ -261,6 +293,11 @@ function SettingsGroups() {
         body: JSON.stringify(data),
       }
     );
+    if (!response.ok) {
+      const data = await response.json();
+      console.log(data)
+      setError(data.error);
+    }
     console.log(await response);
     reloadData();
     return;
@@ -270,18 +307,9 @@ function SettingsGroups() {
     return <Spinner></Spinner>;
   }
 
-  /*
-  TODO: Remove entries in userData if they are in groupData.handlers
-
-  console.log(groupData)
-  console.log(userData)
-*/
-
-  console.log(groupData);
-  console.log(servingData);
-
   return (
     <div className="flex gap-3 flex-col p-3 bg-slate-50 sm:w-max">
+    {error ? <Alert error={error} setError={setError}></Alert> : <></>}
       <div className="flex gap-3 items-start sm:flex-wrap flex-col sm:flex-row">
         <div>
           <h2>Grupper</h2>
@@ -388,7 +416,7 @@ function SettingsGroups() {
           <input
             type="button"
             className="px-3 py-1 w-min bg-red-300"
-            value="Ränsa"
+            value="Rensa"
             onClick={resetSelectedGroup}
           ></input>
         </form>
@@ -444,7 +472,7 @@ function SettingsGroups() {
               value={handlerForm}
             >
               <option value="">Välj handledare</option>
-              {userData?.map((i: any, key: Key) => (
+              {getAvailableUsers().map((i: any, key: Key) => (
                 <option key={key} value={i.id}>
                   {i.email}
                 </option>
@@ -477,7 +505,3 @@ function SettingsGroups() {
 }
 
 export default SettingsGroups;
-
-// function getSelectedUser() {
-//   throw new Error('Function not implemented.')
-// }

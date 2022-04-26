@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Alert from "../../components/Alert/Alert";
 import Spinner from "../../components/Spinner/Spinner";
 import UserRoles from "../../components/UserRoles/UserRoles";
 import iStringKeys from "../../interfaces/iStringKeys";
@@ -50,6 +51,7 @@ function SettingsUsers() {
       groupId: "",
     },
   } as iForm);
+  const [error, setError] = useState(false as any)
 
 
   function formHandleChange (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
@@ -127,6 +129,12 @@ function SettingsUsers() {
         },
       }
     );
+
+    if (!response.ok) {
+      const data = await response.json();
+      console.log(data)
+      setError(data.error);
+    }
     console.log(response);
     reloadData();
   }
@@ -146,6 +154,12 @@ function SettingsUsers() {
         },
       }
     );
+
+    if (!response.ok) {
+      const data = await response.json();
+      console.log(data)
+      setError(data.error);
+    }
     console.log(response);
     reloadData();
   }
@@ -168,18 +182,24 @@ function SettingsUsers() {
         }
       );
       console.log(response);
+
+      if (!response.ok) {
+        const data = await response.json();
+        console.log(data)
+        setError(data.error);
+      }
       reloadData();
     } catch (error) {
       console.log(error)
     }
   }
 
-  function deleteHandler(groupID: any) {
+  async function deleteHandler(groupID: any) {
     const data = {
       groupID: groupID,
       employeeID: selectedUser
     }
-    const response = fetch(
+    const response = await fetch(
       process.env.REACT_APP_API_SERVER + "handler/deleteHandler.php", {
         method: "POST",
         body: JSON.stringify(data),
@@ -187,21 +207,33 @@ function SettingsUsers() {
           "Content-Type": "application/json",
         }
       })
+
+      if (!response.ok) {
+        const data = await response.json();
+        console.log(data)
+        setError(data.error);
+      }
     console.log(response)
     reloadData();
   }
 
-  function deleteUser() {
+  async function deleteUser() {
     const data = {
       employeeID: selectedUser,
     };
-    fetch(process.env.REACT_APP_API_SERVER + "user/deleteUser.php", {
+    const response = await fetch(process.env.REACT_APP_API_SERVER + "user/deleteUser.php", {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
         "Content-Type": "application/json",
       },
     });
+
+    if (!response.ok) {
+      const data = await response.json();
+      console.log(data)
+      setError(data.error);
+    }
     setIsUserSelected(false);
     reloadData();
   }
@@ -267,7 +299,9 @@ function SettingsUsers() {
   console.log(usersData);
 
   return (
+    
     <div className="flex gap-3 flex-col p-3 bg-slate-50 sm:w-max">
+    {error ? <Alert error={error} setError={setError}></Alert> : <></>}
       <div className="flex gap-3 items-start sm:flex-wrap flex-col sm:flex-row">
         <div>
           <h2>Användare</h2>
