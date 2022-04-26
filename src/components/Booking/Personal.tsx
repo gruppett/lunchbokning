@@ -148,7 +148,7 @@ function PersonalBooking(props: any) {
         return error;
       })
       .then((error) => {
-        console.log(error);
+        if (error) console.log(error);
       });
     props.setBooking(data);
   }
@@ -186,7 +186,7 @@ function PersonalBooking(props: any) {
         return error;
       })
       .then((error) => {
-        console.log(error);
+        if (error) console.log(error);
       });
     props.setBooking(data);
   }
