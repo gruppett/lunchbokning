@@ -69,7 +69,7 @@ function SettingsGroups() {
       groupID: "",
       groupServing: "",
     };
-    setGroupForm(data);
+    setGroupForm({...data});
     setSelectedGroup(0);
     setIsGroupSelected(false);
   }
@@ -155,8 +155,7 @@ function SettingsGroups() {
     const name = target.name;
     const form = groupForm;
     form[name] = value;
-    setGroupForm(form);
-    reloadData();
+    setGroupForm({...form});
   }
   function handlerHandleChange(event: { target: any }) {
     const target = event.target;
@@ -196,6 +195,7 @@ function SettingsGroups() {
         console.log(data)
         setError(data.error);
       }
+      resetSelectedGroup()
       reloadData();
       return;
     }
@@ -215,6 +215,7 @@ function SettingsGroups() {
       }
     );
     console.log(await response);
+    resetSelectedGroup()
     reloadData();
     return;
   }

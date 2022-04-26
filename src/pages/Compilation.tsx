@@ -17,7 +17,6 @@ function Compilation() {
     startDate: formatDate(new Date()),
     endDate: moment(formatDate(new Date())).add(6, 'days').format("YYYY-MM-DD")
   })
-  const [servings, setServings] = useState([] as any)
   const { userData } = useContext(UserContext);
   let printRef = useRef(null)
 
@@ -45,7 +44,6 @@ function Compilation() {
         } 
         console.log(data)
         setDaysData(data)
-        setServings(getUniqueServings(data))
         setLoading(false)
       } catch (error) {
         console.log(error)
@@ -53,17 +51,6 @@ function Compilation() {
     })()
   }, [dates])
 
-  function getUniqueServings (data: any) {
-    const result: string[] = []
-    data.forEach((day: { serving: any[]; }) => {
-      day.serving.forEach(serving => {
-        if (!result.includes(serving.name)) {
-          result.push(serving.name)
-        }
-      });
-    });
-    return result
-  }
 
 
   console.log(daysData)
