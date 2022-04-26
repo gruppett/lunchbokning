@@ -2,6 +2,7 @@ import React, {useState, useEffect, Key} from 'react'
 import Spinner from '../../components/Spinner/Spinner'
 import moment from 'moment'
 import iStringKeys from '../../interfaces/iStringKeys'
+import Alert from '../../components/Alert/Alert'
 
 
 interface iForm extends iStringKeys {
@@ -85,6 +86,7 @@ function SettingsDates() {
   } as iSelected)
   const [fetchedData, setFetchedData] = useState({} as iFetched)
   const [refetch, setRefetch] = useState(0)
+  const [error, seterror] = useState(false as any)
 
   function triggerRefetch() {
     setRefetch(refetch + 1)
@@ -171,6 +173,10 @@ function SettingsDates() {
           "Content-Type": "application/json"
         }})
       console.log(response)
+      const resJson = await response.json()
+      if (!response.ok) {
+        seterror(resJson.error)
+      }
       triggerRefetch()
       return
     }
@@ -182,6 +188,10 @@ function SettingsDates() {
         "Content-Type": "application/json"
       }})
     console.log(response)
+    const resJson = await response.json()
+    if (!response.ok) {
+      seterror(resJson.error)
+    }
     triggerRefetch()
   }
 
@@ -196,74 +206,99 @@ function SettingsDates() {
           "Content-Type": "application/json"
         }})
       console.log(response)
+      const resJson = await response.json()
+      if (!response.ok) {
+        seterror(resJson.error)
+      }
       triggerRefetch()
       return
     }
     data.id = selected.excluded
-    const response = await fetch(process.env.REACT_APP_API_SERVER + "period/updatePeriod.php", {
+    const response = await fetch(process.env.REACT_APP_API_SERVER + "date/updateExclude.php", {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
         "Content-Type": "application/json"
       }})
     console.log(response)
+    const resJson = await response.json()
+    if (!response.ok) {
+      seterror(resJson.error)
+    }
     triggerRefetch()
   }
 
-  function servingHandleSubmit (e: React.FormEvent<HTMLFormElement>) {
+  async function servingHandleSubmit (e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     const data:any = formData.serving
     data.startTime = moment(data.startTime, "HH:mm").format("HH:mm:ss")
     data.endTime = moment(data.endTime, "HH:mm").format("HH:mm:ss")
     if (!isSelected('serving')) {
-      const response = fetch(process.env.REACT_APP_API_SERVER + "serving/postServing.php", {
+      const response = await fetch(process.env.REACT_APP_API_SERVER + "serving/postServing.php", {
         method: "POST",
         body: JSON.stringify(data),
         headers: {
           "Content-Type": "application/json"
         }})
       console.log(response)
+      const resJson = await response.json()
+      if (!response.ok) {
+        seterror(resJson.error)
+      }
       triggerRefetch()
       return
     }
     data.id = selected.serving
-    const response = fetch(process.env.REACT_APP_API_SERVER + "serving/updateServing.php", {
+    const response = await fetch(process.env.REACT_APP_API_SERVER + "serving/updateServing.php", {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
         "Content-Type": "application/json"
       }})
     console.log(response)
+    const resJson = await response.json()
+    if (!response.ok) {
+      seterror(resJson.error)
+    }
     triggerRefetch()
   }
 
-  function deleteExcluded () {
+  async function deleteExcluded () {
     const data = {
       id: selected.excluded
     }
-    const response = fetch(process.env.REACT_APP_API_SERVER + "date/deleteExclude.php", {
+    const response = await fetch(process.env.REACT_APP_API_SERVER + "date/deleteExclude.php", {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
         "Content-Type": "application/json"
       }})
     console.log(response)
+    const resJson = await response.json()
+    if (!response.ok) {
+      seterror(resJson.error)
+    }
     deselect('excluded')
     triggerRefetch()
   }
 
-  function deletePeriod () {
+  async function deletePeriod () {
     const data = {
       periodID: selected.period
     }
     try {
-    const response = fetch(process.env.REACT_APP_API_SERVER + "period/deletePeriod.php", {
+    const response = await fetch(process.env.REACT_APP_API_SERVER + "period/deletePeriod.php", {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
         "Content-Type": "application/json"
       }})
     console.log(response)
+
+    const resJson = await response.json()
+    if (!response.ok) {
+      seterror(resJson.error)
+    }
     } catch (error) {
       console.log(error)
     }
@@ -271,18 +306,22 @@ function SettingsDates() {
     triggerRefetch()
   }
 
-  function deleteServing () {
+  async function deleteServing () {
     const data = {
       id: selected.serving
     }
     try {
-      const repsonse = fetch(process.env.REACT_APP_API_SERVER + "serving/deleteServing.php", {
+      const response = await fetch(process.env.REACT_APP_API_SERVER + "serving/deleteServing.php", {
         method: "POST",
         body: JSON.stringify(data),
         headers: {
           "Content-Type": "application/json"
         }})
-      console.log(repsonse)
+      console.log(response)
+      const resJson = await response.json()
+      if (!response.ok) {
+        seterror(resJson.error)
+      }
       } catch (error) {
         console.log(error)
       }
@@ -323,7 +362,9 @@ function SettingsDates() {
   }
   
   return (
+    <>
     <div className="flex gap-3 p-3 bg-slate-50 sm:w-max flex-col">
+    {error && <Alert setError={seterror} error={error}/>}
       <div className=''>
         <div className="flex gap-3 items-start sm:flex-wrap flex-col sm:flex-row">
           <div>
@@ -357,7 +398,7 @@ function SettingsDates() {
             <input type="date" name="endDate" id="periodTo" className='bg-white p-1'value={formData.period.endDate.toString()} onChange={formHandleChange} required/>
             <div className="flex gap-1">
               <input type="submit" className='px-3 py-1 w-min whitespace-nowrap bg-blue-300' value="Spara" />
-              <button type="button" className='px-3 py-1 w-min whitespace-nowrap bg-red-300' onClick={() => deselect("period")}>Ränsa</button>
+              <button type="button" className='px-3 py-1 w-min whitespace-nowrap bg-red-300' onClick={() => deselect("period")}>Rensa</button>
             </div>
           </form>
         </div>
@@ -396,7 +437,7 @@ function SettingsDates() {
             <input type="date" name="date" id="excludedDate" className='bg-white p-1'value={formData.excluded.date.toString()} onChange={formHandleChange}/>
             <div className="flex gap-1">
               <input type="submit" className='px-3 py-1 w-min whitespace-nowrap bg-blue-300' value="Spara"/>
-              <button type="button" className='px-3 py-1 w-min whitespace-nowrap bg-red-300' onClick={() => deselect("excluded")}>Ränsa</button>
+              <button type="button" className='px-3 py-1 w-min whitespace-nowrap bg-red-300' onClick={() => deselect("excluded")}>Rensa</button>
             </div>
           </form>
         </div>
@@ -433,7 +474,7 @@ function SettingsDates() {
               <input type="time" name="time" id="servingTime" className='bg-white p-1'value={formData.serving.time} onChange={formHandleChange}/>
               <div className="flex gap-1">
                 <input type="submit" className='px-3 py-1 w-min whitespace-nowrap bg-blue-300' value="Spara"/>
-                <button type="button" className='px-3 py-1 w-min whitespace-nowrap bg-red-300' onClick={() => deselect("serving")}>Ränsa</button>
+                <button type="button" className='px-3 py-1 w-min whitespace-nowrap bg-red-300' onClick={() => deselect("serving")}>Rensa</button>
               </div>
             </form>
           </div>
@@ -443,6 +484,7 @@ function SettingsDates() {
         </div>
         :<>Välj en servering för att hantera den.</>}
       </div>
+    </>
   )
 }
 
