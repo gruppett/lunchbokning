@@ -137,7 +137,9 @@ function Page() {
                 <Route path="anvandare" element={<SettingsUsers />} />
                 <Route path="datum" element={<SettingsDates />} />
               </Route>
-              <Route path="loggar" element={<Logs />}></Route>
+              <Route path="loggar" element={<Logs />}>
+                <Route path=":day" element={<Logs />}></Route>
+              </Route>
               </>
               :<></>
               }

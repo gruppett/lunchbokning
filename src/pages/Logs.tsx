@@ -5,21 +5,11 @@ import DataTable, {
   Media,
   defaultThemes,
 } from "react-data-table-component";
+import { useParams } from "react-router-dom";
 
 function Logs() {
-  const [loadStatus, setLoadStatus] = useState([0, 1]);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const [logData, setLogData] = useState({} as any);
-
-  const sectionLoaded = useCallback(() => {
-    let status = loadStatus;
-    status[0]++;
-    if (status[0] === status[1]) {
-      setIsLoaded(true);
-    }
-    setLoadStatus(status);
-  }, [loadStatus]);
-
   interface DataRow {
     date: string;
     employeeName: string;
@@ -29,6 +19,7 @@ function Logs() {
     count: number;
     servingName: string;
   }
+  const params = useParams()
 
   const customStyles = {
     header: {
@@ -126,13 +117,15 @@ function Logs() {
       .then((response) => response.json())
       .then((data) => {
         setLogData(data);
-        sectionLoaded();
+        setLoaded(true)
       });
-  }, [sectionLoaded]);
+  }, []);
 
-  if (!isLoaded) {
+  if (!loaded) {
     return <Spinner />;
   }
+
+  console.log(params)
 
   return (
     <DataTable
