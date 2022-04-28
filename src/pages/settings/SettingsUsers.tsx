@@ -283,6 +283,11 @@ function SettingsUsers() {
         body: JSON.stringify(data),
       }
     );
+    if (!response.ok) {
+      const data = await response.json();
+      console.log(data)
+      setError(data.error);
+    }
     console.log(response);
     reloadData();
   }
