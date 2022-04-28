@@ -353,7 +353,6 @@ function SettingsGroups() {
             id="groupName"
             className="p-1 bg-slate-50 border"
             onChange={groupHandleChange}
-            placeholder="Gruppnamn"
             required
             value={groupForm.groupName}
           />
