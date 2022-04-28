@@ -300,9 +300,9 @@ function SettingsUsers() {
 
   return (
     
-    <div className="flex gap-3 flex-col p-3 bg-slate-50 sm:w-max">
+    <div className="flex gap-3 flex-col p-3">
     {error ? <Alert error={error} setError={setError}></Alert> : <></>}
-      <div className="flex gap-3 items-start sm:flex-wrap flex-col sm:flex-row">
+      <div className="flex gap-6 items-start sm:flex-wrap flex-col sm:flex-row">
         <div>
           <h2>Användare</h2>
           <table className="text-left border-collapse">
@@ -337,7 +337,7 @@ function SettingsUsers() {
               type="text"
               name="userMail"
               id="userMail"
-              className="p-1"
+              className="bg-slate-50 border p-1"
               required
             />
             <span>@gymnasium.ax</span>
@@ -350,22 +350,22 @@ function SettingsUsers() {
         </form>
       </div>
       {isUserSelected ? (
-        <div className="min-w-min">
-          <div className="flex flex-col gap-1 items-start sm:flex-wrap flex-col sm:flex-row">
+        <div className="min-w-min flex gap-3 flex-col items-start">
+          <div className="flex flex-col gap-6 items-start sm:flex-wrap flex-col sm:flex-row">
             <div>
               <h2>{getSelectedUser().email}</h2>
               <table>
                 <thead>
                   <tr>
-                    <th>Roll</th>
+                    <th className="p-1 border" colSpan={2}>Roll</th>
                   </tr>
                 </thead>
                 <tbody>
                   {getSelectedUser().roles &&
                     getSelectedUser().roles.map((i: any, key: any) => (
-                      <tr key={key}>
-                        <td>{getRole(i)?.name}</td>
-                        <td>
+                      <tr key={key} className="even:bg-slate-50">
+                        <td className="p-1 border">{getRole(i)?.name}</td>
+                        <td className="p-1 border">
                           <form onSubmit={rolesDeleteHandleSubmit}>
                             <span className="material-icons-outlined flex items-center justify-center text-red-500 hover:text-opacity-60">
                               <input
@@ -383,9 +383,10 @@ function SettingsUsers() {
                 </tbody>
               </table>
             </div>
-            <form onSubmit={rolesAddHandleSubmit} className="">
+            <form onSubmit={rolesAddHandleSubmit} className="flex flex-col gap-1">
               <h2>Lägg till roll</h2>
-              <select className="p-1" required>
+
+              <select className="p-1 bg-slate-50 border" required>
                 <option value="">Välj en roll</option>
                 {getUnassignedRoles() &&
                   getUnassignedRoles()?.map((i: any, key: any) => (
@@ -398,10 +399,10 @@ function SettingsUsers() {
                 type="submit"
                 value="Lägg till Roll"
                 className="px-3 py-1 w-min whitespace-nowrap bg-blue-300"
-              />
+                />
             </form>
           </div>
-          <div className="flex gap-3 items-start sm:flex-wrap flex-col sm:flex-row">
+          <div className="flex gap-6 items-start sm:flex-wrap flex-col sm:flex-row">
             <table className="table-auto text-left border-collapse">
               <thead>
                 <tr className="border bg-white">
@@ -427,7 +428,7 @@ function SettingsUsers() {
               <select
                 id="addGroupGroupId"
                 name="groupId"
-                className="bg-white p-1"
+                className="bg-slate-50 border p-1"
                 onChange={formHandleChange}
                 required
               >

@@ -363,10 +363,10 @@ function SettingsDates() {
   
   return (
     <>
-    <div className="flex gap-3 p-3 bg-slate-50 sm:w-max flex-col">
+    <div className="flex gap-3 p-3 flex-col">
     {error && <Alert setError={seterror} error={error}/>}
       <div className=''>
-        <div className="flex gap-3 items-start sm:flex-wrap flex-col sm:flex-row">
+        <div className="flex gap-6 items-start sm:flex-wrap flex-col sm:flex-row">
           <div>
             <h2>Perioder</h2>
             <table className='table-auto text-left border-collapse'>
@@ -391,11 +391,11 @@ function SettingsDates() {
           <form className='flex flex-col gap-1' name="period" onSubmit={periodHandleSubmit}>
             <h2>{!isSelected("period") ? "Lägg till" : `Ändra ${getSelected("period").periodName}`}</h2>
             <label htmlFor="periodName">Namn</label>
-            <input type="text" name="name" id="periodName" className='bg-white p-1'value={formData.period.name} onChange={formHandleChange} required/>
+            <input type="text" name="name" id="periodName" className='bg-slate-50 border p-1'value={formData.period.name} onChange={formHandleChange} required/>
             <label htmlFor="periodFrom">Från</label>
-            <input type="date" name="startDate" id="periodFrom" className='bg-white p-1'value={formData.period.startDate.toString()} onChange={formHandleChange} required/>
+            <input type="date" name="startDate" id="periodFrom" className='bg-slate-50 border p-1'value={formData.period.startDate.toString()} onChange={formHandleChange} required/>
             <label htmlFor="periodTo">Till</label>
-            <input type="date" name="endDate" id="periodTo" className='bg-white p-1'value={formData.period.endDate.toString()} onChange={formHandleChange} required/>
+            <input type="date" name="endDate" id="periodTo" className='bg-slate-50 border p-1'value={formData.period.endDate.toString()} onChange={formHandleChange} required/>
             <div className="flex gap-1">
               <input type="submit" className='px-3 py-1 w-min whitespace-nowrap bg-blue-300' value="Spara" />
               <button type="button" className='px-3 py-1 w-min whitespace-nowrap bg-red-300' onClick={() => deselect("period")}>Rensa</button>
@@ -408,7 +408,7 @@ function SettingsDates() {
       </div>
         :<p>Välj en period för att hantera den.</p>}
       </div>
-      <div className="flex gap-3 items-start sm:flex-wrap flex-col sm:flex-row">
+      <div className="flex gap-6 items-start sm:flex-wrap flex-col sm:flex-row">
         <div className=''>
 
         <h2>Exkluderade datum</h2>
@@ -432,9 +432,9 @@ function SettingsDates() {
               <form className='flex flex-col gap-1' name='excluded' onSubmit={excludedHandleSubmit}>
               <h2>{!isSelected("excluded") ? "Lägg till" : `Ändra ${getSelected("excluded").name}`}</h2>
             <label htmlFor="excludedName">Namn</label>
-            <input type="text" name="name" id="excludedName" className='bg-white p-1'value={formData.excluded.name} onChange={formHandleChange}/>
+            <input type="text" name="name" id="excludedName" className='bg-slate-50 border p-1'value={formData.excluded.name} onChange={formHandleChange}/>
             <label htmlFor="excludedDate">Datum</label>
-            <input type="date" name="date" id="excludedDate" className='bg-white p-1'value={formData.excluded.date.toString()} onChange={formHandleChange}/>
+            <input type="date" name="date" id="excludedDate" className='bg-slate-50 border p-1'value={formData.excluded.date.toString()} onChange={formHandleChange}/>
             <div className="flex gap-1">
               <input type="submit" className='px-3 py-1 w-min whitespace-nowrap bg-blue-300' value="Spara"/>
               <button type="button" className='px-3 py-1 w-min whitespace-nowrap bg-red-300' onClick={() => deselect("excluded")}>Rensa</button>
@@ -446,7 +446,7 @@ function SettingsDates() {
           <button type="button" className='px-3 py-1 bg-red-500 hover:bg-opacity-60' onClick={deleteExcluded}>Radera {getSelected("excluded").name}</button>
         </div>
         :<p>Välj ett exkluderad datum för att hantera den.</p>}
-        <div className="flex gap-3 items-start sm:flex-wrap flex-col sm:flex-row">
+        <div className="flex gap-6 items-start sm:flex-wrap flex-col sm:flex-row">
         <div className=''>
         <h2>Dukningar</h2>
           <table className='table-auto text-left border-collapse'>
@@ -469,9 +469,9 @@ function SettingsDates() {
             <form className='flex flex-col gap-1' name='serving' onSubmit={servingHandleSubmit}>
               <h2>{!isSelected("serving") ? "Lägg till" : `Ändra ${getSelected("serving").servingName}`}</h2>
               <label htmlFor="servingName">Namn</label>
-              <input type="text" name="name" id="servingName" className='bg-white p-1'value={formData.serving.name} onChange={formHandleChange}/>
+              <input type="text" name="name" id="servingName" className='bg-slate-50 border p-1'value={formData.serving.name} onChange={formHandleChange}/>
               <label htmlFor="servingTime">Tid</label>
-              <input type="time" name="time" id="servingTime" className='bg-white p-1'value={formData.serving.time} onChange={formHandleChange}/>
+              <input type="time" name="time" id="servingTime" className='bg-slate-50 border p-1'value={formData.serving.time} onChange={formHandleChange}/>
               <div className="flex gap-1">
                 <input type="submit" className='px-3 py-1 w-min whitespace-nowrap bg-blue-300' value="Spara"/>
                 <button type="button" className='px-3 py-1 w-min whitespace-nowrap bg-red-300' onClick={() => deselect("serving")}>Rensa</button>

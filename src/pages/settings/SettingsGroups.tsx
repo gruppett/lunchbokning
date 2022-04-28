@@ -35,7 +35,7 @@ function SettingsGroups() {
     groupCount: "1",
     groupDiet: "0",
     groupHandler: "",
-    groupServing: "",
+    groupServing: "0",
   } as groupFormInterface);
   const [handlerForm, setHandlerForm] = useState("");
   const [reload, setReload] = useState(0);
@@ -67,7 +67,7 @@ function SettingsGroups() {
       groupDiet: "0",
       groupHandler: "",
       groupID: "",
-      groupServing: "",
+      groupServing: "0",
     };
     setGroupForm({...data});
     setSelectedGroup(0);
@@ -177,6 +177,7 @@ function SettingsGroups() {
       delete data.employeeID;
     }
     if (!isGroupSelected) {
+      resetSelectedGroup()
       const response = await fetch(
         process.env.REACT_APP_API_SERVER + "groups/postGroup.php",
         {
@@ -195,12 +196,12 @@ function SettingsGroups() {
         console.log(data)
         setError(data.error);
       }
-      resetSelectedGroup()
       reloadData();
       return;
     }
     let updateData = data;
     updateData.groupID = selectedGroup.toString();
+    resetSelectedGroup()
     console.log(data);
     const response = await fetch(
       process.env.REACT_APP_API_SERVER + "groups/updateGroup.php",
@@ -215,7 +216,6 @@ function SettingsGroups() {
       }
     );
     console.log(await response);
-    resetSelectedGroup()
     reloadData();
     return;
   }
@@ -308,10 +308,10 @@ function SettingsGroups() {
   }
 
   return (
-    <div className="flex gap-3 flex-col p-3 bg-slate-50 sm:w-max">
+    <div className="flex gap-3 flex-col p-3">
     {error ? <Alert error={error} setError={setError}></Alert> : <></>}
-      <div className="flex gap-3 items-start sm:flex-wrap flex-col sm:flex-row">
-        <div>
+      <div className="flex gap-6 items-start sm:flex-wrap flex-col sm:flex-row sm:w-max">
+        <div className="">
           <h2>Grupper</h2>
           <table className="table-auto text-left border-collapse bg-white">
             <thead>
@@ -351,8 +351,9 @@ function SettingsGroups() {
             type="text"
             name="groupName"
             id="groupName"
-            className="bg-white p-1"
+            className="p-1 bg-slate-50 border"
             onChange={groupHandleChange}
+            placeholder="Gruppnamn"
             required
             value={groupForm.groupName}
           />
@@ -361,7 +362,7 @@ function SettingsGroups() {
             type="number"
             name="groupCount"
             id="groupCount"
-            className="bg-white p-1"
+            className="bg-slate-50 border p-1"
             min={1}
             onChange={groupHandleChange}
             required
@@ -372,7 +373,7 @@ function SettingsGroups() {
             type="number"
             name="groupDiet"
             id="groupDiet"
-            className="bg-white p-1"
+            className="bg-slate-50 border p-1"
             min={0}
             onChange={groupHandleChange}
             required
@@ -382,11 +383,11 @@ function SettingsGroups() {
           <select
             name="groupHandler"
             id="groupHandler"
-            className="bg-white p-1"
+            className="bg-slate-50 border p-1"
             onChange={groupHandleChange}
             value={groupForm.groupHandler}
           >
-            <option value="">Ingen primär</option>
+            <option value="0">Ingen primär</option>
             {userData.map((i: any, key: any) => (
               <option value={i.id} key={key}>
                 {i.email}
@@ -397,7 +398,7 @@ function SettingsGroups() {
           <select
             name="groupServing"
             id="groupServing"
-            className="bg-white p-1"
+            className="bg-slate-50 border p-1"
             onChange={groupHandleChange}
             value={groupForm.groupServing}
           >
@@ -422,11 +423,11 @@ function SettingsGroups() {
         </form>
       </div>
       {isGroupSelected ? (
-        <div className="flex gap-3 items-start">
+        <div className="flex gap-6 items-start">
           <table className="table-auto text-left border-collapse">
             <thead>
               <tr className="border bg-white">
-                <th colSpan={2}> Handledare för {getSelectedGroup().name}</th>
+                <th colSpan={2} className="p-1 border" >Handledare för {getSelectedGroup().name}</th>
               </tr>
             </thead>
             <tbody>
@@ -467,7 +468,7 @@ function SettingsGroups() {
             <select
               id="handlerName"
               name="handerName"
-              className="bg-white p-1"
+              className="bg-slate-50 border p-1"
               onChange={handlerHandleChange}
               value={handlerForm}
             >
