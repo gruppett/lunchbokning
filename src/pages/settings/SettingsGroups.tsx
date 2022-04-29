@@ -3,7 +3,7 @@ import Spinner from "../../components/Spinner/Spinner";
 import Alert from "../../components/Alert/Alert"
 
 interface groupFormInterfaceKeys {
-  [key: string]: string | undefined;
+  [key: string]: string | boolean | undefined;
 }
 
 interface groupFormInterface extends groupFormInterfaceKeys {
@@ -12,6 +12,7 @@ interface groupFormInterface extends groupFormInterfaceKeys {
   groupDiet: string;
   groupHandler: string;
   groupServing: string;
+  groupExternal: boolean;
 }
 interface groupFormSubmitInterface extends groupFormInterfaceKeys {
   name?: string;
@@ -20,6 +21,7 @@ interface groupFormSubmitInterface extends groupFormInterfaceKeys {
   employeeID?: string;
   groupID?: string;
   groupServing?: string;
+  groupExternal?: string;
 }
 
 function SettingsGroups() {
@@ -36,6 +38,7 @@ function SettingsGroups() {
     groupDiet: "0",
     groupHandler: "",
     groupServing: "0",
+    groupExternal: false,
   } as groupFormInterface);
   const [handlerForm, setHandlerForm] = useState("");
   const [reload, setReload] = useState(0);
@@ -50,6 +53,7 @@ function SettingsGroups() {
       groupHandler: group.primaryHandler.id || "",
       groupID: group.groupID,
       groupServing: group.servingID,
+      groupExternal: group.external === 1 ? true : false,
     };
     setGroupForm(data);
     setSelectedGroup(group.groupID);
@@ -68,6 +72,7 @@ function SettingsGroups() {
       groupHandler: "",
       groupID: "",
       groupServing: "0",
+      groupExternal: false,
     };
     setGroupForm({...data});
     setSelectedGroup(0);
@@ -151,7 +156,11 @@ function SettingsGroups() {
 
   function groupHandleChange(event: { target: any }) {
     const target = event.target;
-    const value = target.value;
+    let value = target.value;
+    if (target.name === "groupExternal") {
+      value = target.checked ? true : false;
+    }
+    console.log(target.checked)
     const name = target.name;
     const form = groupForm;
     form[name] = value;
@@ -172,7 +181,8 @@ function SettingsGroups() {
       diet: groupForm.groupDiet,
       employeeID: groupForm.groupHandler,
       servingID: groupForm.groupServing,
-    } as groupFormSubmitInterface;
+      external: groupForm.groupExternal ? 1 : 0,
+    } as unknown as groupFormSubmitInterface;
     if (data.employeeID === "") {
       delete data.employeeID;
     }
@@ -307,6 +317,8 @@ function SettingsGroups() {
     return <Spinner></Spinner>;
   }
 
+  console.log(groupForm)
+
   return (
     <div className="flex gap-3 flex-col p-3">
     {error ? <Alert error={error} setError={setError}></Alert> : <></>}
@@ -321,6 +333,7 @@ function SettingsGroups() {
                 <th className="border p-1">Diet</th>
                 <th className="border p-1">Primär handledare</th>
                 <th className="border p-1">Dukning</th>
+                <th className="border p-1">Extern</th>
               </tr>
             </thead>
             <tbody>
@@ -335,6 +348,14 @@ function SettingsGroups() {
                   <td className="border p-1">{i.diet}</td>
                   <td className="border p-1">{i.primaryHandler.email}</td>
                   <td className="border p-1">{servingData.find((x) => x.servingID === i.servingID)?.servingName}</td>
+                  <td className="border p-1">
+                    {i.external ?
+                      <span className="material-icons-outlined">
+                        done
+                      </span>
+                      : <></>
+                    }
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -408,6 +429,10 @@ function SettingsGroups() {
               </option>
             ))}
           </select>
+          <div className="flex gap-1 items-center">
+            <input type="checkbox" name="groupExternal" id="groupExternal" checked={groupForm.groupExternal} onChange={groupHandleChange}/>
+            <label htmlFor="groupExternal">Extern</label>
+          </div>
           <input
             type="submit"
             className="px-3 py-1 w-min bg-blue-300"
