@@ -5,7 +5,6 @@ import DataTable, {
   Media,
   defaultThemes,
 } from "react-data-table-component";
-import { useParams } from "react-router-dom";
 
 function Logs() {
   const [loaded, setLoaded] = useState(false);
@@ -19,7 +18,7 @@ function Logs() {
     count: number;
     servingName: string;
   }
-  const params = useParams()
+  const [error, setError] = useState(false as any)
 
   const customStyles = {
     header: {
@@ -106,26 +105,35 @@ function Logs() {
   ];
 
   useEffect(() => {
-    fetch(process.env.REACT_APP_API_SERVER + "log/getLogs.php", {
-      method: "GET", // *GET, POST, PUT, DELETE, etc.
-      mode: "cors", // no-cors, *cors, same-origin
-      headers: {
-        "Content-Type": "application/json",
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
+    ( async () => {
+      try {
+        const response = await fetch(process.env.REACT_APP_API_SERVER + "log/getLogs.php");
+        const data = await response.json();
+        if (!response.ok) {
+          setError(data.error)
+        }
         setLogData(data);
+      } catch (error) {
+        console.log(error)
+      } finally {
         setLoaded(true)
-      });
+      }
+    })()
   }, []);
 
   if (!loaded) {
     return <Spinner />;
   }
 
-  console.log(params)
+  if (error) {
+    console.log(error)
+    return (
+      <div>
+        <h2>{error}</h2>
+      </div>
+    )
+  }
+
 
   return (
     <DataTable
