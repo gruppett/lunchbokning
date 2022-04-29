@@ -154,6 +154,22 @@ function SettingsGroups() {
     return availableUsers
   }
 
+  function getAvailablePriamryUsers () {
+    let availableUsers: any = []
+    userData.forEach((user) => {
+      if (getSelectedGroup()?.primaryHandler.id === user.id) {
+        availableUsers.push(user)
+        return
+      }
+      if (user.groups?.some((x: { primary: number }) => x.primary === 1)) {
+        return 
+      } else {
+        availableUsers.push(user)
+      }
+    })
+    return availableUsers
+  }
+
   function groupHandleChange(event: { target: any }) {
     const target = event.target;
     let value = target.value;
@@ -408,7 +424,7 @@ function SettingsGroups() {
             value={groupForm.groupHandler}
           >
             <option value="0">Ingen primär</option>
-            {userData.map((i: any, key: any) => (
+            {getAvailablePriamryUsers().map((i: any, key: any) => (
               <option value={i.id} key={key}>
                 {i.email}
               </option>
