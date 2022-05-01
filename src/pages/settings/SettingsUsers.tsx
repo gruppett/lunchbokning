@@ -3,6 +3,7 @@ import Alert from "../../components/Alert/Alert";
 import Spinner from "../../components/Spinner/Spinner";
 import UserRoles from "../../components/UserRoles/UserRoles";
 import iStringKeys from "../../interfaces/iStringKeys";
+import mailToShort from "../../helpers/mailToShort";
 
 const roles = [
   {
@@ -326,7 +327,7 @@ function SettingsUsers() {
                   className="cursor-pointer bg-white hover:bg-slate-100 even:bg-slate-50"
                   onClick={() => selectUser(i.id)}
                 >
-                  <td className="p-1 border">{i.email}</td>
+                  <td className="p-1 border">{mailToShort(i.email)}</td>
                   <UserRoles roles={i.roles}></UserRoles>
                 </tr>
               ))}

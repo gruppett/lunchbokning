@@ -94,7 +94,7 @@ function Compilation() {
               <div className="w-full w-1/6 my-1 px-1 min-w-min" key={iKey}>
                 <table className="text-left border-collapse border-4 ">
                   <tbody>
-                    <tr className='border-b-2'>
+                    <tr className='border-b-4'>
                       <th colSpan={2} className="border p-1 text-lg">{i.date}</th>
                       <th className="border p-1">T</th>
                       <th className="border p-1">N</th>
@@ -112,7 +112,7 @@ function Compilation() {
                         ))
                       })}
                       {i.serving.map((j:any, jKey: Key) => (
-                        <tr key={jKey} className={jKey === 0 ? "border-t-2 even:bg-slate-100" : "even:bg-slate-100"}>
+                        <tr key={jKey} className={jKey === 0 ? "border-t-4 even:bg-slate-100" : "even:bg-slate-100"}>
                           {jKey === 0 ? <th rowSpan={i.serving.length} className="border p-1 bg-white">Subtotal</th> : <></>}
                           <th className="border p-1">{j.name}</th>
                           <td className="border p-1">{j.total}</td>
@@ -120,7 +120,7 @@ function Compilation() {
                           <td className="border p-1"  >{j.diet}</td>
                         </tr>
                       ))}
-                      <tr className='border-t-2'>
+                      <tr className='border-t-4'>
                         <th colSpan={2} className="border p-1">Totalt</th>
                         <td className="border p-1">{i.total}</td>
                         <td className="border p-1">{i.normal}</td>

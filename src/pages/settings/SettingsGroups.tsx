@@ -1,6 +1,7 @@
 import React, { useState, useEffect, Key, useCallback } from "react";
 import Spinner from "../../components/Spinner/Spinner";
 import Alert from "../../components/Alert/Alert"
+import mailToShort from "../../helpers/mailToShort";
 
 interface groupFormInterfaceKeys {
   [key: string]: string | boolean | undefined;
@@ -338,9 +339,10 @@ function SettingsGroups() {
   return (
     <div className="flex gap-3 flex-col p-3">
     {error ? <Alert error={error} setError={setError}></Alert> : <></>}
-      <div className="flex gap-6 items-start sm:flex-wrap flex-col sm:flex-row sm:w-max">
+      <div className="flex gap-6 items-start sm:flex-wrap flex-col sm:flex-row">
         <div className="">
           <h2>Grupper</h2>
+          <div className="overflow-auto whitespace-nowrap">
           <table className="table-auto text-left border-collapse bg-white">
             <thead>
               <tr>
@@ -362,9 +364,9 @@ function SettingsGroups() {
                   <td className="border p-1">{i.name}</td>
                   <td className="border p-1">{i.count}</td>
                   <td className="border p-1">{i.diet}</td>
-                  <td className="border p-1">{i.primaryHandler.email}</td>
+                  <td className="border p-1">{i.primaryHandler.email && mailToShort(i.primaryHandler.email)}</td>
                   <td className="border p-1">{servingData.find((x) => x.servingID === i.servingID)?.servingName}</td>
-                  <td className="border p-1">
+                  <td className="border p-1 text-center">
                     {i.external ?
                       <span className="material-icons-outlined">
                         done
@@ -376,6 +378,7 @@ function SettingsGroups() {
               ))}
             </tbody>
           </table>
+        </div>
         </div>
         <form className="flex flex-col gap-1" onSubmit={groupHandleSubmit}>
           <h2>
