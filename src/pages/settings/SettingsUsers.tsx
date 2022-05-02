@@ -310,7 +310,6 @@ function SettingsUsers() {
 
   console.log(usersData);
 
-  return (<h1>Test</h1>)
 
   return (
     
