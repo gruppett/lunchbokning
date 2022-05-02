@@ -5,6 +5,22 @@ import { tileHasBooking } from "../../helpers/tileHasBooking";
 import { getIdFromProp } from "../../helpers/getBookingIdFromProp";
 import moment from "moment";
 
+interface iFormKeys {
+  [key: string]: {
+    [key: string]: string | number | undefined;
+  };
+}
+
+interface iForm extends iFormKeys {
+  personalBooking: {
+    serving: number;
+  };
+  groupBooking: {
+    count: number;
+    serving: number;
+  };
+}
+
 function Overview_popup(props: any) {
   const [personalData, setPersonalData] = useState(null as any);
   const [personalLoading, setPersonalLoading] = useState(true);
@@ -24,13 +40,44 @@ function Overview_popup(props: any) {
   const [servingsLoading, setServingsLoading] = useState(true);
   const [servingsError, setServingsError] = useState(false);
 
+  const [formData, setFormData] = useState({
+    personalBooking: {
+      serving: props.appUser.servingID,
+    },
+    groupBooking: {
+      count: props.group.count,
+      serving: props.group.servingID,
+    },
+  } as iForm);
+
   const [servingSelect, setServingSelect] = useState(1);
   const [servingSelectGroup, setServingSelectGroup] = useState(1);
   const [editBooking, setEditBooking] = useState(false);
   const [editBookingGroup, setEditBookingGroup] = useState(false);
-  const [groupCount, setGroupCount] = useState(
-    props.group !== undefined && props.group !== null ? props.group.count : 0
-  );
+
+  function formHandleChangeInput(e: React.ChangeEvent<HTMLInputElement>) {
+    const form = e.target.parentElement?.parentElement?.attributes.getNamedItem(
+      "name"
+    )?.value as string;
+    const target = e.target;
+    const value = target.value;
+    const name = target.name;
+    const newFormData = formData;
+    newFormData[form][name] = value;
+    setFormData(newFormData);
+  }
+
+  function formHandleChangeSelect(e: React.ChangeEvent<HTMLSelectElement>) {
+    const form = e.target.parentElement?.parentElement?.attributes.getNamedItem(
+      "name"
+    )?.value as string;
+    const target = e.target;
+    const value = parseInt(target.value);
+    const name = target.name;
+    const newFormData = formData;
+    newFormData[form][name] = value;
+    setFormData(newFormData);
+  }
 
   function postBooking(
     date: String,
@@ -181,6 +228,10 @@ function Overview_popup(props: any) {
             })
             .then((data) => {
               setPersonalData(data);
+              const newFormData = formData;
+
+              newFormData.personalBooking.serving = data.servingID;
+              setFormData({ ...newFormData });
             })
             .catch((error) => {
               return error;
@@ -229,6 +280,10 @@ function Overview_popup(props: any) {
             })
             .then((data) => {
               setGroupBookingData(data);
+              const newFormData = formData;
+              newFormData.groupBooking.serving = data.servingID;
+              newFormData.groupBooking.count = data.count;
+              setFormData({ ...newFormData });
             })
             .catch((error) => {
               return error;
@@ -306,7 +361,7 @@ function Overview_popup(props: any) {
       </div>
     );
   }
-
+  console.log(formData.personalBooking);
   return (
     <>
       <div
@@ -316,24 +371,30 @@ function Overview_popup(props: any) {
       >
         <div className="flex flex-col m-3 w-40">
           {props.view === "Overview" || props.view === "Personal" ? (
-            <div className={"flex p-0.5"}>
+            <form
+              className={"flex p-0.5"}
+              name="personalBooking"
+              onSubmit={(e) => {
+                e.preventDefault();
+              }}
+            >
               <p className="p-0.5 m-1">{props.user.mail.split(".")[0]}:</p>
               <div className="flex flex-col w-full">
                 <select
-                  id="servingSelect"
+                  id="servingPersonal"
+                  name="serving"
                   className="p-0.5 m-1 bg-white rounded text-right"
-                  defaultValue={
-                    personalData !== null
-                      ? personalData.servingID
-                      : props.appUser.servingID
-                  }
+                  defaultValue={formData.personalBooking.serving as any}
                   onChange={(e) => {
                     if (personalData !== null) {
                       setEditBooking(
-                        (e.target.value as any) !== servingSelect ? true : false
+                        (e.target.value as any) !==
+                          formData.personalBooking.serving
+                          ? true
+                          : false
                       );
                     }
-                    setServingSelect(e.target.value as any);
+                    formHandleChangeSelect(e);
                   }}
                 >
                   {servings[0].servingID !== -1 ? (
@@ -353,13 +414,13 @@ function Overview_popup(props: any) {
                       updateBooking(
                         getIdFromProp(props.booking).personal as Number,
                         moment(props.datetime).format("YYYY-MM-DD"),
-                        servingSelect,
+                        formData.personalBooking.serving as any,
                         props.appUser.id
                       );
                     } else if (personalData === null) {
                       postBooking(
                         moment(props.datetime).format("YYYY-MM-DD"),
-                        servingSelect,
+                        formData.personalBooking.serving as any,
                         props.appUser.id
                       );
                     } else if (personalData) {
@@ -379,60 +440,64 @@ function Overview_popup(props: any) {
                     : "Avboka"}
                 </button>
               </div>
-            </div>
-          ) : null}
+            </form>
+          ) : (
+            <></>
+          )}
           {props.view === "Overview" &&
           props.group !== undefined &&
           props.group !== null ? (
             !props.group.hasOwnProperty("message") ? (
-              <div className={"flex p-0.5"}>
+              <form
+                className={"flex p-0.5"}
+                name="groupBooking"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                }}
+              >
                 <p className="m-1">{props.group.name}:</p>
                 <div className="flex flex-col">
                   <input
                     type="number"
                     id="groupCount"
+                    name="count"
                     min="1"
                     max="9999999999"
                     style={{ maxWidth: "-webkit-fill-available" }}
                     className="p-0.5 rounded m-1 text-right w-full box-border"
-                    defaultValue={
-                      groupBookingData === null
-                        ? props.group.count
-                        : groupBookingData.count
-                    }
+                    defaultValue={formData.groupBooking.count}
                     onChange={(e) => {
                       if (e.target.value.length > 10) {
                         e.target.value = e.target.value.slice(0, 10);
                         alert("Max antal personer är 9999999999");
                       }
-                      if (groupBookingData !== null) {
-                        setEditBookingGroup(
-                          (e.target.value as any) !== servingSelect
-                            ? true
-                            : false
-                        );
-                      }
-                      setGroupCount(e.target.value as any);
+                      // if (groupBookingData !== null) {
+                      //   setEditBookingGroup(
+                      //     (e.target.value as any) !== servingSelect
+                      //       ? true
+                      //       : false
+                      //   );
+                      // }
+                      //setGroupCount(e.target.value as any);
+                      formHandleChangeInput(e);
                     }}
                   />
                   <select
-                    id="servingSelect"
+                    id="servingSelectGroup"
+                    name="serving"
                     className="p-0.5 m-1 bg-white rounded text-right"
                     onChange={(e) => {
                       if (groupBookingData !== null) {
                         setEditBookingGroup(
-                          (e.target.value as any) !== servingSelect
+                          (e.target.value as any) !==
+                            formData.groupBooking.serving
                             ? true
                             : false
                         );
                       }
-                      setServingSelectGroup(e.target.value as any);
+                      formHandleChangeSelect(e);
                     }}
-                    defaultValue={
-                      groupBookingData !== null
-                        ? groupBookingData.servingID
-                        : props.group.servingID
-                    }
+                    defaultValue={formData.groupBooking.serving as any}
                   >
                     {servings[0].servingID !== -1 ? (
                       servings.map((serving: any) => (
@@ -454,19 +519,19 @@ function Overview_popup(props: any) {
                         updateBooking(
                           getIdFromProp(props.booking).group as Number,
                           moment(props.datetime).format("YYYY-MM-DD"),
-                          servingSelectGroup,
+                          formData.groupBooking.serving as any,
                           props.appUser.id,
                           props.group.id,
-                          groupCount,
+                          formData.groupBooking.count as any,
                           props.group.diet
                         );
                       } else if (groupBookingData === null) {
                         postBooking(
                           moment(props.datetime).format("YYYY-MM-DD"),
-                          servingSelectGroup,
+                          formData.groupBooking.serving as any,
                           props.appUser.id,
                           props.group.id,
-                          groupCount,
+                          formData.groupBooking.count as any,
                           props.group.diet
                         );
                       } else if (groupBookingData) {
@@ -486,9 +551,13 @@ function Overview_popup(props: any) {
                       : "Avboka"}
                   </button>
                 </div>
-              </div>
-            ) : null
-          ) : null}
+              </form>
+            ) : (
+              <></>
+            )
+          ) : (
+            <></>
+          )}
         </div>
         <span
           className="material-icons-outlined text-sm p-1 cursor-pointer"
