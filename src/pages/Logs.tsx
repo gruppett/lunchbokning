@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState} from "react";
 import Spinner from "../components/Spinner/Spinner";
 import DataTable, {
   TableColumn,
