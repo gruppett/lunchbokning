@@ -89,7 +89,6 @@ function HjortenCalendar(props: any) {
         })
         .then((data) => {
           setAppUser(data);
-          console.log(data);
           if (data.hasOwnProperty("groups")) {
             setGroupData(data.groups.find((x: any) => x.primary === 1));
             setGroupError(false);
@@ -147,7 +146,6 @@ function HjortenCalendar(props: any) {
 
   useEffect(() => {
     if (groupData !== undefined && groupData !== null) {
-      console.log(groupData);
       if (!groupData.hasOwnProperty("message")) {
         const url =
           process.env.REACT_APP_API_SERVER + "booking/getBookings.php";
