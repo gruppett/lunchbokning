@@ -161,7 +161,7 @@ function ExternalGroups() {
               </tr>  
             </thead>
             <tbody>
-              {fetched.groups.map((group: any, i: Key) => (
+              {fetched.groups?.map((group: any, i: Key) => (
                 <tr key={i} onClick={() => select("group", group.groupID)}>
                   <td>{group.name}</td>
                   <td>{group.count}</td>
