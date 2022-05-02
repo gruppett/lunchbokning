@@ -9,6 +9,11 @@ function formatDate(date: Date) {
   const dateFormat = "YYYY-MM-DD"
   return moment(date).format(dateFormat)
 }
+function dateToLocaleString(date: Date) {
+  const newDate = new Date(date)
+  return newDate.toLocaleDateString("fi-FI")
+}
+
 function Compilation() {
   const [daysData, setDaysData] = useState({} as any)
   const [error, setError] = useState(false as any)
@@ -77,7 +82,7 @@ function Compilation() {
       </div>
       <div className=""  ref={printRef}>
         <div className="flex gap-3 flex-col">
-          <div>Hämtat {new Date().toLocaleDateString()} av {userData.employeeEmail}</div>
+          <div>Hämtat {new Date().toLocaleDateString("fi-FI")} av {userData.employeeEmail}</div>
           <div className='flex gap-3'>
             <div>T: Total</div>
             <div>N: Normal</div>
@@ -95,7 +100,7 @@ function Compilation() {
                 <table className="text-left border-collapse border-4 ">
                   <tbody>
                     <tr className='border-b-4'>
-                      <th colSpan={2} className="border p-1 text-lg">{i.date}</th>
+                      <th colSpan={2} className="border p-1 text-lg">{dateToLocaleString(i.date)}</th>
                       <th className="border p-1">T</th>
                       <th className="border p-1">N</th>
                       <th className="border p-1">D</th>
