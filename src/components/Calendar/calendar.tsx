@@ -260,7 +260,6 @@ function HjortenCalendar(props: any) {
           );
         }}
         tileContent={({ date, view }) => {
-          console.log("tile");
           return (
             <>
               {props.view === "Overview" || props.view === "Personal" ? (
