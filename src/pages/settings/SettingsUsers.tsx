@@ -240,31 +240,37 @@ function SettingsUsers() {
   }
 
   useEffect(() => {
-    fetch(process.env.REACT_APP_API_SERVER + "user/getUsers.php", {
-      method: "POST", // *GET, POST, PUT, DELETE, etc.
-      mode: "cors", // no-cors, *cors, same-origin
-      headers: {
-        "Content-Type": "application/json",
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
+    (async () => {
+      try {
+        const response = await fetch(process.env.REACT_APP_API_SERVER + "user/getUsers.php", {
+          method: "POST", // *GET, POST, PUT, DELETE, etc.
+          mode: "cors", // no-cors, *cors, same-origin
+          headers: {
+            "Content-Type": "application/json",
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        })
+        const data = await response.json();
         setUsersData(data);
-      });
-    fetch(process.env.REACT_APP_API_SERVER + "groups/getGroups.php", {
-      method: "POST", // *GET, POST, PUT, DELETE, etc.
-      mode: "cors", // no-cors, *cors, same-origin
-      headers: {
-        "Content-Type": "application/json",
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setGroupsData(data);
-        setIsLoaded(true);
-      });
+
+        const response2 = await fetch(process.env.REACT_APP_API_SERVER + "groups/getGroups.php", {
+          method: "POST", // *GET, POST, PUT, DELETE, etc.
+          mode: "cors", // no-cors, *cors, same-origin
+          headers: {
+            "Content-Type": "application/json",
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        })
+        const data2 = await response2.json();
+        setGroupsData(data2);
+
+      } catch (error) {
+        console.log(error)
+      }
+      finally {
+        setIsLoaded(true)
+      }
+    })()
   }, [reload]);
 
   async function addUserHandleSubmit(event: any) {
