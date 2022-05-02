@@ -141,14 +141,16 @@ function PersonalBooking(props: any) {
           throw response.json();
         }
       })
-      .then((data) => {})
       .catch((error) => {
         return error;
       })
       .then((error) => {
-        if (error) console.log(error);
+        if (error) console.log(error.error);
+      })
+      .finally(() => {
+        props.setBooking({ ...data });
       });
-    props.setBooking(data);
+    console.log(data);
   }
 
   function deleteBooking(): void {
@@ -177,14 +179,15 @@ function PersonalBooking(props: any) {
           throw response.json();
         }
       })
-      .then((data) => {})
       .catch((error) => {
         return error;
       })
       .then((error) => {
         if (error) console.log(error);
+      })
+      .finally(() => {
+        props.setBooking({ ...data });
       });
-    props.setBooking(data);
   }
 
   useEffect(() => {

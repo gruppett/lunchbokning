@@ -45,13 +45,10 @@ function Overview_popup(props: any) {
       serving: props.appUser.servingID,
     },
     groupBooking: {
-      count: props.group.count,
-      serving: props.group.servingID,
+      count: props.group !== null ? props.group.count : 0,
+      serving: props.group !== null ? props.group.servingID : 0,
     },
   } as iForm);
-
-  const [servingSelect, setServingSelect] = useState(1);
-  const [servingSelectGroup, setServingSelectGroup] = useState(1);
   const [editBooking, setEditBooking] = useState(false);
   const [editBookingGroup, setEditBookingGroup] = useState(false);
 
@@ -251,7 +248,8 @@ function Overview_popup(props: any) {
     } else {
       setPersonalLoading(false);
     }
-  }, [props.datetime, props.booking, props.view]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (props.view === "Overview") {
@@ -303,7 +301,8 @@ function Overview_popup(props: any) {
     } else {
       setGroupBookingLoading(false);
     }
-  }, [props.datetime, props.booking, props.view]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const fetchServings = () => {
@@ -361,7 +360,7 @@ function Overview_popup(props: any) {
       </div>
     );
   }
-  console.log(formData.personalBooking);
+
   return (
     <>
       <div
