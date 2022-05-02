@@ -85,7 +85,6 @@ function Compilation() {
           <div>Hämtat {new Date().toLocaleDateString("fi-FI")} av {userData.employeeEmail}</div>
           <div className='flex gap-3'>
             <div>T: Total</div>
-            <div>N: Normal</div>
             <div>D: Diet</div>
           </div>
         </div>
@@ -102,7 +101,6 @@ function Compilation() {
                     <tr className='border-b-4'>
                       <th colSpan={2} className="border p-1 text-lg">{dateToLocaleString(i.date)}</th>
                       <th className="border p-1">T</th>
-                      <th className="border p-1">N</th>
                       <th className="border p-1">D</th>
                     </tr>
                     {i.serving.map((j:any, jKey: Key) => {
@@ -111,7 +109,6 @@ function Compilation() {
                           {kKey === 0 ? <th className="border p-1 bg-white" rowSpan={j.groups.length}>{j.name}</th> : <></>}
                           <td className="border p-1">{k.name}</td>
                           <td className="border p-1">{k.total}</td>
-                          <td className="border p-1">{k.normal}</td>
                           <td className="border p-1">{k.diet}</td>
                         </tr>)
                         ))
@@ -121,14 +118,12 @@ function Compilation() {
                           {jKey === 0 ? <th rowSpan={i.serving.length} className="border p-1 bg-white">Subtotal</th> : <></>}
                           <th className="border p-1">{j.name}</th>
                           <td className="border p-1">{j.total}</td>
-                          <td className="border p-1">{j.normal}</td>
-                          <td className="border p-1"  >{j.diet}</td>
+                          <td className="border p-1">{j.diet}</td>
                         </tr>
                       ))}
                       <tr className='border-t-4'>
                         <th colSpan={2} className="border p-1">Totalt</th>
                         <td className="border p-1">{i.total}</td>
-                        <td className="border p-1">{i.normal}</td>
                         <td className="border p-1">{i.diet}</td>
                       </tr>
                   </tbody>
