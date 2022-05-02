@@ -45,8 +45,8 @@ function Overview_popup(props: any) {
       serving: props.appUser.servingID,
     },
     groupBooking: {
-      count: props.group.count,
-      serving: props.group.servingID,
+      count: props.group !== null ? props.group.count : 0,
+      serving: props.group !== null ? props.group.servingID : 0,
     },
   } as iForm);
   const [editBooking, setEditBooking] = useState(false);
