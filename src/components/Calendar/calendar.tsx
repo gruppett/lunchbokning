@@ -59,6 +59,7 @@ function HjortenCalendar(props: any) {
           setPersonalData(data);
         })
         .catch((error) => {
+          setPersonalData(null);
           return error;
         })
         .then((error) => {
@@ -194,35 +195,35 @@ function HjortenCalendar(props: any) {
     return <Spinner />;
   }
 
-  const errors = [
-    personalError,
-    appUserError,
-    excludeDatesError,
-    groupError,
-    groupBookingError,
-  ];
-  errors.forEach((x, index) => {
-    let processingError;
-    switch (index) {
-      case 0:
-        processingError = "Personal bookings error";
-        break;
-      case 1:
-        processingError = "Personal information error";
-        break;
-      case 2:
-        processingError = "Exclude dates error";
-        break;
-      case 3:
-        processingError = "Group error";
-        break;
-      case 4:
-        processingError = "Group booking error";
-        break;
-    }
-    if (x !== undefined && x !== false)
-      console.log(processingError + ": " + x.error);
-  });
+  // const errors = [
+  //   personalError,
+  //   appUserError,
+  //   excludeDatesError,
+  //   groupError,
+  //   groupBookingError,
+  // ];
+  // errors.forEach((x, index) => {
+  //   let processingError;
+  //   switch (index) {
+  //     case 0:
+  //       processingError = "Personal bookings error";
+  //       break;
+  //     case 1:
+  //       processingError = "Personal information error";
+  //       break;
+  //     case 2:
+  //       processingError = "Exclude dates error";
+  //       break;
+  //     case 3:
+  //       processingError = "Group error";
+  //       break;
+  //     case 4:
+  //       processingError = "Group booking error";
+  //       break;
+  //   }
+  //   if (x !== undefined && x !== false)
+  //     console.log(processingError + ": " + x.error);
+  // });
 
   return (
     <>
@@ -259,6 +260,7 @@ function HjortenCalendar(props: any) {
           );
         }}
         tileContent={({ date, view }) => {
+          console.log("tile");
           return (
             <>
               {props.view === "Overview" || props.view === "Personal" ? (

@@ -37,7 +37,6 @@ export function getIdFromProp(prop: any) {
     if (booking_nr.group.length !== 0) {
       booking_nr.group = booking_nr.group[0][1];
     }
-    console.log(booking_nr);
     return booking_nr;
   }
 }
