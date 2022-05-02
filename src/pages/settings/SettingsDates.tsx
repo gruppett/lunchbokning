@@ -61,6 +61,17 @@ function formatTime(date: Date){
   const timeFormat = "HH:mm:ss"
   return moment(date).startOf("minute").format(timeFormat)
 }
+function formatTimeToLocaleString(time: string){   
+  let newDate: any = moment(time, "HH:mm:SS")
+  newDate = new Date(newDate)
+  const newDateArray = newDate.toLocaleTimeString("fi-FI").split(".")
+  newDateArray.pop()
+  return newDateArray.join(".")
+}
+function formatDateToLocaleString(date: string) {
+  const newDate = new Date(date)
+  return newDate.toLocaleDateString("fi-FI")
+}
 
 function SettingsDates() {
   const [loading, setLoading] = useState(true)
@@ -381,8 +392,8 @@ function SettingsDates() {
                 {fetchedData.period ? fetchedData.period.map((i: any, key: Key) => (
                   <tr className="bg-white even:bg-slate-50 cursor-pointer hover:bg-slate-100" onClick={() => select("period",i.periodID as number)} key={key}>
                     <td className='p-1 border'>{i.periodName}</td>
-                    <td className='p-1 border'>{i.startDate}</td>
-                    <td className='p-1 border'>{i.endDate}</td>
+                    <td className='p-1 border'>{formatDateToLocaleString(i.startDate)}</td>
+                    <td className='p-1 border'>{formatDateToLocaleString(i.endDate)}</td>
                   </tr>
                 )): <></>}
               </tbody>
@@ -423,7 +434,7 @@ function SettingsDates() {
                 {fetchedData.excluded ? fetchedData.excluded.map((i: any, key: Key) => (
                   <tr className="bg-white even:bg-slate-50 cursor-pointer hover:bg-slate-100" onClick={() => select("excluded",i.id)} key={key}>
                     <td className='p-1 border'>{i.name}</td>
-                    <td className='p-1 border'>{i.date}</td>
+                    <td className='p-1 border'>{formatDateToLocaleString(i.date)}</td>
                   </tr>
                 )) : <></>}
               </tbody>
@@ -460,7 +471,7 @@ function SettingsDates() {
                 {fetchedData.serving ? fetchedData.serving.map((i: any, key: Key) => (
                   <tr className="bg-white even:bg-slate-50 cursor-pointer hover:bg-slate-100" key={key} onClick={() => select("serving", i.servingID)}>
                     <td className='p-1 border'>{i.servingName}</td>
-                    <td className='p-1 border'>{i.time}</td>
+                    <td className='p-1 border'>{formatTimeToLocaleString(i.time)}</td>
                   </tr>
                 )) : <></>}
               </tbody>
