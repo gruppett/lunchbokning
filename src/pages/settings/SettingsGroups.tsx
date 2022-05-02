@@ -337,13 +337,12 @@ function SettingsGroups() {
   console.log(groupForm)
 
   return (
-    <div className="flex gap-3 flex-col p-3">
+    <div className="flex gap-3 flex-col p-3l">
     {error ? <Alert error={error} setError={setError}></Alert> : <></>}
       <div className="flex gap-6 items-start sm:flex-wrap flex-col sm:flex-row">
-        <div className="">
+        <div className="min-w-min">
           <h2>Grupper</h2>
-          <div className="overflow-auto whitespace-nowrap">
-          <table className="table-auto text-left border-collapse bg-white">
+          <table className="table-auto text-left border-collapse bg-white hidden sm:table">
             <thead>
               <tr>
                 <th className="border p-1">Grupp</th>
@@ -378,7 +377,51 @@ function SettingsGroups() {
               ))}
             </tbody>
           </table>
-        </div>
+
+          <table className="table-auto text-left border-collapse bg-white sm:hidden table">
+            {groupData?.map((i: any, key: Key) => (
+              <tbody key={key} className="even:bg-slate-50">
+                <tr className="border p-1 border-t-4">
+                  <th className="border p-1">Grupp</th>
+                  <td className="border p-1">{i.name}</td>
+                </tr>
+                <tr>
+                  <th className="border p-1">Antal</th>
+                  <td className="border p-1">{i.count}</td>
+                </tr>
+                <tr>
+                  <th className="border p-1">Diet</th>
+                  <td className="border p-1">{i.diet}</td>
+                </tr>
+                <tr>
+                  <th className="border p-1">Primär handledare</th>
+                  <td className="border p-1">{i.primaryHandler.email && mailToShort(i.primaryHandler.email)}</td>
+                </tr>
+                <tr>
+                  <th className="border p-1">Dukning</th>
+                  <td className="border p-1">{servingData.find((x) => x.servingID === i.servingID)?.servingName}</td>
+                </tr>
+                <tr>
+                  <th className="border p-1">Extern</th>
+                  <td className="border p-1 text-center">
+                    {i.external ?
+                      <span className="material-icons-outlined">
+                        done
+                      </span>
+                      : <></>
+                    }
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border border-b-4" colSpan={2}>
+                    <button className="bg-blue-300 w-full" onClick={() => selectGroup(i.groupID as number)}>
+                      Redigera
+                    </button>
+                  </td>
+                </tr>
+            </tbody>
+              ))}
+          </table>
         </div>
         <form className="flex flex-col gap-1" onSubmit={groupHandleSubmit}>
           <h2>
@@ -429,7 +472,7 @@ function SettingsGroups() {
             <option value="0">Ingen primär</option>
             {getAvailablePriamryUsers().map((i: any, key: any) => (
               <option value={i.id} key={key}>
-                {i.email}
+                {mailToShort(i.email)}
               </option>
             ))}
           </select>
@@ -483,7 +526,7 @@ function SettingsGroups() {
                         : ""
                     }`}
                   >
-                    {i.email}
+                    {mailToShort(i.email)}
                   </td>
                   {getSelectedGroup().primaryHandler.email === i.email ? (
                     <></>
@@ -518,7 +561,7 @@ function SettingsGroups() {
               <option value="">Välj handledare</option>
               {getAvailableUsers().map((i: any, key: Key) => (
                 <option key={key} value={i.id}>
-                  {i.email}
+                  {mailToShort(i.email)}
                 </option>
               ))}
             </select>
