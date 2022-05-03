@@ -328,7 +328,7 @@ function PersonalBooking(props: any) {
               name="startDate"
               id="startDate"
               className="mx-1"
-              value={formData.bookingDates.startDate.toString()}
+              defaultValue={formData.bookingDates.startDate.toString()}
               onChange={formHandleChangeInput}
             />
             <input
@@ -336,7 +336,7 @@ function PersonalBooking(props: any) {
               name="endDate"
               id="endDate"
               className="mx-1"
-              value={formData.bookingDates.endDate.toString()}
+              defaultValue={formData.bookingDates.endDate.toString()}
               onChange={formHandleChangeInput}
             />
           </div>
