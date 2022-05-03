@@ -42,7 +42,7 @@ function Overview_popup(props: any) {
 
   const [formData, setFormData] = useState({
     personalBooking: {
-      serving: props.appUser.servingID,
+      serving: props.appUser.servingID !== 0 ? props.appUser.servingID : 1,
     },
     groupBooking: {
       count: props.group !== null ? props.group.count : 0,
@@ -470,14 +470,14 @@ function Overview_popup(props: any) {
                         e.target.value = e.target.value.slice(0, 10);
                         alert("Max antal personer är 9999999999");
                       }
-                      // if (groupBookingData !== null) {
-                      //   setEditBookingGroup(
-                      //     (e.target.value as any) !== servingSelect
-                      //       ? true
-                      //       : false
-                      //   );
-                      // }
-                      //setGroupCount(e.target.value as any);
+                      if (groupBookingData !== null) {
+                        setEditBookingGroup(
+                          (e.target.value as any) !==
+                            formData.groupBooking.count
+                            ? true
+                            : false
+                        );
+                      }
                       formHandleChangeInput(e);
                     }}
                   />

@@ -57,8 +57,10 @@ function HjortenCalendar(props: any) {
         })
         .then((data) => {
           setPersonalData(data);
+          props.setBookings(data);
         })
         .catch((error) => {
+          setPersonalData(null);
           return error;
         })
         .then((error) => {
@@ -142,10 +144,15 @@ function HjortenCalendar(props: any) {
       await fetchExcludes();
     };
     fetchAll();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.mail, bookingID, props.bookingID]);
 
   useEffect(() => {
-    if (groupData !== undefined && groupData !== null) {
+    if (
+      (props.view === "Overview" || props.view === "Group") &&
+      groupData !== undefined &&
+      groupData !== null
+    ) {
       if (!groupData.hasOwnProperty("message")) {
         const url =
           process.env.REACT_APP_API_SERVER + "booking/getBookings.php";
@@ -168,8 +175,10 @@ function HjortenCalendar(props: any) {
           })
           .then((data) => {
             setGroupBookingData(data);
+            props.setBookings(data);
           })
           .catch((error) => {
+            props.setBookings(null);
             return error;
           })
           .then((error) => {
@@ -182,6 +191,7 @@ function HjortenCalendar(props: any) {
     } else {
       setGroupBookingLoading(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [groupData, user.mail]);
 
   if (
