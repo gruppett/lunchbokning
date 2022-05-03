@@ -42,7 +42,7 @@ function Overview_popup(props: any) {
 
   const [formData, setFormData] = useState({
     personalBooking: {
-      serving: props.appUser.servingID,
+      serving: props.appUser.servingID !== 0 ? props.appUser.servingID : 1,
     },
     groupBooking: {
       count: props.group !== null ? props.group.count : 0,
