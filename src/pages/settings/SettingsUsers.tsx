@@ -317,7 +317,7 @@ function SettingsUsers() {
     {error ? <Alert error={error} setError={setError}></Alert> : <></>}
       <div className="flex gap-6 items-start sm:flex-wrap flex-col sm:flex-row">
         <div>
-          <h2>Användare</h2>
+          <h2 className="text-xl">Användare</h2>
           <table className="text-left border-collapse">
             <thead>
               <tr className="bg-white">

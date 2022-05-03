@@ -341,7 +341,7 @@ function SettingsGroups() {
     {error ? <Alert error={error} setError={setError}></Alert> : <></>}
       <div className="flex gap-6 items-start sm:flex-wrap flex-col sm:flex-row">
         <div className="min-w-min">
-          <h2>Grupper</h2>
+          <h2 className="text-xl">Grupper</h2>
           <table className="table-auto text-left border-collapse bg-white hidden sm:table">
             <thead>
               <tr>

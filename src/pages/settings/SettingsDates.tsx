@@ -379,7 +379,7 @@ function SettingsDates() {
       <div className=''>
         <div className="flex gap-6 items-start sm:flex-wrap flex-col sm:flex-row">
           <div>
-            <h2>Perioder</h2>
+            <h2 className="text-xl">Perioder</h2>
             <table className='table-auto text-left border-collapse'>
               <thead>
                 <tr className='bg-white'>
@@ -422,7 +422,7 @@ function SettingsDates() {
       <div className="flex gap-6 items-start sm:flex-wrap flex-col sm:flex-row">
         <div className=''>
 
-        <h2>Exkluderade datum</h2>
+        <h2 className="text-xl">Exkluderade datum</h2>
           <table className='table-auto text-left border-collapse'>
               <thead>
                 <tr className='bg-white'>
@@ -459,7 +459,7 @@ function SettingsDates() {
         :<p>Välj ett exkluderad datum för att hantera den.</p>}
         <div className="flex gap-6 items-start sm:flex-wrap flex-col sm:flex-row">
         <div className=''>
-        <h2>Dukningar</h2>
+        <h2 className="text-xl">Dukningar</h2>
           <table className='table-auto text-left border-collapse'>
               <thead>
                 <tr className='bg-white'>
