@@ -470,14 +470,14 @@ function Overview_popup(props: any) {
                         e.target.value = e.target.value.slice(0, 10);
                         alert("Max antal personer är 9999999999");
                       }
-                      // if (groupBookingData !== null) {
-                      //   setEditBookingGroup(
-                      //     (e.target.value as any) !== servingSelect
-                      //       ? true
-                      //       : false
-                      //   );
-                      // }
-                      //setGroupCount(e.target.value as any);
+                      if (groupBookingData !== null) {
+                        setEditBookingGroup(
+                          (e.target.value as any) !==
+                            formData.groupBooking.count
+                            ? true
+                            : false
+                        );
+                      }
                       formHandleChangeInput(e);
                     }}
                   />
