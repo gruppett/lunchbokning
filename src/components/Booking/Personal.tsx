@@ -51,6 +51,8 @@ function PersonalBooking(props: any) {
     moment(new Date()).format("YYYY-MM-DD")
   );
 
+  const [edit, setEdit] = useState(false);
+
   const [formData, setFormData] = useState({
     bookingDates: {
       weekday: "0",
@@ -153,6 +155,46 @@ function PersonalBooking(props: any) {
     console.log(data);
   }
 
+  function updateBooking(): void {
+    const url = process.env.REACT_APP_API_SERVER + "booking/updateBooking.php";
+    const data = {
+      startDate: formData.bookingDates.startDate,
+      endDate: formData.bookingDates.endDate,
+      groupID: 1,
+      employeeID: userData.employeeID,
+      count: 1,
+      diet: userData.diet,
+      servingID: formData.bookingDates.serving,
+    } as any;
+    if (formData.bookingDates.weekday !== "0") {
+      data.wday = formData.bookingDates.weekday;
+    }
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+      mode: "cors",
+    })
+      .then((response) => {
+        if (response.ok) {
+          response.json();
+        } else {
+          throw response.json();
+        }
+      })
+      .catch((error) => {
+        return error;
+      })
+      .then((error) => {
+        if (error) console.log(error.error);
+      })
+      .finally(() => {
+        props.setBooking({ ...data });
+      });
+  }
+
   function deleteBooking(): void {
     const url = process.env.REACT_APP_API_SERVER + "booking/deleteBooking.php";
     let data = {
@@ -189,6 +231,24 @@ function PersonalBooking(props: any) {
         props.setBooking({ ...data });
       });
   }
+
+  const hasBooking = useCallback(() => {
+    if (props.bookings !== null) {
+      props.bookings.forEach((booking: any) => {
+        if (
+          new Date(booking.date).getTime() >= new Date(startDate).getTime() &&
+          new Date(booking.date).getTime() <= new Date(endDate).getTime()
+        ) {
+          setEdit(true);
+          return;
+        } else {
+          setEdit(false);
+        }
+      });
+    } else {
+      setEdit(false);
+    }
+  }, [endDate, props.bookings, startDate]);
 
   useEffect(() => {
     async function fetchPeriods() {
@@ -244,6 +304,10 @@ function PersonalBooking(props: any) {
     }
     fetchServings();
   }, []);
+
+  useEffect(() => {
+    hasBooking();
+  }, [props.bookings, hasBooking]);
 
   if (periodsLoading || servingsLoading) {
     return <Spinner />;
@@ -343,10 +407,10 @@ function PersonalBooking(props: any) {
           <div className="p-1">
             <button
               className="bg-blue-200 p-1 rounded mx-1"
-              onClick={postBooking}
+              onClick={edit ? updateBooking : postBooking}
               disabled={startDate === null || endDate === null ? true : false}
             >
-              Boka
+              {edit ? "Uppdatera" : "Boka"}
             </button>
             <button
               className="bg-red-200 p-1 rounded mx-1"
