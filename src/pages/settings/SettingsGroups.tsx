@@ -147,7 +147,7 @@ function SettingsGroups() {
     }
     let availableUsers: any = []
 
-    userData.forEach((user) => {
+    getOnlyHandlers().forEach((user) => {
       if (!getSelectedGroup()?.handlers.some((x: { id: number }) => x.id === user.id)) {
         availableUsers.push(user)
       }
@@ -155,9 +155,13 @@ function SettingsGroups() {
     return availableUsers
   }
 
+  function getOnlyHandlers() {
+    return userData.filter((x) => x.roles.includes(4));
+  }
+
   function getAvailablePriamryUsers () {
     let availableUsers: any = []
-    userData.forEach((user) => {
+    getOnlyHandlers().forEach((user) => {
       if (getSelectedGroup()?.primaryHandler.id === user.id) {
         availableUsers.push(user)
         return
@@ -200,7 +204,7 @@ function SettingsGroups() {
       servingID: groupForm.groupServing,
       external: groupForm.groupExternal ? 1 : 0,
     } as unknown as groupFormSubmitInterface;
-    if (data.employeeID === "") {
+    if (data.employeeID === "0") {
       delete data.employeeID;
     }
     if (!isGroupSelected) {
@@ -438,6 +442,7 @@ function SettingsGroups() {
             onChange={groupHandleChange}
             required
             value={groupForm.groupName}
+            pattern="[a-zA-ZåäöÅÄÖ0-9\ ]"
           />
           <label htmlFor="groupCount">Antal</label>
           <input
@@ -449,6 +454,7 @@ function SettingsGroups() {
             onChange={groupHandleChange}
             required
             value={groupForm.groupCount}
+            pattern="[0-9]"
           />
           <label htmlFor="groupDiet">Diet</label>
           <input
@@ -460,6 +466,7 @@ function SettingsGroups() {
             onChange={groupHandleChange}
             required
             value={groupForm.groupDiet}
+            pattern="[0-9]"
           />
           <label htmlFor="groupHandler">Primär handledare</label>
           <select
