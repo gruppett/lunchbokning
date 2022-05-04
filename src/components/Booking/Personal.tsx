@@ -424,7 +424,7 @@ function PersonalBooking(props: any) {
                 onClick={updateBooking}
               >
                 {" "}
-                Uppdatera
+                Ändra
               </button>
             ) : (
               <></>
