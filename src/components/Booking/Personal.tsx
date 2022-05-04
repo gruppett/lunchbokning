@@ -103,7 +103,12 @@ function PersonalBooking(props: any) {
 
   const setDates = useCallback(
     ([startDate, endDate]: Array<string>): void => {
-      setStartDate(startDate);
+      if (new Date(startDate).getTime() < new Date().getTime()) {
+        startDate = moment(new Date()).format("YYYY-MM-DD");
+        setStartDate(moment(new Date()).format("YYYY-MM-DD"));
+      } else {
+        setStartDate(startDate);
+      }
       setEndDate(endDate);
       const newForm = formData;
       const dates = [startDate, endDate];
@@ -307,6 +312,7 @@ function PersonalBooking(props: any) {
 
   useEffect(() => {
     hasBooking();
+    console.log("Hej");
   }, [props.bookings, hasBooking]);
 
   if (periodsLoading || servingsLoading) {
@@ -405,12 +411,23 @@ function PersonalBooking(props: any) {
             />
           </div>
           <div className="p-1">
+            {edit ? (
+              <button
+                className="bg-yellow-200 p-1 rounded mx-1"
+                onClick={updateBooking}
+              >
+                {" "}
+                Uppdatera
+              </button>
+            ) : (
+              <></>
+            )}
             <button
               className="bg-blue-200 p-1 rounded mx-1"
-              onClick={edit ? updateBooking : postBooking}
+              onClick={postBooking}
               disabled={startDate === null || endDate === null ? true : false}
             >
-              {edit ? "Uppdatera" : "Boka"}
+              Boka
             </button>
             <button
               className="bg-red-200 p-1 rounded mx-1"
