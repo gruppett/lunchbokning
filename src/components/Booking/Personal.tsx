@@ -102,16 +102,16 @@ function PersonalBooking(props: any) {
   }
 
   const setDates = useCallback(
-    ([startDate, endDate]: Array<string>): void => {
-      if (new Date(startDate).getTime() < new Date().getTime()) {
-        startDate = moment(new Date()).format("YYYY-MM-DD");
+    ([startDateF, endDateF]: Array<string>): void => {
+      if (new Date(startDateF).getTime() < new Date().getTime()) {
+        startDateF = moment(new Date()).format("YYYY-MM-DD");
         setStartDate(moment(new Date()).format("YYYY-MM-DD"));
       } else {
-        setStartDate(startDate);
+        setStartDate(startDateF);
       }
-      setEndDate(endDate);
+      setEndDate(endDateF);
       const newForm = formData;
-      const dates = [startDate, endDate];
+      const dates = [startDateF, endDateF];
       newForm.bookingDates.startDate = dates[0];
       newForm.bookingDates.endDate = dates[1];
       setFormData(newForm);
