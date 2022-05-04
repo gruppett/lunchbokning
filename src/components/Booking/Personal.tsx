@@ -411,9 +411,16 @@ function PersonalBooking(props: any) {
             />
           </div>
           <div className="p-1">
+            <button
+              className="bg-blue-200 hover:bg-blue-400 p-1 rounded mx-1"
+              onClick={postBooking}
+              disabled={startDate === null || endDate === null ? true : false}
+            >
+              Boka
+            </button>
             {edit ? (
               <button
-                className="bg-yellow-200 p-1 rounded mx-1"
+                className="bg-yellow-200 hover:bg-yellow-400 p-1 rounded mx-1"
                 onClick={updateBooking}
               >
                 {" "}
@@ -423,14 +430,7 @@ function PersonalBooking(props: any) {
               <></>
             )}
             <button
-              className="bg-blue-200 p-1 rounded mx-1"
-              onClick={postBooking}
-              disabled={startDate === null || endDate === null ? true : false}
-            >
-              Boka
-            </button>
-            <button
-              className="bg-red-200 p-1 rounded mx-1"
+              className="bg-red-200 hover:bg-red-400 p-1 rounded mx-1"
               onClick={deleteBooking}
               disabled={startDate === null || endDate === null ? true : false}
             >
