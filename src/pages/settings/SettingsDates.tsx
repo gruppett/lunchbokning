@@ -403,7 +403,7 @@ function SettingsDates() {
             <h2>{!isSelected("period") ? "Lägg till" : `Ändra ${getSelected("period").periodName}`}</h2>
             <label htmlFor="periodName">Namn</label>
             <input type="text" name="name" id="periodName" className='bg-slate-50 border p-1'value={formData.period.name} onChange={formHandleChange} required 
-            pattern="[a-zA-ZåäöÅÄÖ0-9\ ]" />
+            pattern="[a-zA-ZåäöÅÄÖ0-9 ]+" />
             <label htmlFor="periodFrom">Från</label>
             <input type="date" name="startDate" id="periodFrom" className='bg-slate-50 border p-1'value={formData.period.startDate.toString()} onChange={formHandleChange} required/>
             <label htmlFor="periodTo">Till</label>
@@ -445,7 +445,7 @@ function SettingsDates() {
               <h2>{!isSelected("excluded") ? "Lägg till" : `Ändra ${getSelected("excluded").name}`}</h2>
             <label htmlFor="excludedName">Namn</label>
             <input type="text" name="name" id="excludedName" className='bg-slate-50 border p-1'value={formData.excluded.name} onChange={formHandleChange} 
-            pattern="[a-zA-ZåäöÅÄÖ0-9\ ]"/>
+            pattern="[a-zA-ZåäöÅÄÖ0-9 ]+"/>
             <label htmlFor="excludedDate">Datum</label>
             <input type="date" name="date" id="excludedDate" className='bg-slate-50 border p-1'value={formData.excluded.date.toString()} onChange={formHandleChange}/>
             <div className="flex gap-1">
@@ -483,7 +483,7 @@ function SettingsDates() {
               <h2>{!isSelected("serving") ? "Lägg till" : `Ändra ${getSelected("serving").servingName}`}</h2>
               <label htmlFor="servingName">Namn</label>
               <input type="text" name="name" id="servingName" className='bg-slate-50 border p-1'value={formData.serving.name} onChange={formHandleChange} 
-            pattern="[a-zA-ZåäöÅÄÖ0-9\ ]"/>
+            pattern="[a-zA-ZåäöÅÄÖ0-9 ]+"/>
               <label htmlFor="servingTime">Tid</label>
               <input type="time" name="time" id="servingTime" className='bg-slate-50 border p-1'value={formData.serving.time} onChange={formHandleChange}/>
               <div className="flex gap-1">

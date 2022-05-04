@@ -204,7 +204,7 @@ function SettingsGroups() {
       servingID: groupForm.groupServing,
       external: groupForm.groupExternal ? 1 : 0,
     } as unknown as groupFormSubmitInterface;
-    if (data.employeeID === "0") {
+    if (data.employeeID === "") {  
       delete data.employeeID;
     }
     if (!isGroupSelected) {
@@ -442,7 +442,7 @@ function SettingsGroups() {
             onChange={groupHandleChange}
             required
             value={groupForm.groupName}
-            pattern="[a-zA-ZåäöÅÄÖ0-9\ ]"
+            pattern="[a-zA-ZåäöÅÄÖ0-9 ]+"
           />
           <label htmlFor="groupCount">Antal</label>
           <input
@@ -454,7 +454,7 @@ function SettingsGroups() {
             onChange={groupHandleChange}
             required
             value={groupForm.groupCount}
-            pattern="[0-9]"
+            pattern="[0-9]+"
           />
           <label htmlFor="groupDiet">Diet</label>
           <input
@@ -466,7 +466,7 @@ function SettingsGroups() {
             onChange={groupHandleChange}
             required
             value={groupForm.groupDiet}
-            pattern="[0-9]"
+            pattern="[0-9]+"
           />
           <label htmlFor="groupHandler">Primär handledare</label>
           <select
@@ -476,7 +476,7 @@ function SettingsGroups() {
             onChange={groupHandleChange}
             value={groupForm.groupHandler}
           >
-            <option value="0">Ingen primär</option>
+            <option value="">Ingen primär</option>
             {getAvailablePriamryUsers().map((i: any, key: any) => (
               <option value={i.id} key={key}>
                 {mailToShort(i.email)}
