@@ -102,11 +102,16 @@ function PersonalBooking(props: any) {
   }
 
   const setDates = useCallback(
-    ([startDate, endDate]: Array<string>): void => {
-      setStartDate(startDate);
-      setEndDate(endDate);
+    ([startDateF, endDateF]: Array<string>): void => {
+      if (new Date(startDateF).getTime() < new Date().getTime()) {
+        startDateF = moment(new Date()).format("YYYY-MM-DD");
+        setStartDate(moment(new Date()).format("YYYY-MM-DD"));
+      } else {
+        setStartDate(startDateF);
+      }
+      setEndDate(endDateF);
       const newForm = formData;
-      const dates = [startDate, endDate];
+      const dates = [startDateF, endDateF];
       newForm.bookingDates.startDate = dates[0];
       newForm.bookingDates.endDate = dates[1];
       setFormData(newForm);
@@ -307,6 +312,7 @@ function PersonalBooking(props: any) {
 
   useEffect(() => {
     hasBooking();
+    console.log("Hej");
   }, [props.bookings, hasBooking]);
 
   if (periodsLoading || servingsLoading) {
@@ -406,14 +412,25 @@ function PersonalBooking(props: any) {
           </div>
           <div className="p-1">
             <button
-              className="bg-blue-200 p-1 rounded mx-1"
-              onClick={edit ? updateBooking : postBooking}
+              className="bg-blue-200 hover:bg-blue-400 p-1 rounded mx-1"
+              onClick={postBooking}
               disabled={startDate === null || endDate === null ? true : false}
             >
-              {edit ? "Uppdatera" : "Boka"}
+              Boka
             </button>
+            {edit ? (
+              <button
+                className="bg-yellow-200 hover:bg-yellow-400 p-1 rounded mx-1"
+                onClick={updateBooking}
+              >
+                {" "}
+                Ändra
+              </button>
+            ) : (
+              <></>
+            )}
             <button
-              className="bg-red-200 p-1 rounded mx-1"
+              className="bg-red-200 hover:bg-red-400 p-1 rounded mx-1"
               onClick={deleteBooking}
               disabled={startDate === null || endDate === null ? true : false}
             >

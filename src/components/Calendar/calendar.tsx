@@ -64,6 +64,9 @@ function HjortenCalendar(props: any) {
         })
         .catch((error) => {
           setPersonalData(null);
+          if (props.setBookings !== undefined) {
+            props.setBookings(null);
+          }
           return error;
         })
         .then((error) => {
