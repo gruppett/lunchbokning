@@ -7,6 +7,7 @@ import ReactDOM from "react-dom";
 import Spinner from "../Spinner/Spinner";
 import { tile_Matchesdate } from "../../helpers/tileMatchesDate";
 import { BookingClassNames } from "../../helpers/tileClassNameBooking";
+import moment from "moment";
 
 function HjortenCalendar(props: any) {
   const [value, onChange] = useState(new Date());
@@ -57,7 +58,9 @@ function HjortenCalendar(props: any) {
         })
         .then((data) => {
           setPersonalData(data);
-          props.setBookings(data);
+          if (props.setBookings !== undefined) {
+            props.setBookings(data);
+          }
         })
         .catch((error) => {
           setPersonalData(null);
@@ -303,7 +306,10 @@ function HjortenCalendar(props: any) {
           if (
             tile_Matchesdate(date, excludeDates, view) ||
             date.getDay() === 0 ||
-            date.getDay() === 6
+            date.getDay() === 6 ||
+            date.getTime() <
+              new Date(moment(new Date()).format("YYYY-MM-DD")).getTime() -
+                10800000
           ) {
             return true;
           } else {
