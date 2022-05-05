@@ -37,9 +37,9 @@ class Data {
   [key: string]: { [key: string]: any };
 }
 
-interface iSelected {
-  group: number;
-}
+// interface iSelected {
+//   group: number;
+// }
 
 function ExternalGroups() {
   const [loading, setLoading] = useState(false);
