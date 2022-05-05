@@ -203,6 +203,7 @@ function HjortenCalendar(props: any) {
             if (props.setBookings !== undefined) {
               props.setBookings(null);
             }
+            setGroupBookingData(null);
             return error;
           })
           .then((error) => {
@@ -312,7 +313,7 @@ function HjortenCalendar(props: any) {
               {props.view === "Overview" || props.view === "Groups" ? (
                 tile_Matchesdate(date, groupBookingData, view) ? (
                   <p className="bg-gradient-to-tr from-red-400 to-red-200 rounded p-1">
-                    {groupData.name}
+                    {groupData !== undefined ? groupData.name : ""}
                   </p>
                 ) : (
                   <></>
