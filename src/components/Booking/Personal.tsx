@@ -73,6 +73,11 @@ function PersonalBooking(props: any) {
     const newFormData = formData;
     newFormData[form][name] = value;
     setFormData(newFormData);
+    if (name === "startDate") {
+      setDates([value, endDate]);
+    } else if (name === "endDate") {
+      setDates([startDate, value]);
+    }
   }
 
   function formHandleChangeSelect(e: React.ChangeEvent<HTMLSelectElement>) {
@@ -239,17 +244,11 @@ function PersonalBooking(props: any) {
 
   const hasBooking = useCallback(() => {
     if (props.bookings !== null) {
-      props.bookings.forEach((booking: any) => {
-        if (
-          new Date(booking.date).getTime() >= new Date(startDate).getTime() &&
-          new Date(booking.date).getTime() <= new Date(endDate).getTime()
-        ) {
-          setEdit(true);
-          return;
-        } else {
-          setEdit(false);
-        }
-      });
+      props.bookings.find(
+        (booking: any) => booking.date >= startDate && booking.date <= endDate
+      ) !== undefined
+        ? setEdit(true)
+        : setEdit(false);
     } else {
       setEdit(false);
     }
@@ -312,8 +311,7 @@ function PersonalBooking(props: any) {
 
   useEffect(() => {
     hasBooking();
-    console.log("Hej");
-  }, [props.bookings, hasBooking]);
+  }, [props.bookings, hasBooking, startDate, endDate]);
 
   if (periodsLoading || servingsLoading) {
     return <Spinner />;
@@ -398,7 +396,7 @@ function PersonalBooking(props: any) {
               name="startDate"
               id="startDate"
               className="mx-1"
-              defaultValue={formData.bookingDates.startDate.toString()}
+              value={formData.bookingDates.startDate.toString()}
               onChange={formHandleChangeInput}
             />
             <input
@@ -406,7 +404,7 @@ function PersonalBooking(props: any) {
               name="endDate"
               id="endDate"
               className="mx-1"
-              defaultValue={formData.bookingDates.endDate.toString()}
+              value={formData.bookingDates.endDate.toString()}
               onChange={formHandleChangeInput}
             />
           </div>
