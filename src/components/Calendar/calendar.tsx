@@ -78,7 +78,6 @@ function HjortenCalendar(props: any) {
 
       url = process.env.REACT_APP_API_SERVER + "user/getUser.php";
       body = '{ "email": "' + user.mail + '" }';
-
       await fetch(url, {
         body: body,
         method: "POST",
@@ -98,7 +97,13 @@ function HjortenCalendar(props: any) {
         .then((data) => {
           setAppUser(data);
           if (data.hasOwnProperty("groups")) {
-            setGroupData(data.groups.find((x: any) => x.primary === 1));
+            if (props.group !== undefined && props.group !== null) {
+              setGroupData(
+                data.groups.find((x: any) => x.id === parseInt(props.group))
+              );
+            } else {
+              setGroupData(data.groups.find((x: any) => x.primary === 1));
+            }
             setGroupError(false);
             setGroupLoading(false);
           } else {
@@ -146,23 +151,34 @@ function HjortenCalendar(props: any) {
     };
 
     const fetchAll = async () => {
-      await fetchPersonal();
+      // if (props.view !== "Groups") {
+      // } else {
+      //   setPersonalLoading(false);
+      //   setAppUserLoading(false);
+      //   setGroupLoading(false);
+      // }
       await fetchExcludes();
+      await fetchPersonal();
     };
     fetchAll();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user.mail, bookingID, props.bookingID]);
+  }, [user.mail, bookingID, props.bookingID, props.group]);
 
   useEffect(() => {
-    if (
-      (props.view === "Overview" || props.view === "Group") &&
-      groupData !== undefined &&
-      groupData !== null
-    ) {
-      if (!groupData.hasOwnProperty("message")) {
+    if (props.view === "Overview" || props.view === "Groups") {
+      if (groupData !== null && groupData !== undefined) {
+        setGroupBookingLoading(true);
         const url =
           process.env.REACT_APP_API_SERVER + "booking/getBookings.php";
-        const body = '{ "groupID": "' + groupData.id + '"}';
+        let body;
+        if (props.group !== null && props.group !== undefined) {
+          body = '{ "groupID": "' + props.group + '" }';
+        } else if (props.group === "0" || props.group === null) {
+          setGroupBookingLoading(false);
+          return;
+        } else {
+          body = '{ "groupID": "' + groupData.id + '"}';
+        }
         fetch(url, {
           body: body,
           method: "POST",
@@ -184,7 +200,9 @@ function HjortenCalendar(props: any) {
             props.setBookings(data);
           })
           .catch((error) => {
-            props.setBookings(null);
+            if (props.setBookings !== undefined) {
+              props.setBookings(null);
+            }
             return error;
           })
           .then((error) => {
@@ -193,12 +211,14 @@ function HjortenCalendar(props: any) {
           .finally(() => {
             setGroupBookingLoading(false);
           });
+      } else {
+        setGroupBookingLoading(false);
       }
     } else {
       setGroupBookingLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [groupData, user.mail]);
+  }, [groupData, user.mail, props.bookingID, props.group]);
 
   if (
     personalLoading ||
@@ -236,8 +256,9 @@ function HjortenCalendar(props: any) {
         processingError = "Group booking error";
         break;
     }
-    if (x !== undefined && x !== false)
+    if (x !== undefined && x !== false && x !== null) {
       console.log(processingError + ": " + x.error);
+    }
   });
 
   return (

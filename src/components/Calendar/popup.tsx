@@ -42,11 +42,22 @@ function Overview_popup(props: any) {
 
   const [formData, setFormData] = useState({
     personalBooking: {
-      serving: props.appUser.servingID !== 0 ? props.appUser.servingID : 1,
+      serving:
+        props.appUser !== null
+          ? props.appUser.servingID !== 0
+            ? props.appUser.servingID
+            : 1
+          : 1,
     },
     groupBooking: {
-      count: props.group !== null ? props.group.count : 0,
-      serving: props.group !== null ? props.group.servingID : 0,
+      count:
+        props.group !== null && props.group !== undefined
+          ? props.group.count
+          : 0,
+      serving:
+        props.group !== null && props.group !== undefined
+          ? props.group.servingID
+          : 0,
     },
   } as iForm);
   const [editBooking, setEditBooking] = useState(false);
@@ -252,7 +263,7 @@ function Overview_popup(props: any) {
   }, []);
 
   useEffect(() => {
-    if (props.view === "Overview") {
+    if (props.view === "Overview" || props.view === "Groups") {
       if (tileHasBooking(props.booking)) {
         if (typeof getIdFromProp(props.booking).group !== "object") {
           const url =
@@ -443,7 +454,7 @@ function Overview_popup(props: any) {
           ) : (
             <></>
           )}
-          {props.view === "Overview" &&
+          {(props.view === "Overview" || props.view === "Groups") &&
           props.group !== undefined &&
           props.group !== null ? (
             !props.group.hasOwnProperty("message") ? (
@@ -461,14 +472,14 @@ function Overview_popup(props: any) {
                     id="groupCount"
                     name="count"
                     min="1"
-                    max="9999999999"
+                    max="999"
                     style={{ maxWidth: "-webkit-fill-available" }}
                     className="p-0.5 rounded m-1 text-right w-full box-border"
                     defaultValue={formData.groupBooking.count}
                     onChange={(e) => {
-                      if (e.target.value.length > 10) {
-                        e.target.value = e.target.value.slice(0, 10);
-                        alert("Max antal personer är 9999999999");
+                      if (e.target.value.length > 3) {
+                        e.target.value = e.target.value.slice(0, 3);
+                        alert("Max antal personer är 999");
                       }
                       if (groupBookingData !== null) {
                         setEditBookingGroup(
