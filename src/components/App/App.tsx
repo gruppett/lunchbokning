@@ -42,6 +42,7 @@ interface UserInterface {
 const allowedGroups = [
   "M365-DAT19Projektgrupp1",
   "ayg-personal-s1",
+  "ag-itavdelningen",
   "ayg-larare-s1",
 ];
 
@@ -136,7 +137,7 @@ function App() {
     return (
       <div className="flex justify-center gap-3 items-center h-full flex-col">
         <h1>Du har inte tillgång till lunchbokningen</h1>
-        <button onClick={() => handleLogout(instance)}></button>
+        <button onClick={() => handleLogout(instance)}>Logga ut</button>
       </div>
     );
 
