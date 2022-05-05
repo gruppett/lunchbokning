@@ -203,13 +203,16 @@ function HjortenCalendar(props: any) {
           })
           .then((data) => {
             setGroupBookingData(data);
-            props.setBookings(data);
+            if (props.setBookings !== undefined) {
+              props.setBookings(data);
+            }
           })
           .catch((error) => {
             if (props.setBookings !== undefined) {
               props.setBookings(null);
             }
             setGroupBookingData(null);
+            console.log(error);
             return error;
           })
           .then((error) => {

@@ -72,7 +72,7 @@ function PersonalBooking(props: any) {
     const name = target.name;
     const newFormData = formData;
     newFormData[form][name] = value;
-    setFormData(newFormData);
+    setFormData({ ...newFormData });
     if (name === "startDate") {
       setDates([value, endDate]);
     } else if (name === "endDate") {
@@ -89,7 +89,7 @@ function PersonalBooking(props: any) {
     const name = target.name;
     const newFormData = formData;
     newFormData[form][name] = value;
-    setFormData(newFormData);
+    setFormData({ ...newFormData });
     if (name === "period") {
       setDates(getPeriodDate(value) as any);
     }
@@ -119,7 +119,7 @@ function PersonalBooking(props: any) {
       const dates = [startDateF, endDateF];
       newForm.bookingDates.startDate = dates[0];
       newForm.bookingDates.endDate = dates[1];
-      setFormData(newForm);
+      setFormData({ ...newForm });
     },
     [formData]
   );
@@ -353,7 +353,7 @@ function PersonalBooking(props: any) {
               name="weekday"
               id="weekdaySelect"
               className="m-1 my-2"
-              defaultValue={formData.bookingDates.weekday}
+              value={formData.bookingDates.weekday}
               onChange={formHandleChangeSelect}
             >
               <option value="0">Alla</option>
@@ -370,7 +370,7 @@ function PersonalBooking(props: any) {
               name="period"
               id="periodSelect"
               className="m-1 my-2"
-              defaultValue={formData.bookingDates.period}
+              value={formData.bookingDates.period}
               onChange={formHandleChangeSelect}
             >
               {periods[0].periodID !== -1 ? (
@@ -390,7 +390,7 @@ function PersonalBooking(props: any) {
               name="serving"
               id="servingSelect"
               className="m-1 my-2"
-              defaultValue={formData.bookingDates.serving}
+              value={formData.bookingDates.serving}
               onChange={formHandleChangeSelect}
             >
               {servings[0].servingID !== -1 ? (

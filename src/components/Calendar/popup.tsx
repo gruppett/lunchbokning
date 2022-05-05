@@ -56,10 +56,13 @@ function Overview_popup(props: any) {
           : 0,
       serving:
         props.group !== null && props.group !== undefined
-          ? props.group.servingID
-          : 0,
+          ? props.group.servingID === 0
+            ? 1
+            : props.group.servingID
+          : 1,
     },
   } as iForm);
+  console.log(props.group);
   const [editBooking, setEditBooking] = useState(false);
   const [editBookingGroup, setEditBookingGroup] = useState(false);
 
@@ -72,7 +75,7 @@ function Overview_popup(props: any) {
     const name = target.name;
     const newFormData = formData;
     newFormData[form][name] = value;
-    setFormData(newFormData);
+    setFormData({ ...newFormData });
   }
 
   function formHandleChangeSelect(e: React.ChangeEvent<HTMLSelectElement>) {
@@ -84,7 +87,7 @@ function Overview_popup(props: any) {
     const name = target.name;
     const newFormData = formData;
     newFormData[form][name] = value;
-    setFormData(newFormData);
+    setFormData({ ...newFormData });
   }
 
   function postBooking(
@@ -404,7 +407,7 @@ function Overview_popup(props: any) {
                   id="servingPersonal"
                   name="serving"
                   className="p-0.5 m-1 bg-white rounded text-right"
-                  defaultValue={formData.personalBooking.serving as any}
+                  value={formData.personalBooking.serving as any}
                   onChange={(e) => {
                     if (personalData !== null) {
                       setEditBooking(
@@ -485,7 +488,7 @@ function Overview_popup(props: any) {
                     max="999"
                     style={{ maxWidth: "-webkit-fill-available" }}
                     className="p-0.5 rounded m-1 text-right w-full box-border"
-                    defaultValue={formData.groupBooking.count}
+                    value={formData.groupBooking.count}
                     onChange={(e) => {
                       if (e.target.value.length > 3) {
                         e.target.value = e.target.value.slice(0, 3);
@@ -517,7 +520,7 @@ function Overview_popup(props: any) {
                       }
                       formHandleChangeSelect(e);
                     }}
-                    defaultValue={formData.groupBooking.serving as any}
+                    value={formData.groupBooking.serving as any}
                   >
                     {servings[0].servingID !== -1 ? (
                       servings.map((serving: any) => (
