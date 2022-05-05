@@ -142,6 +142,7 @@ function PersonalBooking(props: any) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "API-Key": process.env.REACT_APP_API_KEY as string,
       },
       body: JSON.stringify(data),
       mode: "cors",
@@ -183,6 +184,7 @@ function PersonalBooking(props: any) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "API-Key": process.env.REACT_APP_API_KEY as string,
       },
       body: JSON.stringify(data),
       mode: "cors",
@@ -220,6 +222,7 @@ function PersonalBooking(props: any) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "API-Key": process.env.REACT_APP_API_KEY as string,
       },
       body: JSON.stringify(data),
       mode: "cors",
@@ -257,7 +260,13 @@ function PersonalBooking(props: any) {
   useEffect(() => {
     async function fetchPeriods() {
       const url = process.env.REACT_APP_API_SERVER + "period/getPeriods.php";
-      await fetch(url)
+      await fetch(url, {
+        method: "GET",
+        headers: {
+          "API-Key": process.env.REACT_APP_API_KEY as string,
+        },
+        mode: "cors",
+      })
         .then((response) => {
           if (response.ok) {
             return response.json();
@@ -286,7 +295,12 @@ function PersonalBooking(props: any) {
   useEffect(() => {
     async function fetchServings() {
       const url = process.env.REACT_APP_API_SERVER + "serving/getServings.php";
-      await fetch(url)
+      await fetch(url, {
+        method: "GET",
+        headers: {
+          "API-Key": process.env.REACT_APP_API_KEY as string,
+        },
+      })
         .then((response) => {
           if (response.ok) {
             return response.json();

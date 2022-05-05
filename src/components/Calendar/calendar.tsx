@@ -45,6 +45,7 @@ function HjortenCalendar(props: any) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "API-Key": process.env.REACT_APP_API_KEY as string,
         },
         mode: "cors",
       })
@@ -83,6 +84,7 @@ function HjortenCalendar(props: any) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "API-Key": process.env.REACT_APP_API_KEY as string,
         },
         mode: "cors",
       })
@@ -126,6 +128,9 @@ function HjortenCalendar(props: any) {
       await fetch(url, {
         method: "GET",
         mode: "cors",
+        headers: {
+          "API-Key": process.env.REACT_APP_API_KEY as string,
+        },
       })
         .then((response) => {
           if (response.ok) {
@@ -184,6 +189,7 @@ function HjortenCalendar(props: any) {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "API-Key": process.env.REACT_APP_API_KEY as string,
           },
           mode: "cors",
         })

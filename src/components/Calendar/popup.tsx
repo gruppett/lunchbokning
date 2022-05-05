@@ -109,6 +109,7 @@ function Overview_popup(props: any) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "API-Key": process.env.REACT_APP_API_KEY as string,
       },
       mode: "cors",
     })
@@ -154,6 +155,7 @@ function Overview_popup(props: any) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "API-Key": process.env.REACT_APP_API_KEY as string,
       },
       mode: "cors",
     })
@@ -186,6 +188,7 @@ function Overview_popup(props: any) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "API-Key": process.env.REACT_APP_API_KEY as string,
       },
       mode: "cors",
     })
@@ -222,6 +225,7 @@ function Overview_popup(props: any) {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
+              "API-Key": process.env.REACT_APP_API_KEY as string,
             },
             mode: "cors",
           })
@@ -275,6 +279,7 @@ function Overview_popup(props: any) {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
+              "API-Key": process.env.REACT_APP_API_KEY as string,
             },
             mode: "cors",
           })
@@ -318,7 +323,12 @@ function Overview_popup(props: any) {
   useEffect(() => {
     const fetchServings = () => {
       const url = process.env.REACT_APP_API_SERVER + "serving/getServings.php";
-      fetch(url)
+      fetch(url, {
+        method: "GET",
+        headers: {
+          "API-Key": process.env.REACT_APP_API_KEY as string,
+        },
+      })
         .then((response) => {
           if (response.ok) {
             return response.json();
