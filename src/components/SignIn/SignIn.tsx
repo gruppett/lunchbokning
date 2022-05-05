@@ -17,9 +17,9 @@ function SignInButton() {
     <div className='h-screen flex flex-col items-center justify-center gap-10'>
       <img src={hjorten} alt="Övningsrestaurang Hjortens logo"></img>
 
-    <button onClick={() => handleLogin(instance)} className='flex items-center bg-[#ffffff] border border-[#8C8C8C] font-semibold text-[15px] gap-3 text-[#5E5E5E] px-3 py-2 font-sans]'>
+    <button onClick={() => handleLogin(instance)} className='flex items-center bg-[#ffffff] border border-[#8C8C8C] gap-3 text-[#5E5E5E] px-3 py-2'>
       <img src={ms} alt="Microsoft logo"></img>
-      Logga in med Microsoft
+      <span className='font-semibold font-ms text-[15px]'>Logga in med Microsoft</span>
     </button>
     </div>
   )
