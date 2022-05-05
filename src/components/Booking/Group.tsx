@@ -96,7 +96,7 @@ function GroupBooking(props: any) {
     const name = target.name;
     const newFormData = formData;
     newFormData[form][name] = value;
-    setFormData(newFormData);
+    setFormData({ ...newFormData });
     if (name === "period") {
       setDates(getPeriodDate(value) as any);
     } else if (name === "group") {
@@ -146,7 +146,7 @@ function GroupBooking(props: any) {
       const dates = [startDateF, endDateF];
       newForm.bookingDates.startDate = dates[0];
       newForm.bookingDates.endDate = dates[1];
-      setFormData(newForm);
+      setFormData({ ...newForm });
     },
     [formData]
   );
@@ -418,7 +418,7 @@ function GroupBooking(props: any) {
               name="group"
               id="group"
               className="m-1 my-2"
-              defaultValue={formData.bookingDates.group}
+              value={formData.bookingDates.group}
               onChange={formHandleChangeSelect}
             >
               <option value="0">Välj grupp</option>
@@ -455,7 +455,7 @@ function GroupBooking(props: any) {
               name="weekday"
               id="weekdaySelect"
               className="m-1 my-2"
-              defaultValue={formData.bookingDates.weekday}
+              value={formData.bookingDates.weekday}
               onChange={formHandleChangeSelect}
             >
               <option value="0">Alla</option>
@@ -472,7 +472,7 @@ function GroupBooking(props: any) {
               name="period"
               id="periodSelect"
               className="m-1 my-2"
-              defaultValue={formData.bookingDates.period}
+              value={formData.bookingDates.period}
               onChange={formHandleChangeSelect}
             >
               {periods[0].periodID !== -1 ? (
@@ -492,7 +492,7 @@ function GroupBooking(props: any) {
               name="serving"
               id="servingSelect"
               className="m-1 my-2"
-              defaultValue={formData.bookingDates.serving}
+              value={formData.bookingDates.serving}
               onChange={formHandleChangeSelect}
             >
               {servings[0].servingID !== -1 ? (
@@ -512,7 +512,7 @@ function GroupBooking(props: any) {
               name="startDate"
               id="startDate"
               className="mx-1"
-              defaultValue={formData.bookingDates.startDate.toString()}
+              value={formData.bookingDates.startDate.toString()}
               onChange={formHandleChangeInput}
             />
             <input
@@ -520,7 +520,7 @@ function GroupBooking(props: any) {
               name="endDate"
               id="endDate"
               className="mx-1"
-              defaultValue={formData.bookingDates.endDate.toString()}
+              value={formData.bookingDates.endDate.toString()}
               onChange={formHandleChangeInput}
             />
           </div>
