@@ -5,8 +5,9 @@ export function getIdFromProp(prop: any) {
     personal: "",
     group: "",
   };
+  var path = prop.path || (prop.composedPath && prop.composedPath());
   if (tileHasBooking(prop)) {
-    booking_nr.personal = prop.path
+    booking_nr.personal = path
       .find((x: any) => x.tagName === "BUTTON")
       .classList.value.split(" ")
       .map((x: any) => {
@@ -19,7 +20,7 @@ export function getIdFromProp(prop: any) {
       .filter((x: any) => x !== null)
       .map((x: any) => x.split("personal_booking_nr"));
 
-    booking_nr.group = prop.path
+    booking_nr.group = path
       .find((x: any) => x.tagName === "BUTTON")
       .classList.value.split(" ")
       .map((x: any) => {
