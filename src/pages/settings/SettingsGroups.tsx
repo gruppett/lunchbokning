@@ -249,6 +249,7 @@ function SettingsGroups() {
         mode: "cors", // no-cors, *cors, same-origin
         headers: {
           "Content-Type": "application/json",
+          "API-Key": process.env.REACT_APP_API_KEY as string,
           // 'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: JSON.stringify(updateData),
@@ -271,6 +272,7 @@ function SettingsGroups() {
         mode: "cors", // no-cors, *cors, same-origin
         headers: {
           "Content-Type": "application/json",
+          "API-Key": process.env.REACT_APP_API_KEY as string,
           // 'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: JSON.stringify(data),
@@ -299,6 +301,7 @@ function SettingsGroups() {
         mode: "cors", // no-cors, *cors, same-origin
         headers: {
           "Content-Type": "application/json",
+          "API-Key": process.env.REACT_APP_API_KEY as string,
           // 'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: JSON.stringify(data),
@@ -327,6 +330,7 @@ function SettingsGroups() {
         mode: "cors", // no-cors, *cors, same-origin
         headers: {
           "Content-Type": "application/json",
+          "API-Key": process.env.REACT_APP_API_KEY as string,
           // 'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: JSON.stringify(data),
