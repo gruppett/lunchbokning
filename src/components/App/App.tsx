@@ -42,6 +42,7 @@ interface UserInterface {
 const allowedGroups = [
   "M365-DAT19Projektgrupp1",
   "ayg-personal-s1",
+  "ag-itavdelningen",
   "ayg-larare-s1",
 ];
 
