@@ -227,6 +227,7 @@ function SettingsUsers() {
       body: JSON.stringify(data),
       headers: {
         "Content-Type": "application/json",
+        "API-Key": process.env.REACT_APP_API_KEY as string,
       },
     });
 
@@ -247,6 +248,7 @@ function SettingsUsers() {
           mode: "cors", // no-cors, *cors, same-origin
           headers: {
             "Content-Type": "application/json",
+            "API-Key": process.env.REACT_APP_API_KEY as string,
             // 'Content-Type': 'application/x-www-form-urlencoded',
           },
         })
@@ -258,6 +260,7 @@ function SettingsUsers() {
           mode: "cors", // no-cors, *cors, same-origin
           headers: {
             "Content-Type": "application/json",
+            "API-Key": process.env.REACT_APP_API_KEY as string,
             // 'Content-Type': 'application/x-www-form-urlencoded',
           },
         })

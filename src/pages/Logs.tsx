@@ -107,7 +107,11 @@ function Logs() {
   useEffect(() => {
     ( async () => {
       try {
-        const response = await fetch(process.env.REACT_APP_API_SERVER + "log/getLogs.php");
+        const response = await fetch(process.env.REACT_APP_API_SERVER + "log/getLogs.php", {
+          headers: {
+            "API-Key": process.env.REACT_APP_API_KEY as string,
+          }
+        });
         const data = await response.json();
         if (!response.ok) {
           setError(data.error)

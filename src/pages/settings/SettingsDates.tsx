@@ -181,7 +181,8 @@ function SettingsDates() {
         method: "POST",
         body: JSON.stringify(data),
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "API-Key": process.env.REACT_APP_API_KEY as string,
         }})
       console.log(response)
       const resJson = await response.json()
@@ -196,7 +197,8 @@ function SettingsDates() {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "API-Key": process.env.REACT_APP_API_KEY as string,
       }})
     console.log(response)
     const resJson = await response.json()
@@ -214,7 +216,8 @@ function SettingsDates() {
         method: "POST",
         body: JSON.stringify(data),
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "API-Key": process.env.REACT_APP_API_KEY as string,
         }})
       console.log(response)
       const resJson = await response.json()
@@ -229,7 +232,8 @@ function SettingsDates() {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "API-Key": process.env.REACT_APP_API_KEY as string,
       }})
     console.log(response)
     const resJson = await response.json()
@@ -249,7 +253,8 @@ function SettingsDates() {
         method: "POST",
         body: JSON.stringify(data),
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "API-Key": process.env.REACT_APP_API_KEY as string,
         }})
       console.log(response)
       const resJson = await response.json()
@@ -264,7 +269,8 @@ function SettingsDates() {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "API-Key": process.env.REACT_APP_API_KEY as string,
       }})
     console.log(response)
     const resJson = await response.json()
@@ -282,7 +288,8 @@ function SettingsDates() {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "API-Key": process.env.REACT_APP_API_KEY as string,
       }})
     console.log(response)
     const resJson = await response.json()
@@ -302,7 +309,8 @@ function SettingsDates() {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "API-Key": process.env.REACT_APP_API_KEY as string,
       }})
     console.log(response)
 
@@ -326,7 +334,8 @@ function SettingsDates() {
         method: "POST",
         body: JSON.stringify(data),
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "API-Key": process.env.REACT_APP_API_KEY as string,
         }})
       console.log(response)
       const resJson = await response.json()
@@ -345,7 +354,11 @@ function SettingsDates() {
       try {
         setLoading(true)
         const results = await Promise.all(fetchHelp.map(i => {
-          return fetch(process.env.REACT_APP_API_SERVER + i.url)
+          return fetch(process.env.REACT_APP_API_SERVER + i.url, {
+            headers: {
+              "API-Key": process.env.REACT_APP_API_KEY as string,
+            }
+          })
         }))
         const data = await Promise.all(results.map((i) => {
           if (i.ok) {

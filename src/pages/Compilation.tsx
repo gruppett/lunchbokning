@@ -39,7 +39,8 @@ function Compilation() {
           method: "POST",
           body: JSON.stringify(dates),
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "API-Key": process.env.REACT_APP_API_KEY as string,
           }
         })
         const data = await result.json()

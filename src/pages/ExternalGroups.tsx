@@ -58,6 +58,9 @@ function ExternalGroups() {
             return fetch(process.env.REACT_APP_API_SERVER + i.url, {
               method: i.method,
               mode: "cors",
+              headers: {
+                "API-Key": process.env.REACT_APP_API_KEY as string,
+              }
             });
           })
         );

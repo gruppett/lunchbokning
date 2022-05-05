@@ -71,7 +71,8 @@ function PersonalSettings() {
       const response = await fetch(process.env.REACT_APP_API_SERVER + 'user/updateUser.php', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          "API-Key": process.env.REACT_APP_API_KEY as string,
         },
         body: JSON.stringify(data)
       })
@@ -106,12 +107,17 @@ function PersonalSettings() {
         fetchHelpWithEmail[1].data = {email: userData.employeeEmail}
         const results = await Promise.all(fetchHelpWithEmail.map(i => {
           if (i.method === 'GET') {
-            return fetch(process.env.REACT_APP_API_SERVER +  i.url)
+            return fetch(process.env.REACT_APP_API_SERVER +  i.url, {
+              headers: {
+                "API-Key": process.env.REACT_APP_API_KEY as string,
+              }
+            })
           } else {
             return fetch(process.env.REACT_APP_API_SERVER + i.url, {
               method: i.method,
               headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                "API-Key": process.env.REACT_APP_API_KEY as string,
               },
               body: JSON.stringify(i.data)
             })
