@@ -1,6 +1,7 @@
 export function tileHasBooking(prop: any) {
-    if (
-      prop.path
+  var path = prop.path || (prop.composedPath && prop.composedPath());
+  if (
+      path
         .find((x: any) => x.tagName === "BUTTON")
         .classList.value.split(" ")
         .map((x: any) => {
