@@ -445,7 +445,7 @@ function SettingsGroups() {
             onChange={groupHandleChange}
             required
             value={groupForm.groupName}
-            pattern="[a-zA-ZåäöÅÄÖ0-9 ]+"
+            pattern="[a-zA-ZåäöÅÄÖ0-9 ]{1,50}"
           />
           <label htmlFor="groupCount">Antal</label>
           <input
@@ -454,6 +454,7 @@ function SettingsGroups() {
             id="groupCount"
             className="bg-slate-50 border p-1"
             min={1}
+            max={10000}
             onChange={groupHandleChange}
             required
             value={groupForm.groupCount}
@@ -466,6 +467,7 @@ function SettingsGroups() {
             id="groupDiet"
             className="bg-slate-50 border p-1"
             min={0}
+            max={10000}
             onChange={groupHandleChange}
             required
             value={groupForm.groupDiet}

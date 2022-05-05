@@ -355,7 +355,7 @@ function SettingsUsers() {
               id="userMail"
               className="bg-slate-50 border p-1"
               required
-              pattern="[a-zA-Z.]+"
+              pattern="[a-zA-Z.]{1,87}"
             />
             <span>@gymnasium.ax</span>
           </div>
