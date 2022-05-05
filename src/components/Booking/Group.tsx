@@ -293,9 +293,10 @@ function GroupBooking(props: any) {
     async function fetchPeriods() {
       const url = process.env.REACT_APP_API_SERVER + "period/getPeriods.php";
       await fetch(url, {
+        method: "GET",
         headers: {
           "API-Key": process.env.REACT_APP_API_KEY as string,
-        }
+        },
       })
         .then((response) => {
           if (response.ok) {
@@ -326,9 +327,10 @@ function GroupBooking(props: any) {
     async function fetchServings() {
       const url = process.env.REACT_APP_API_SERVER + "serving/getServings.php";
       await fetch(url, {
+        method: "GET",
         headers: {
           "API-Key": process.env.REACT_APP_API_KEY as string,
-        }
+        },
       })
         .then((response) => {
           if (response.ok) {
@@ -420,13 +422,15 @@ function GroupBooking(props: any) {
               onChange={formHandleChangeSelect}
             >
               <option value="0">Välj grupp</option>
-              {user.groups.map((group: any) => {
-                return (
-                  <option key={group.id} value={group.id}>
-                    {group.name}
-                  </option>
-                );
-              })}
+              {user.groups !== undefined
+                ? user.groups.map((group: any) => {
+                    return (
+                      <option key={group.id} value={group.id}>
+                        {group.name}
+                      </option>
+                    );
+                  })
+                : null}
             </select>
             <label htmlFor="count" className="m-1 my-2">
               Antal:{" "}

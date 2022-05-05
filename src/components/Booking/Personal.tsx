@@ -261,9 +261,11 @@ function PersonalBooking(props: any) {
     async function fetchPeriods() {
       const url = process.env.REACT_APP_API_SERVER + "period/getPeriods.php";
       await fetch(url, {
+        method: "GET",
         headers: {
           "API-Key": process.env.REACT_APP_API_KEY as string,
-        }
+        },
+        mode: "cors",
       })
         .then((response) => {
           if (response.ok) {
@@ -294,9 +296,10 @@ function PersonalBooking(props: any) {
     async function fetchServings() {
       const url = process.env.REACT_APP_API_SERVER + "serving/getServings.php";
       await fetch(url, {
+        method: "GET",
         headers: {
           "API-Key": process.env.REACT_APP_API_KEY as string,
-        }
+        },
       })
         .then((response) => {
           if (response.ok) {
