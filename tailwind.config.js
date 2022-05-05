@@ -6,11 +6,6 @@ module.exports = {
         '"Open Sans"',
         'sans-serif',
       ],
-      ms: [
-        '"Segoe UI"',
-        '"Open Sans"',
-        'sans-serif',
-      ],
     },
     extends: {
       fontFamily: {
