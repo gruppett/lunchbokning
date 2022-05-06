@@ -246,7 +246,7 @@ function SettingsDates() {
   async function servingHandleSubmit (e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     const data:any = formData.serving
-    data.time = moment(data.time, "HH:mm").format("HH:mm:ss")
+    data.time = moment(data.time, "HH:mm").format("HH:mm:SS")
     if (!isSelected('serving')) {
       const response = await fetch(process.env.REACT_APP_API_SERVER + "serving/postServing.php", {
         method: "POST",
@@ -457,9 +457,9 @@ function SettingsDates() {
               <h2>{!isSelected("excluded") ? "Lägg till" : `Ändra ${getSelected("excluded").name}`}</h2>
             <label htmlFor="excludedName">Namn</label>
             <input type="text" name="name" id="excludedName" className='bg-slate-50 border p-1'value={formData.excluded.name} onChange={formHandleChange} 
-            pattern="[a-zA-ZåäöÅÄÖ0-9 ]{0,50}"/>
+            pattern="[a-zA-ZåäöÅÄÖ0-9 ]{0,50}" required/>
             <label htmlFor="excludedDate">Datum</label>
-            <input type="date" name="date" id="excludedDate" className='bg-slate-50 border p-1'value={formData.excluded.date.toString()} onChange={formHandleChange}/>
+            <input type="date" name="date" id="excludedDate" className='bg-slate-50 border p-1'value={formData.excluded.date.toString()} onChange={formHandleChange} required/>
             <div className="flex gap-1">
               <input type="submit" className='px-3 py-1 w-min whitespace-nowrap bg-blue-300' value="Spara"/>
               <button type="button" className='px-3 py-1 w-min whitespace-nowrap bg-red-300' onClick={() => deselect("excluded")}>Rensa</button>
@@ -495,9 +495,9 @@ function SettingsDates() {
               <h2>{!isSelected("serving") ? "Lägg till" : `Ändra ${getSelected("serving").servingName}`}</h2>
               <label htmlFor="servingName">Namn</label>
               <input type="text" name="name" id="servingName" className='bg-slate-50 border p-1'value={formData.serving.name} onChange={formHandleChange} 
-            pattern="[a-zA-ZåäöÅÄÖ0-9 ]{0,50}"/>
+            pattern="[a-zA-ZåäöÅÄÖ0-9 ]{0,50}" required/>
               <label htmlFor="servingTime">Tid</label>
-              <input type="time" name="time" id="servingTime" className='bg-slate-50 border p-1'value={formData.serving.time} onChange={formHandleChange}/>
+              <input type="time" name="time" id="servingTime" className='bg-slate-50 border p-1'value={formData.serving.time} onChange={formHandleChange} required/>
               <div className="flex gap-1">
                 <input type="submit" className='px-3 py-1 w-min whitespace-nowrap bg-blue-300' value="Spara"/>
                 <button type="button" className='px-3 py-1 w-min whitespace-nowrap bg-red-300' onClick={() => deselect("serving")}>Rensa</button>
