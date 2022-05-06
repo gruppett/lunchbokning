@@ -135,7 +135,6 @@ function HjortenCalendar(props: any) {
                 }
               })
               .then((data) => {
-                console.log(data);
                 setGroupData(
                   data.find((x: any) => x.groupID === parseInt(props.group))
                 );
@@ -208,7 +207,6 @@ function HjortenCalendar(props: any) {
         const url =
           process.env.REACT_APP_API_SERVER + "booking/getBookings.php";
         let body;
-        console.log(props.group);
         if (props.group !== null && props.group !== undefined) {
           body = '{ "groupID": "' + props.group + '" }';
         } else if (props.group === "0" || props.group === null) {

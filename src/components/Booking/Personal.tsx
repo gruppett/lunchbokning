@@ -163,7 +163,6 @@ function PersonalBooking(props: any) {
       .finally(() => {
         props.setBooking({ ...data });
       });
-    console.log(data);
   }
 
   function updateBooking(): void {
