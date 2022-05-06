@@ -59,7 +59,7 @@ function PersonalBooking(props: any) {
       startDate: formatDate(new Date()),
       endDate: formatDate(new Date()),
       period: "",
-      serving: "1",
+      serving: userData.servingID !== 0 ? userData.servingID : "",
     },
   } as iForm);
 

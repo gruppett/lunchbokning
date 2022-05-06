@@ -118,6 +118,12 @@ function GroupBooking(props: any) {
     if (newFormData.bookingDates.diet === undefined) {
       newFormData.bookingDates.diet = 0;
     }
+    newFormData.bookingDates.serving = user.groups.find(
+      (group: any) => group.id === groupID
+    )?.servingID;
+    if (newFormData.bookingDates.serving === undefined) {
+      newFormData.bookingDates.serving = "1";
+    }
     setFormData({ ...newFormData });
   }
 
