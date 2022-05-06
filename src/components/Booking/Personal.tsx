@@ -337,7 +337,7 @@ function PersonalBooking(props: any) {
 
   return (
     <>
-      <div className="flex w-100">
+      <div className="flex">
         <form
           name="bookingDates"
           onSubmit={(e) => {

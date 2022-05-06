@@ -12,13 +12,14 @@ interface iFormKeys {
 interface iForm extends iFormKeys {
   bookingDates: {
     group: number;
-    count: number;
-    diet: number;
     weekday: string;
     startDate: string;
     endDate: string;
     period: string;
     serving: string;
+    groupName: string;
+    groupCount: number;
+    groupDiet: number;
   };
 }
 
@@ -27,7 +28,7 @@ function formatDate(date: Date) {
   return moment(date).format(dateFormat);
 }
 
-function GroupBooking(props: any) {
+function ExternalGroupBooking(props: any) {
   const { userData } = useContext(UserContext);
 
   const [periods, setPeriods] = useState([
@@ -46,9 +47,12 @@ function GroupBooking(props: any) {
   const [servingsLoading, setServingsLoading] = useState(true);
   const [servingsError, setServingsError] = useState(false);
 
-  const [user, setUser] = useState(null as any);
-  const [userLoading, setUserLoading] = useState(true);
-  const [userError, setUserError] = useState(false);
+  const [groups, setGroups] = useState([] as any);
+  const [groupsLoading, setGroupsLoading] = useState(true);
+  const [groupsError, setGroupsError] = useState(false);
+
+  const [newGroup, setNewGroup] = useState(null as any);
+  const [updateGroup, setUpdateGroup] = useState(0);
 
   const [startDate, setStartDate] = useState(
     moment(new Date()).format("YYYY-MM-DD")
@@ -62,13 +66,14 @@ function GroupBooking(props: any) {
   const [formData, setFormData] = useState({
     bookingDates: {
       group: 0,
-      count: 0,
-      diet: 0,
       weekday: "0",
       startDate: formatDate(new Date()),
       endDate: formatDate(new Date()),
       period: "",
       serving: "1",
+      groupName: "",
+      groupCount: 0,
+      groupDiet: 0,
     },
   } as iForm);
 
@@ -76,11 +81,9 @@ function GroupBooking(props: any) {
     const form = e.target.parentElement?.parentElement?.attributes.getNamedItem(
       "name"
     )?.value as string;
-    console.log(form);
     const target = e.target;
     const value = target.value;
     const name = target.name;
-    console.log(form, name, value);
     const newFormData = formData;
     newFormData[form][name] = value;
     setFormData({ ...newFormData });
@@ -106,17 +109,19 @@ function GroupBooking(props: any) {
 
   function formHandleGroupChange(groupID: number) {
     const newFormData = formData;
-    newFormData.bookingDates.count = user.groups.find(
-      (group: any) => group.id === groupID
+    newFormData.bookingDates.group = groupID;
+    props.setGroup(groupID);
+    newFormData.bookingDates.groupCount = groups.find(
+      (group: any) => group.groupID === groupID
     )?.count;
-    if (newFormData.bookingDates.count === undefined) {
-      newFormData.bookingDates.count = 0;
+    if (newFormData.bookingDates.groupCount === undefined) {
+      newFormData.bookingDates.groupCount = 0;
     }
-    newFormData.bookingDates.diet = user.groups.find(
-      (group: any) => group.id === groupID
+    newFormData.bookingDates.groupDiet = groups.find(
+      (group: any) => group.groupID === groupID
     )?.diet;
-    if (newFormData.bookingDates.diet === undefined) {
-      newFormData.bookingDates.diet = 0;
+    if (newFormData.bookingDates.groupDiet === undefined) {
+      newFormData.bookingDates.groupDiet = 0;
     }
     setFormData({ ...newFormData });
   }
@@ -150,21 +155,27 @@ function GroupBooking(props: any) {
     [formData]
   );
 
-  function postBooking(): void {
-    const url = process.env.REACT_APP_API_SERVER + "booking/postBooking.php";
+  async function postBooking() {
+    setUpdateGroup(updateGroup + 1);
+    const url =
+      process.env.REACT_APP_API_SERVER + "booking/postNewExternal.php";
     const data = {
       startDate: formData.bookingDates.startDate,
       endDate: formData.bookingDates.endDate,
-      groupID: formData.bookingDates.group,
       employeeID: userData.employeeID,
-      count: formData.bookingDates.count,
-      diet: formData.bookingDates.diet,
       servingID: formData.bookingDates.serving,
+      count: formData.bookingDates.groupCount,
+      diet: formData.bookingDates.groupDiet,
     } as any;
     if (formData.bookingDates.weekday !== "0") {
       data.wday = formData.bookingDates.weekday;
     }
-    fetch(url, {
+    if (formData.bookingDates.groupName.length !== 0) {
+      data.name = formData.bookingDates.groupName;
+    } else {
+      data.groupID = formData.bookingDates.group;
+    }
+    await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -175,10 +186,13 @@ function GroupBooking(props: any) {
     })
       .then((response) => {
         if (response.ok) {
-          response.json();
+          return response.json();
         } else {
           throw response.json();
         }
+      })
+      .then((response) => {
+        setNewGroup(response.groupID as number);
       })
       .catch((error) => {
         return error;
@@ -198,8 +212,8 @@ function GroupBooking(props: any) {
       endDate: formData.bookingDates.endDate,
       groupID: formData.bookingDates.group,
       employeeID: userData.employeeID,
-      count: formData.bookingDates.count,
-      diet: formData.bookingDates.diet,
+      count: formData.bookingDates.groupCount,
+      diet: formData.bookingDates.groupDiet,
       servingID: formData.bookingDates.serving,
     } as any;
     if (formData.bookingDates.weekday !== "0") {
@@ -330,6 +344,7 @@ function GroupBooking(props: any) {
         headers: {
           "API-Key": process.env.REACT_APP_API_KEY as string,
         },
+        mode: "cors",
       })
         .then((response) => {
           if (response.ok) {
@@ -350,18 +365,14 @@ function GroupBooking(props: any) {
           setServingsLoading(false);
         });
     }
-    async function getUser() {
-      const url = process.env.REACT_APP_API_SERVER + "user/getUser.php";
-      const data = {
-        email: userData.employeeEmail,
-      };
-      await fetch(url, {
+    async function fetchGroups() {
+      await fetch(process.env.REACT_APP_API_SERVER + "groups/getGroups.php", {
         method: "POST",
+        mode: "cors",
         headers: {
           "Content-Type": "application/json",
           "API-Key": process.env.REACT_APP_API_KEY as string,
         },
-        body: JSON.stringify(data),
       })
         .then((response) => {
           if (response.ok) {
@@ -371,33 +382,43 @@ function GroupBooking(props: any) {
           }
         })
         .then((data) => {
-          setUser({ ...data });
-          setUserLoading(false);
+          setGroups(data.filter((group: any) => group.external === 1));
+          setGroupsLoading(false);
         })
         .catch((error) => {
           return error;
         })
         .then((data) => {
-          setUserError(data);
-          setUserLoading(false);
+          setGroupsError(data);
+          setGroupsLoading(false);
         });
     }
-    fetchServings();
-    getUser();
-  }, [userData.employeeEmail]);
+    fetchGroups();
+    if (updateGroup === 0) {
+      fetchServings();
+    }
+  }, [updateGroup]);
+
+  useEffect(() => {
+    if (newGroup !== null && newGroup !== undefined) {
+      console.log(newGroup);
+      formHandleGroupChange(newGroup);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [groups]);
 
   useEffect(() => {
     hasBooking();
   }, [props.bookings, hasBooking]);
 
-  if (periodsLoading || servingsLoading || userLoading) {
+  if (periodsLoading || servingsLoading || groupsLoading) {
     return <Spinner />;
   }
 
-  if (periodsError || servingsError || userError) {
+  if (periodsError || servingsError || groupsError) {
     console.log(periodsError);
     console.log(servingsError);
-    console.log(userError);
+    console.log(groupsError);
   }
 
   return (
@@ -410,9 +431,18 @@ function GroupBooking(props: any) {
           }}
         >
           <div className="p-1">
-            <label htmlFor="group" className="m-1 my-2">
-              Grupp:{" "}
+            <label htmlFor="groupName" className="m-1 my-2">
+              Grupp namn:{" "}
             </label>
+            <input
+              type="text"
+              name="groupName"
+              id="groupName"
+              className="m-1 my-2 border rounded"
+              value={formData.bookingDates.groupName}
+              onChange={formHandleChangeInput}
+            />
+            eller
             <select
               name="group"
               id="group"
@@ -421,29 +451,45 @@ function GroupBooking(props: any) {
               onChange={formHandleChangeSelect}
             >
               <option value="0">Välj grupp</option>
-              {user.groups !== undefined
-                ? user.groups.map((group: any) => {
+              {groups !== undefined
+                ? groups.map((group: any) => {
                     return (
-                      <option key={group.id} value={group.id}>
+                      <option key={group.groupID} value={group.groupID}>
                         {group.name}
                       </option>
                     );
                   })
                 : null}
             </select>
-            <label htmlFor="count" className="m-1 my-2">
+          </div>
+          <div className="p-1">
+            <label htmlFor="groupCount" className="m-1 my-2">
               Antal:{" "}
             </label>
             <input
               type="number"
-              name="count"
-              id="count"
+              name="groupCount"
+              id="groupCount"
               min="1"
               max="999"
-              value={formData.bookingDates.count}
-              onChange={formHandleChangeInput}
               style={{ width: "fit-content" }}
               className="rounded m-1 my-2 text-right box-border"
+              value={formData.bookingDates.groupCount}
+              onChange={formHandleChangeInput}
+            />
+            <label htmlFor="groupDiet" className="m-1 my-2">
+              Diet:{" "}
+            </label>
+            <input
+              type="number"
+              name="groupDiet"
+              id="groupDiet"
+              min="0"
+              max="999"
+              style={{ width: "fit-content" }}
+              className="rounded m-1 my-2 text-right box-border"
+              value={formData.bookingDates.groupDiet}
+              onChange={formHandleChangeInput}
             />
           </div>
           <div className="p-1">
@@ -556,4 +602,4 @@ function GroupBooking(props: any) {
   );
 }
 
-export default GroupBooking;
+export default ExternalGroupBooking;
