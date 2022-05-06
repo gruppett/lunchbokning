@@ -39,43 +39,46 @@ function HjortenCalendar(props: any) {
     const fetchPersonal = async () => {
       let url = process.env.REACT_APP_API_SERVER + "booking/getBookings.php";
       let body = '{ "employeeEmail": "' + user.mail + '"}';
-
-      await fetch(url, {
-        body: body,
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "API-Key": process.env.REACT_APP_API_KEY as string,
-        },
-        mode: "cors",
-      })
-        .then((response) => {
-          if (response.ok) {
-            setPersonalError(false);
-            return response.json();
-          } else {
-            throw response.json();
-          }
+      if (props.view !== "Groups") {
+        await fetch(url, {
+          body: body,
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "API-Key": process.env.REACT_APP_API_KEY as string,
+          },
+          mode: "cors",
         })
-        .then((data) => {
-          setPersonalData(data);
-          if (props.setBookings !== undefined) {
-            props.setBookings(data);
-          }
-        })
-        .catch((error) => {
-          setPersonalData(null);
-          if (props.setBookings !== undefined) {
-            props.setBookings(null);
-          }
-          return error;
-        })
-        .then((error) => {
-          setPersonalError(error);
-        })
-        .finally(() => {
-          setPersonalLoading(false);
-        });
+          .then((response) => {
+            if (response.ok) {
+              setPersonalError(false);
+              return response.json();
+            } else {
+              throw response.json();
+            }
+          })
+          .then((data) => {
+            setPersonalData(data);
+            if (props.setBookings !== undefined) {
+              props.setBookings(data);
+            }
+          })
+          .catch((error) => {
+            setPersonalData(null);
+            if (props.setBookings !== undefined) {
+              props.setBookings(null);
+            }
+            return error;
+          })
+          .then((error) => {
+            setPersonalError(error);
+          })
+          .finally(() => {
+            setPersonalLoading(false);
+          });
+      } else {
+        setPersonalLoading(false);
+      }
 
       url = process.env.REACT_APP_API_SERVER + "user/getUser.php";
       body = '{ "email": "' + user.mail + '" }';
@@ -100,15 +103,47 @@ function HjortenCalendar(props: any) {
           setAppUser(data);
           if (data.hasOwnProperty("groups")) {
             if (props.group !== undefined && props.group !== null) {
-              setGroupData(
-                data.groups.find((x: any) => x.id === parseInt(props.group))
-              );
+              data.groups.find((x: any) => x.id === parseInt(props.group)) ===
+              undefined
+                ? setGroupData(props.group)
+                : setGroupData(
+                    data.groups.find((x: any) => x.id === parseInt(props.group))
+                  );
             } else {
               setGroupData(data.groups.find((x: any) => x.primary === 1));
             }
             setGroupError(false);
             setGroupLoading(false);
           } else {
+            fetch(
+              process.env.REACT_APP_API_SERVER + "groups/getExternals.php",
+              {
+                method: "POST",
+                mode: "cors",
+                headers: {
+                  "Content-Type": "application/json",
+                  "API-Key": process.env.REACT_APP_API_KEY as string,
+                },
+              }
+            )
+              .then((response) => {
+                if (response.ok) {
+                  setGroupError(false);
+                  return response.json();
+                } else {
+                  throw response.json();
+                }
+              })
+              .then((data) => {
+                console.log(data);
+                setGroupData(
+                  data.find((x: any) => x.groupID === parseInt(props.group))
+                );
+              })
+              .catch((error) => {
+                setGroupData(null);
+                setGroupError(error);
+              });
             setGroupLoading(false);
           }
         })
@@ -156,12 +191,6 @@ function HjortenCalendar(props: any) {
     };
 
     const fetchAll = async () => {
-      // if (props.view !== "Groups") {
-      // } else {
-      //   setPersonalLoading(false);
-      //   setAppUserLoading(false);
-      //   setGroupLoading(false);
-      // }
       await fetchExcludes();
       await fetchPersonal();
     };
@@ -171,11 +200,15 @@ function HjortenCalendar(props: any) {
 
   useEffect(() => {
     if (props.view === "Overview" || props.view === "Groups") {
-      if (groupData !== null && groupData !== undefined) {
+      if (
+        (groupData !== null && groupData !== undefined) ||
+        (props.group !== null && props.group !== undefined)
+      ) {
         setGroupBookingLoading(true);
         const url =
           process.env.REACT_APP_API_SERVER + "booking/getBookings.php";
         let body;
+        console.log(props.group);
         if (props.group !== null && props.group !== undefined) {
           body = '{ "groupID": "' + props.group + '" }';
         } else if (props.group === "0" || props.group === null) {
@@ -322,7 +355,11 @@ function HjortenCalendar(props: any) {
               {props.view === "Overview" || props.view === "Groups" ? (
                 tile_Matchesdate(date, groupBookingData, view) ? (
                   <p className="bg-gradient-to-tr from-red-400 to-red-200 rounded p-1">
-                    {groupData !== undefined ? groupData.name : ""}
+                    {groupData !== undefined
+                      ? groupData.name !== undefined
+                        ? groupData.name
+                        : groupBookingData[0].name
+                      : ""}
                   </p>
                 ) : (
                   <></>
