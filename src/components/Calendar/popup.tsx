@@ -62,7 +62,7 @@ function Overview_popup(props: any) {
           : 1,
     },
   } as iForm);
-  console.log(props.group);
+
   const [editBooking, setEditBooking] = useState(false);
   const [editBookingGroup, setEditBookingGroup] = useState(false);
 

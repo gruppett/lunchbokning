@@ -36,9 +36,8 @@ const roles = [
 interface iForm extends iStringKeys {
   addGroup: {
     groupId: string;
-  }
+  };
 }
-
 
 function SettingsUsers() {
   const [selectedUser, setSelectedUser] = useState(-1);
@@ -52,19 +51,21 @@ function SettingsUsers() {
       groupId: "",
     },
   } as iForm);
-  const [error, setError] = useState(false as any)
+  const [error, setError] = useState(false as any);
 
-
-  function formHandleChange (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
-    const form = e.target.parentElement?.attributes.getNamedItem('name')?.value as string
-    const target = e.target
-    const value = target.value
-    const name = target.name
-    const newFormData = formData
-    newFormData[form][name] = value
-    console.log(newFormData)
-    setFormData(newFormData)
-    reloadData()
+  function formHandleChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) {
+    const form = e.target.parentElement?.attributes.getNamedItem("name")
+      ?.value as string;
+    const target = e.target;
+    const value = target.value;
+    const name = target.name;
+    const newFormData = formData;
+    newFormData[form][name] = value;
+    console.log(newFormData);
+    setFormData(newFormData);
+    reloadData();
   }
 
   function reloadData() {
@@ -100,22 +101,22 @@ function SettingsUsers() {
     return unassignedRoles;
   }
 
-  function getAvailableGroups () {
+  function getAvailableGroups() {
     if (!getSelectedUser().groups) {
-      return groupsData
+      return groupsData;
     }
-    let availableGroups: any = []
+    let availableGroups: any = [];
 
     groupsData.forEach((group: { handlers: any[] }) => {
       if (!group.handlers.some((x: { id: number }) => x.id === selectedUser)) {
-        availableGroups.push(group)
+        availableGroups.push(group);
       }
     });
-    return availableGroups
+    return availableGroups;
   }
 
-  async function rolesDeleteHandleSubmit (e: any) {
-    e.preventDefault()
+  async function rolesDeleteHandleSubmit(e: any) {
+    e.preventDefault();
     const data = {
       employeeID: selectedUser,
       roleID: e.target[0].value,
@@ -127,13 +128,14 @@ function SettingsUsers() {
         body: JSON.stringify(data),
         headers: {
           "Content-Type": "application/json",
+          "API-Key": process.env.REACT_APP_API_KEY as string,
         },
       }
     );
 
     if (!response.ok) {
       const data = await response.json();
-      console.log(data)
+      console.log(data);
       setError(data.error);
     }
     console.log(response);
@@ -152,13 +154,14 @@ function SettingsUsers() {
         body: JSON.stringify(data),
         headers: {
           "Content-Type": "application/json",
+          "API-Key": process.env.REACT_APP_API_KEY as string,
         },
       }
     );
 
     if (!response.ok) {
       const data = await response.json();
-      console.log(data)
+      console.log(data);
       setError(data.error);
     }
     console.log(response);
@@ -170,15 +173,17 @@ function SettingsUsers() {
       event.preventDefault();
       const data = {
         employeeID: selectedUser,
-        groupID: formData.addGroup.groupId
-      }
+        groupID: formData.addGroup.groupId,
+      };
 
       const response = await fetch(
-        process.env.REACT_APP_API_SERVER + "handler/postHandler.php", {
+        process.env.REACT_APP_API_SERVER + "handler/postHandler.php",
+        {
           method: "POST",
           body: JSON.stringify(data),
           headers: {
             "Content-Type": "application/json",
+            "API-Key": process.env.REACT_APP_API_KEY as string,
           },
         }
       );
@@ -186,35 +191,38 @@ function SettingsUsers() {
 
       if (!response.ok) {
         const data = await response.json();
-        console.log(data)
+        console.log(data);
         setError(data.error);
       }
       reloadData();
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
 
   async function deleteHandler(groupID: any) {
     const data = {
       groupID: groupID,
-      employeeID: selectedUser
-    }
+      employeeID: selectedUser,
+    };
     const response = await fetch(
-      process.env.REACT_APP_API_SERVER + "handler/deleteHandler.php", {
+      process.env.REACT_APP_API_SERVER + "handler/deleteHandler.php",
+      {
         method: "POST",
         body: JSON.stringify(data),
         headers: {
           "Content-Type": "application/json",
-        }
-      })
-
-      if (!response.ok) {
-        const data = await response.json();
-        console.log(data)
-        setError(data.error);
+          "API-Key": process.env.REACT_APP_API_KEY as string,
+        },
       }
-    console.log(response)
+    );
+
+    if (!response.ok) {
+      const data = await response.json();
+      console.log(data);
+      setError(data.error);
+    }
+    console.log(response);
     reloadData();
   }
 
@@ -222,18 +230,21 @@ function SettingsUsers() {
     const data = {
       employeeID: selectedUser,
     };
-    const response = await fetch(process.env.REACT_APP_API_SERVER + "user/deleteUser.php", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-        "API-Key": process.env.REACT_APP_API_KEY as string,
-      },
-    });
+    const response = await fetch(
+      process.env.REACT_APP_API_SERVER + "user/deleteUser.php",
+      {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+          "API-Key": process.env.REACT_APP_API_KEY as string,
+        },
+      }
+    );
 
     if (!response.ok) {
       const data = await response.json();
-      console.log(data)
+      console.log(data);
       setError(data.error);
     }
     setIsUserSelected(false);
@@ -243,37 +254,41 @@ function SettingsUsers() {
   useEffect(() => {
     (async () => {
       try {
-        const response = await fetch(process.env.REACT_APP_API_SERVER + "user/getUsers.php", {
-          method: "POST", // *GET, POST, PUT, DELETE, etc.
-          mode: "cors", // no-cors, *cors, same-origin
-          headers: {
-            "Content-Type": "application/json",
-            "API-Key": process.env.REACT_APP_API_KEY as string,
-            // 'Content-Type': 'application/x-www-form-urlencoded',
-          },
-        })
+        const response = await fetch(
+          process.env.REACT_APP_API_SERVER + "user/getUsers.php",
+          {
+            method: "POST", // *GET, POST, PUT, DELETE, etc.
+            mode: "cors", // no-cors, *cors, same-origin
+            headers: {
+              "Content-Type": "application/json",
+              "API-Key": process.env.REACT_APP_API_KEY as string,
+              // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+          }
+        );
         const data = await response.json();
         setUsersData(data);
 
-        const response2 = await fetch(process.env.REACT_APP_API_SERVER + "groups/getGroups.php", {
-          method: "POST", // *GET, POST, PUT, DELETE, etc.
-          mode: "cors", // no-cors, *cors, same-origin
-          headers: {
-            "Content-Type": "application/json",
-            "API-Key": process.env.REACT_APP_API_KEY as string,
-            // 'Content-Type': 'application/x-www-form-urlencoded',
-          },
-        })
+        const response2 = await fetch(
+          process.env.REACT_APP_API_SERVER + "groups/getGroups.php",
+          {
+            method: "POST", // *GET, POST, PUT, DELETE, etc.
+            mode: "cors", // no-cors, *cors, same-origin
+            headers: {
+              "Content-Type": "application/json",
+              "API-Key": process.env.REACT_APP_API_KEY as string,
+              // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+          }
+        );
         const data2 = await response2.json();
         setGroupsData(data2);
-
       } catch (error) {
-        console.log(error)
+        console.log(error);
+      } finally {
+        setIsLoaded(true);
       }
-      finally {
-        setIsLoaded(true)
-      }
-    })()
+    })();
   }, [reload]);
 
   async function addUserHandleSubmit(event: any) {
@@ -288,6 +303,7 @@ function SettingsUsers() {
         mode: "cors", // no-cors, *cors, same-origin
         headers: {
           "Content-Type": "application/json",
+          "API-Key": process.env.REACT_APP_API_KEY as string,
           // 'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: JSON.stringify(data),
@@ -295,7 +311,7 @@ function SettingsUsers() {
     );
     if (!response.ok) {
       const data = await response.json();
-      console.log(data)
+      console.log(data);
       setError(data.error);
     }
     console.log(response);
@@ -313,11 +329,9 @@ function SettingsUsers() {
 
   console.log(usersData);
 
-
   return (
-    
     <div className="flex gap-3 flex-col p-3">
-    {error ? <Alert error={error} setError={setError}></Alert> : <></>}
+      {error ? <Alert error={error} setError={setError}></Alert> : <></>}
       <div className="flex gap-6 items-start sm:flex-wrap flex-col sm:flex-row">
         <div>
           <h2 className="text-xl">Användare</h2>
@@ -374,7 +388,9 @@ function SettingsUsers() {
               <table>
                 <thead>
                   <tr>
-                    <th className="p-1 border" colSpan={2}>Roll</th>
+                    <th className="p-1 border" colSpan={2}>
+                      Roll
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -400,7 +416,10 @@ function SettingsUsers() {
                 </tbody>
               </table>
             </div>
-            <form onSubmit={rolesAddHandleSubmit} className="flex flex-col gap-1">
+            <form
+              onSubmit={rolesAddHandleSubmit}
+              className="flex flex-col gap-1"
+            >
               <h2>Lägg till roll</h2>
 
               <select className="p-1 bg-slate-50 border" required>
@@ -416,7 +435,7 @@ function SettingsUsers() {
                 type="submit"
                 value="Lägg till Roll"
                 className="px-3 py-1 w-min whitespace-nowrap bg-blue-300"
-                />
+              />
             </form>
           </div>
           <div className="flex gap-6 items-start sm:flex-wrap flex-col sm:flex-row">
@@ -431,7 +450,10 @@ function SettingsUsers() {
                   getSelectedUser().groups.map((i: any, key: any) => (
                     <tr key={key} className="bg-white even:bg-slate-50">
                       <td className="border p-1">{i.name}</td>
-                      <td className="border p-1" onClick={() => deleteHandler(i.id)}>
+                      <td
+                        className="border p-1"
+                        onClick={() => deleteHandler(i.id)}
+                      >
                         <span className="material-icons-outlined flex items-center justify-center text-red-500 cursor-pointer hover:text-opacity-60">
                           highlight_off
                         </span>
@@ -440,7 +462,11 @@ function SettingsUsers() {
                   ))}
               </tbody>
             </table>
-            <form className="flex flex-col gap-1" name="addGroup" onSubmit={addGroupSubmit}>
+            <form
+              className="flex flex-col gap-1"
+              name="addGroup"
+              onSubmit={addGroupSubmit}
+            >
               <h2>Lägg till</h2>
               <select
                 id="addGroupGroupId"
@@ -451,13 +477,25 @@ function SettingsUsers() {
               >
                 <option value="">Välj Grupp</option>
                 {getAvailableGroups().map((i: any, key: any) => (
-                  <option key={key} value={i.groupID}>{i.name}</option>
+                  <option key={key} value={i.groupID}>
+                    {i.name}
+                  </option>
                 ))}
               </select>
-              <input type="submit" className="px-3 py-1 w-min whitespace-nowrap bg-blue-300" value="Lägg till"></input>
+              <input
+                type="submit"
+                className="px-3 py-1 w-min whitespace-nowrap bg-blue-300"
+                value="Lägg till"
+              ></input>
             </form>
           </div>
-          <button type="button" className='px-3 py-1 bg-red-500 hover:bg-opacity-60' onClick={deleteUser}>Radera {getSelectedUser().email}</button>
+          <button
+            type="button"
+            className="px-3 py-1 bg-red-500 hover:bg-opacity-60"
+            onClick={deleteUser}
+          >
+            Radera {getSelectedUser().email}
+          </button>
         </div>
       ) : (
         <></>

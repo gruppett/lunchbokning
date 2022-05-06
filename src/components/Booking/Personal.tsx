@@ -171,7 +171,6 @@ function PersonalBooking(props: any) {
     const data = {
       startDate: formData.bookingDates.startDate,
       endDate: formData.bookingDates.endDate,
-      groupID: 1,
       employeeID: userData.employeeID,
       count: 1,
       diet: userData.diet,
