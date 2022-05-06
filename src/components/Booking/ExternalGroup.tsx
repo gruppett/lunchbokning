@@ -404,19 +404,21 @@ function ExternalGroupBooking(props: any) {
       console.log(newGroup);
       formHandleGroupChange(newGroup);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [groups]);
 
   useEffect(() => {
     hasBooking();
   }, [props.bookings, hasBooking]);
 
-  if (periodsLoading || servingsLoading) {
+  if (periodsLoading || servingsLoading || groupsLoading) {
     return <Spinner />;
   }
 
-  if (periodsError || servingsError) {
+  if (periodsError || servingsError || groupsError) {
     console.log(periodsError);
     console.log(servingsError);
+    console.log(groupsError);
   }
 
   return (
