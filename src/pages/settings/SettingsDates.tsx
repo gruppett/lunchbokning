@@ -246,8 +246,7 @@ function SettingsDates() {
   async function servingHandleSubmit (e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     const data:any = formData.serving
-    data.startTime = moment(data.startTime, "HH:mm").format("HH:mm:ss")
-    data.endTime = moment(data.endTime, "HH:mm").format("HH:mm:ss")
+    data.time = moment(data.time, "HH:mm").format("HH:mm:ss")
     if (!isSelected('serving')) {
       const response = await fetch(process.env.REACT_APP_API_SERVER + "serving/postServing.php", {
         method: "POST",
