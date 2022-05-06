@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Key, useCallback } from "react";
 import Spinner from "../../components/Spinner/Spinner";
-import Alert from "../../components/Alert/Alert"
+import Alert from "../../components/Alert/Alert";
 import mailToShort from "../../helpers/mailToShort";
 
 interface groupFormInterfaceKeys {
@@ -75,7 +75,7 @@ function SettingsGroups() {
       groupServing: "0",
       groupExternal: false,
     };
-    setGroupForm({...data});
+    setGroupForm({ ...data });
     setSelectedGroup(0);
     setIsGroupSelected(false);
   }
@@ -144,38 +144,42 @@ function SettingsGroups() {
       });
   }, [reload, sectionLoaded]);
 
-  function getAvailableUsers () {
+  function getAvailableUsers() {
     if (!getSelectedGroup()?.handlers) {
-      return userData
+      return userData;
     }
-    let availableUsers: any = []
+    let availableUsers: any = [];
 
     getOnlyHandlers().forEach((user) => {
-      if (!getSelectedGroup()?.handlers.some((x: { id: number }) => x.id === user.id)) {
-        availableUsers.push(user)
+      if (
+        !getSelectedGroup()?.handlers.some(
+          (x: { id: number }) => x.id === user.id
+        )
+      ) {
+        availableUsers.push(user);
       }
     });
-    return availableUsers
+    return availableUsers;
   }
 
   function getOnlyHandlers() {
     return userData.filter((x) => x.roles.includes(4));
   }
 
-  function getAvailablePriamryUsers () {
-    let availableUsers: any = []
+  function getAvailablePriamryUsers() {
+    let availableUsers: any = [];
     getOnlyHandlers().forEach((user) => {
       if (getSelectedGroup()?.primaryHandler.id === user.id) {
-        availableUsers.push(user)
-        return
+        availableUsers.push(user);
+        return;
       }
       if (user.groups?.some((x: { primary: number }) => x.primary === 1)) {
-        return 
+        return;
       } else {
-        availableUsers.push(user)
+        availableUsers.push(user);
       }
-    })
-    return availableUsers
+    });
+    return availableUsers;
   }
 
   function groupHandleChange(event: { target: any }) {
@@ -184,11 +188,11 @@ function SettingsGroups() {
     if (target.name === "groupExternal") {
       value = target.checked ? true : false;
     }
-    console.log(target.checked)
+    console.log(target.checked);
     const name = target.name;
     const form = groupForm;
     form[name] = value;
-    setGroupForm({...form});
+    setGroupForm({ ...form });
   }
   function handlerHandleChange(event: { target: any }) {
     const target = event.target;
@@ -207,11 +211,11 @@ function SettingsGroups() {
       servingID: groupForm.groupServing,
       external: groupForm.groupExternal ? 1 : 0,
     } as unknown as groupFormSubmitInterface;
-    if (data.employeeID === "") {  
+    if (data.employeeID === "") {
       delete data.employeeID;
     }
     if (!isGroupSelected) {
-      resetSelectedGroup()
+      resetSelectedGroup();
       const response = await fetch(
         process.env.REACT_APP_API_SERVER + "groups/postGroup.php",
         {
@@ -219,6 +223,7 @@ function SettingsGroups() {
           mode: "cors", // no-cors, *cors, same-origin
           headers: {
             "Content-Type": "application/json",
+            "API-Key": process.env.REACT_APP_API_KEY as string,
             // 'Content-Type': 'application/x-www-form-urlencoded',
           },
           body: JSON.stringify(data),
@@ -227,7 +232,7 @@ function SettingsGroups() {
       console.log(await response);
       if (!response.ok) {
         const data = await response.json();
-        console.log(data)
+        console.log(data);
         setError(data.error);
       }
       reloadData();
@@ -235,7 +240,7 @@ function SettingsGroups() {
     }
     let updateData = data;
     updateData.groupID = selectedGroup.toString();
-    resetSelectedGroup()
+    resetSelectedGroup();
     console.log(data);
     const response = await fetch(
       process.env.REACT_APP_API_SERVER + "groups/updateGroup.php",
@@ -244,6 +249,7 @@ function SettingsGroups() {
         mode: "cors", // no-cors, *cors, same-origin
         headers: {
           "Content-Type": "application/json",
+          "API-Key": process.env.REACT_APP_API_KEY as string,
           // 'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: JSON.stringify(updateData),
@@ -266,6 +272,7 @@ function SettingsGroups() {
         mode: "cors", // no-cors, *cors, same-origin
         headers: {
           "Content-Type": "application/json",
+          "API-Key": process.env.REACT_APP_API_KEY as string,
           // 'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: JSON.stringify(data),
@@ -273,7 +280,7 @@ function SettingsGroups() {
     );
     if (!response.ok) {
       const data = await response.json();
-      console.log(data)
+      console.log(data);
       setError(data.error);
     }
     console.log(await response);
@@ -294,6 +301,7 @@ function SettingsGroups() {
         mode: "cors", // no-cors, *cors, same-origin
         headers: {
           "Content-Type": "application/json",
+          "API-Key": process.env.REACT_APP_API_KEY as string,
           // 'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: JSON.stringify(data),
@@ -301,7 +309,7 @@ function SettingsGroups() {
     );
     if (!response.ok) {
       const data = await response.json();
-      console.log(data)
+      console.log(data);
       setError(data.error);
     }
     console.log(await response);
@@ -322,6 +330,7 @@ function SettingsGroups() {
         mode: "cors", // no-cors, *cors, same-origin
         headers: {
           "Content-Type": "application/json",
+          "API-Key": process.env.REACT_APP_API_KEY as string,
           // 'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: JSON.stringify(data),
@@ -329,7 +338,7 @@ function SettingsGroups() {
     );
     if (!response.ok) {
       const data = await response.json();
-      console.log(data)
+      console.log(data);
       setError(data.error);
     }
     console.log(await response);
@@ -341,11 +350,11 @@ function SettingsGroups() {
     return <Spinner></Spinner>;
   }
 
-  console.log(groupForm)
+  console.log(groupForm);
 
   return (
     <div className="flex gap-3 flex-col p-3l">
-    {error ? <Alert error={error} setError={setError}></Alert> : <></>}
+      {error ? <Alert error={error} setError={setError}></Alert> : <></>}
       <div className="flex gap-6 items-start sm:flex-wrap flex-col sm:flex-row">
         <div className="min-w-min">
           <h2 className="text-xl">Grupper</h2>
@@ -370,15 +379,22 @@ function SettingsGroups() {
                   <td className="border p-1">{i.name}</td>
                   <td className="border p-1">{i.count}</td>
                   <td className="border p-1">{i.diet}</td>
-                  <td className="border p-1">{i.primaryHandler.email && mailToShort(i.primaryHandler.email)}</td>
-                  <td className="border p-1">{servingData.find((x) => x.servingID === i.servingID)?.servingName}</td>
-                  <td className="border p-1 text-center">
-                    {i.external ?
-                      <span className="material-icons-outlined">
-                        done
-                      </span>
-                      : <></>
+                  <td className="border p-1">
+                    {i.primaryHandler.email &&
+                      mailToShort(i.primaryHandler.email)}
+                  </td>
+                  <td className="border p-1">
+                    {
+                      servingData.find((x) => x.servingID === i.servingID)
+                        ?.servingName
                     }
+                  </td>
+                  <td className="border p-1 text-center">
+                    {i.external ? (
+                      <span className="material-icons-outlined">done</span>
+                    ) : (
+                      <></>
+                    )}
                   </td>
                 </tr>
               ))}
@@ -402,32 +418,42 @@ function SettingsGroups() {
                 </tr>
                 <tr>
                   <th className="border p-1">Primär handledare</th>
-                  <td className="border p-1">{i.primaryHandler.email && mailToShort(i.primaryHandler.email)}</td>
+                  <td className="border p-1">
+                    {i.primaryHandler.email &&
+                      mailToShort(i.primaryHandler.email)}
+                  </td>
                 </tr>
                 <tr>
                   <th className="border p-1">Dukning</th>
-                  <td className="border p-1">{servingData.find((x) => x.servingID === i.servingID)?.servingName}</td>
-                </tr>
-                <tr>
-                  <th className="border p-1">Extern</th>
-                  <td className="border p-1 text-center">
-                    {i.external ?
-                      <span className="material-icons-outlined">
-                        done
-                      </span>
-                      : <></>
+                  <td className="border p-1">
+                    {
+                      servingData.find((x) => x.servingID === i.servingID)
+                        ?.servingName
                     }
                   </td>
                 </tr>
                 <tr>
+                  <th className="border p-1">Extern</th>
+                  <td className="border p-1 text-center">
+                    {i.external ? (
+                      <span className="material-icons-outlined">done</span>
+                    ) : (
+                      <></>
+                    )}
+                  </td>
+                </tr>
+                <tr>
                   <td className="border border-b-4" colSpan={2}>
-                    <button className="bg-blue-300 w-full" onClick={() => selectGroup(i.groupID as number)}>
+                    <button
+                      className="bg-blue-300 w-full"
+                      onClick={() => selectGroup(i.groupID as number)}
+                    >
                       Redigera
                     </button>
                   </td>
                 </tr>
-            </tbody>
-              ))}
+              </tbody>
+            ))}
           </table>
         </div>
         <form className="flex flex-col gap-1" onSubmit={groupHandleSubmit}>
@@ -504,7 +530,13 @@ function SettingsGroups() {
             ))}
           </select>
           <div className="flex gap-1 items-center">
-            <input type="checkbox" name="groupExternal" id="groupExternal" checked={groupForm.groupExternal} onChange={groupHandleChange}/>
+            <input
+              type="checkbox"
+              name="groupExternal"
+              id="groupExternal"
+              checked={groupForm.groupExternal}
+              onChange={groupHandleChange}
+            />
             <label htmlFor="groupExternal">Extern</label>
           </div>
           <input
@@ -525,7 +557,9 @@ function SettingsGroups() {
           <table className="table-auto text-left border-collapse">
             <thead>
               <tr className="border bg-white">
-                <th colSpan={2} className="p-1 border" >Handledare för {getSelectedGroup().name}</th>
+                <th colSpan={2} className="p-1 border">
+                  Handledare för {getSelectedGroup().name}
+                </th>
               </tr>
             </thead>
             <tbody>
