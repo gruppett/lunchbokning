@@ -20,6 +20,11 @@ interface iForm extends iFormKeys {
     period: string;
     serving: string;
   };
+  externalGroup: {
+    groupName: string;
+    groupCount: number;
+    groupDiet: number;
+  };
 }
 
 function formatDate(date: Date) {
@@ -27,7 +32,7 @@ function formatDate(date: Date) {
   return moment(date).format(dateFormat);
 }
 
-function GroupBooking(props: any) {
+function ExternalGroupBooking(props: any) {
   const { userData } = useContext(UserContext);
 
   const [periods, setPeriods] = useState([
@@ -46,9 +51,9 @@ function GroupBooking(props: any) {
   const [servingsLoading, setServingsLoading] = useState(true);
   const [servingsError, setServingsError] = useState(false);
 
-  const [user, setUser] = useState(null as any);
-  const [userLoading, setUserLoading] = useState(true);
-  const [userError, setUserError] = useState(false);
+  const [groups, setGroups] = useState([] as any);
+  const [groupsLoading, setGroupsLoading] = useState(true);
+  const [groupsError, setGroupsError] = useState(false);
 
   const [startDate, setStartDate] = useState(
     moment(new Date()).format("YYYY-MM-DD")
@@ -70,6 +75,11 @@ function GroupBooking(props: any) {
       period: "",
       serving: "1",
     },
+    externalGroup: {
+      groupName: "",
+      groupCount: 0,
+      groupDiet: 0,
+    },
   } as iForm);
 
   function formHandleChangeInput(e: React.ChangeEvent<HTMLInputElement>) {
@@ -80,7 +90,6 @@ function GroupBooking(props: any) {
     const target = e.target;
     const value = target.value;
     const name = target.name;
-    console.log(form, name, value);
     const newFormData = formData;
     newFormData[form][name] = value;
     setFormData({ ...newFormData });
@@ -100,19 +109,20 @@ function GroupBooking(props: any) {
       setDates(getPeriodDate(value) as any);
     } else if (name === "group") {
       props.setGroup(value);
+      console.log(value);
       formHandleGroupChange(parseInt(value));
     }
   }
 
   function formHandleGroupChange(groupID: number) {
     const newFormData = formData;
-    newFormData.bookingDates.count = user.groups.find(
+    newFormData.bookingDates.count = groups.find(
       (group: any) => group.id === groupID
     )?.count;
     if (newFormData.bookingDates.count === undefined) {
       newFormData.bookingDates.count = 0;
     }
-    newFormData.bookingDates.diet = user.groups.find(
+    newFormData.bookingDates.diet = groups.find(
       (group: any) => group.id === groupID
     )?.diet;
     if (newFormData.bookingDates.diet === undefined) {
@@ -151,18 +161,25 @@ function GroupBooking(props: any) {
   );
 
   function postBooking(): void {
-    const url = process.env.REACT_APP_API_SERVER + "booking/postBooking.php";
+    const url =
+      process.env.REACT_APP_API_SERVER + "booking/postNewExternal.php";
     const data = {
       startDate: formData.bookingDates.startDate,
       endDate: formData.bookingDates.endDate,
-      groupID: formData.bookingDates.group,
       employeeID: userData.employeeID,
-      count: formData.bookingDates.count,
-      diet: formData.bookingDates.diet,
       servingID: formData.bookingDates.serving,
     } as any;
     if (formData.bookingDates.weekday !== "0") {
       data.wday = formData.bookingDates.weekday;
+    }
+    if (formData.bookingDates.group === 0) {
+      data.name = formData.externalGroup.groupName;
+      data.count = formData.externalGroup.groupCount;
+      data.diet = formData.externalGroup.groupDiet;
+    } else {
+      data.groupID = formData.bookingDates.group;
+      data.count = formData.bookingDates.count;
+      data.diet = formData.bookingDates.diet;
     }
     fetch(url, {
       method: "POST",
@@ -330,6 +347,7 @@ function GroupBooking(props: any) {
         headers: {
           "API-Key": process.env.REACT_APP_API_KEY as string,
         },
+        mode: "cors",
       })
         .then((response) => {
           if (response.ok) {
@@ -350,18 +368,15 @@ function GroupBooking(props: any) {
           setServingsLoading(false);
         });
     }
-    async function getUser() {
-      const url = process.env.REACT_APP_API_SERVER + "user/getUser.php";
-      const data = {
-        email: userData.employeeEmail,
-      };
-      await fetch(url, {
-        method: "POST",
+    async function fetchGroups() {
+      await fetch(process.env.REACT_APP_API_SERVER + "groups/getGroups.php", {
+        method: "POST", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, *cors, same-origin
         headers: {
           "Content-Type": "application/json",
           "API-Key": process.env.REACT_APP_API_KEY as string,
+          // 'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: JSON.stringify(data),
       })
         .then((response) => {
           if (response.ok) {
@@ -371,38 +386,87 @@ function GroupBooking(props: any) {
           }
         })
         .then((data) => {
-          setUser({ ...data });
-          setUserLoading(false);
+          setGroups(data.filter((group: any) => group.external === 1));
+          setGroupsLoading(false);
         })
         .catch((error) => {
           return error;
         })
         .then((data) => {
-          setUserError(data);
-          setUserLoading(false);
+          setGroupsError(data);
+          setGroupsLoading(false);
         });
     }
+    fetchGroups();
     fetchServings();
-    getUser();
-  }, [userData.employeeEmail]);
+  }, []);
 
   useEffect(() => {
     hasBooking();
   }, [props.bookings, hasBooking]);
 
-  if (periodsLoading || servingsLoading || userLoading) {
+  if (periodsLoading || servingsLoading) {
     return <Spinner />;
   }
 
-  if (periodsError || servingsError || userError) {
+  if (periodsError || servingsError) {
     console.log(periodsError);
     console.log(servingsError);
-    console.log(userError);
   }
 
   return (
     <>
       <div className="flex">
+        <form
+          name="externalGroup"
+          onSubmit={(e) => {
+            e.preventDefault();
+          }}
+        >
+          <div className="p-1">
+            <label htmlFor="groupName" className="m-1 my-2">
+              Grupp namn:{" "}
+            </label>
+            <input
+              type="text"
+              name="groupName"
+              id="groupName"
+              className="m-1 my-2 border rounded"
+              value={formData.externalGroup.groupName}
+              onChange={formHandleChangeInput}
+            />
+          </div>
+          <div className="p-1">
+            <label htmlFor="groupCount" className="m-1 my-2">
+              Antal:{" "}
+            </label>
+            <input
+              type="number"
+              name="groupCount"
+              id="groupCount"
+              min="1"
+              max="999"
+              style={{ width: "fit-content" }}
+              className="rounded m-1 my-2 text-right box-border"
+              value={formData.externalGroup.groupCount}
+              onChange={formHandleChangeInput}
+            />
+            <label htmlFor="groupDiet" className="m-1 my-2">
+              Diet:{" "}
+            </label>
+            <input
+              type="number"
+              name="groupDiet"
+              id="groupDiet"
+              min="1"
+              max="999"
+              style={{ width: "fit-content" }}
+              className="rounded m-1 my-2 text-right box-border"
+              value={formData.externalGroup.groupDiet}
+              onChange={formHandleChangeInput}
+            />
+          </div>
+        </form>
         <form
           name="bookingDates"
           onSubmit={(e) => {
@@ -421,10 +485,10 @@ function GroupBooking(props: any) {
               onChange={formHandleChangeSelect}
             >
               <option value="0">Välj grupp</option>
-              {user.groups !== undefined
-                ? user.groups.map((group: any) => {
+              {groups !== undefined
+                ? groups.map((group: any) => {
                     return (
-                      <option key={group.id} value={group.id}>
+                      <option key={group.groupID} value={group.groupID}>
                         {group.name}
                       </option>
                     );
@@ -556,4 +620,4 @@ function GroupBooking(props: any) {
   );
 }
 
-export default GroupBooking;
+export default ExternalGroupBooking;
