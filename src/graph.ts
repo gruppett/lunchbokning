@@ -15,6 +15,9 @@ export async function callMsGraph(accessToken: any) {
     headers: headers
   };
   let result: any = {}
+  // graphConfig.[permission] is the URL of the Microsoft Graph API permission.
+  // permissions have to be allowed in the app registration in azure portal
+  // some need to be granted to the app in the azure portal by admins
   result.user = await fetch(graphConfig.graphMeEndpoint, options)
     .then(response => response.json())
     .catch(error => console.log(error));

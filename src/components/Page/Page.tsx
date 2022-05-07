@@ -37,6 +37,7 @@ function Page() {
   const activeLink = cleanLocation(location, 1);
 
   useEffect(() => {
+    // hides nav if page switches
     setNavState("hidden");
   }, [location]);
 
@@ -49,6 +50,7 @@ function Page() {
   }
 
   function isAllowed (permissions: Array<number>) {
+    // checks if user has permission to access page
     if (userData.roles === undefined) {
       return false
     }
@@ -74,6 +76,7 @@ function Page() {
             <span className="material-icons-outlined text-2xl">close</span>
             <span className="sm:hidden text-xl">Stäng</span>
           </button>
+          
           {nav.main.map((i, key) => (
             isAllowed(i.permissions) ?
               <Link

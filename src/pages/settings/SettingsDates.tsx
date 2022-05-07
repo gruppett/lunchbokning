@@ -100,13 +100,16 @@ function SettingsDates() {
   const [error, seterror] = useState(false as any)
 
   function triggerRefetch() {
+    // fetches new data
     setRefetch(refetch + 1)
   }
 
   function isSelected<K extends keyof typeof selected>(key: K) {
+    // check if key is selected
     return selected[key] > 0 ? true : false
   }
   function getSelected<K extends keyof typeof fetchedData>(key: K) {
+    // returns the selected data from key
     switch (key) {
       case "period":
         return fetchedData.period.find((x: { periodID: number }) => x.periodID === selected.period)
@@ -117,8 +120,10 @@ function SettingsDates() {
     }
   }
   function select<K extends keyof typeof selected>(key: K, id: number) {
+    // selects from id in key
     const newSelected = selected
     newSelected[key] = id
+    // fills form from selected id
     const newForm: any = formData
     const selectedData = getSelected(key)
     switch (key) {
@@ -140,8 +145,10 @@ function SettingsDates() {
     setSelected({...newSelected})
   }
   function deselect<K extends keyof typeof selected>(key:K) {
+    // deselects from key
     const newSelected = selected
     newSelected[key] = -1
+    // clears form from selected key
     const newForm: any = formData
     switch (key) {
       case 'period':
@@ -163,6 +170,7 @@ function SettingsDates() {
   }
 
   function formHandleChange (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
+    // changes the value in the form to the value of the input
     const form = e.target.parentElement?.attributes.getNamedItem('name')?.value as string
     const target = e.target
     const value = target.value
@@ -351,6 +359,7 @@ function SettingsDates() {
   useEffect(() => {
     (async () => {
       try {
+        // fetches data by fetchHelp
         setLoading(true)
         const results = await Promise.all(fetchHelp.map(i => {
           return fetch(process.env.REACT_APP_API_SERVER + i.url, {
@@ -359,6 +368,7 @@ function SettingsDates() {
             }
           })
         }))
+        // converts to json and checks if theres an error
         const data = await Promise.all(results.map((i) => {
           if (i.ok) {
             return i.json()
@@ -366,8 +376,8 @@ function SettingsDates() {
           return null
         }))
         const newFetchedData = fetchedData
+        // sets the fetched data by the key
         data.map((i, key) => (
-
           newFetchedData[fetchHelp[key].name] = i
         ))
         setFetchedData(newFetchedData)

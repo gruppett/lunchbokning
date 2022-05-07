@@ -26,6 +26,7 @@ function Compilation() {
   let printRef = useRef(null)
 
   function handleChange(event: any) {
+    // updates dates
     setLoading(true)
     const {name, value} = event.target
     setDates({...dates, [name]: value})
@@ -34,6 +35,7 @@ function Compilation() {
   useEffect(() => {
     (async () => {
       try {
+        // fetches data from server with dates
         setLoading(true)
         const result = await fetch(process.env.REACT_APP_API_SERVER + "booking/getDays.php", {
           method: "POST",
@@ -56,11 +58,6 @@ function Compilation() {
       }
     })()
   }, [dates])
-
-
-
-  console.log(daysData)
-
 
   return (
     <>

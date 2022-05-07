@@ -56,12 +56,16 @@ function SettingsUsers() {
   function formHandleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) {
+    // gets form name from name attribute
     const form = e.target.parentElement?.attributes.getNamedItem("name")
       ?.value as string;
     const target = e.target;
+    // gets value
     const value = target.value;
+    // gets key of input
     const name = target.name;
     const newFormData = formData;
+    // updates form with new key value where form is the name of the form
     newFormData[form][name] = value;
     console.log(newFormData);
     setFormData(newFormData);
@@ -74,27 +78,21 @@ function SettingsUsers() {
 
   async function selectUser(id: number) {
     setSelectedUser(id);
-    let rolesBool = [];
-    const user = usersData.find((x: { id: number }) => x.id === id);
-    for (let i = 0; i < 4; i++) {
-      if (user.roles && user.roles.includes(i + 1)) {
-        rolesBool.push(true);
-      } else {
-        rolesBool.push(false);
-      }
-    }
     setIsUserSelected(true);
   }
 
   function getSelectedUser() {
+    // finds selected user 
     const data = usersData.find((x: { id: number }) => x.id === selectedUser);
     return data;
   }
 
   function getUnassignedRoles() {
+    // if user does not have any roles return all roles
     if (!getSelectedUser().roles) {
       return roles;
     }
+    // return roles that are undefined in selected user
     const unassignedRoles = roles.filter(
       (x) => !getSelectedUser().roles.includes(x.id)
     );
@@ -102,9 +100,12 @@ function SettingsUsers() {
   }
 
   function getAvailableGroups() {
+    // if user does not have any groups return all groups
     if (!getSelectedUser().groups) {
       return groupsData;
     }
+
+    // return groups that user is not handler for
     let availableGroups: any = [];
 
     groupsData.forEach((group: { handlers: any[] }) => {
@@ -319,6 +320,7 @@ function SettingsUsers() {
   }
 
   function getRole(id: number) {
+    // get specific role
     const role = roles.find((x: { id: number }) => x.id === id);
     return role;
   }
@@ -327,7 +329,6 @@ function SettingsUsers() {
     return <Spinner />;
   }
 
-  console.log(usersData);
 
   return (
     <div className="flex gap-3 flex-col p-3">

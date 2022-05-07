@@ -5,6 +5,8 @@ type Props = {
   setError: (error: any) => void
 }
 
+// error that is closable by props
+
 function Alert({error, setError}: Props) {
   console.log("err", error)
   return (

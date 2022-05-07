@@ -64,10 +64,12 @@ function App() {
   const [userData, setUserData] = useState({} as ApiUserContextInterface);
 
   useEffect(() => {
+    // If the user is not authenticated, redirect to login page
     if (!isAuthenticated) {
       return;
     }
 
+    // If the user is authenticated, get the user's data
     const request = {
       ...loginRequest,
       account: accounts[0],
@@ -91,7 +93,9 @@ function App() {
   }, [isAuthenticated, accounts, instance]);
 
   useEffect(() => {
+    // Skip until graphData is not empty
     if (graphData?.user?.mail !== undefined) {
+      // Check if the user is in the allowed groups
       let groups: string[] = [];
       graphData.groups?.value.forEach((g: any) => {
         groups.push(g.displayName);
@@ -107,6 +111,7 @@ function App() {
         return;
       }
 
+      // call api check on user
       const data = {
         employeeEmail: graphData.user.mail,
         roles: groups,
@@ -127,13 +132,16 @@ function App() {
   }, [graphData]);
 
   useEffect(() => {
+    // check if graphData is ready
     if (graphData?.user?.mail !== undefined) {
       setIsLoading(false);
     }
   }, [graphData]);
 
+  // show login page to unauthenticated users
   if (!isAuthenticated) return <SignIn />;
 
+  // notify users if they are unprivileged
   if (isUnprivileged)
     return (
       <div className="flex justify-center gap-3 items-center h-full flex-col">
@@ -149,6 +157,8 @@ function App() {
       </div>
     );
   }
+  // show the app
+  // provide context to the rest of the app
   return (
     <BrowserRouter>
       <GraphContext.Provider value={graphData}>

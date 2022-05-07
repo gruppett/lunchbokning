@@ -9,7 +9,7 @@ import { PublicClientApplication } from "@azure/msal-browser";
 import { MsalProvider } from "@azure/msal-react";
 import { msalConfigDev, msalConfigProd } from "./authConfig";
 
-//console.log(process.env)
+
 let msalInstance;
 console.log(process.env.NODE_ENV);
 

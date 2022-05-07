@@ -46,6 +46,9 @@ function SettingsGroups() {
   const [error, setError] = useState(false as any);
 
   function selectGroup(id: number) {
+    // function for selecting group
+    // form gets filled with data
+    // states gets setted
     const group = groupData.find((x) => x.groupID === id);
     const data = {
       groupName: group.name,
@@ -62,10 +65,12 @@ function SettingsGroups() {
   }
 
   function getSelectedGroup() {
+    // retrieves selected group data
     return groupData.find((x) => x.groupID === selectedGroup);
   }
 
   function resetSelectedGroup() {
+    // clears form and sets states to default
     const data = {
       groupName: "",
       groupCount: "1",
@@ -81,10 +86,12 @@ function SettingsGroups() {
   }
 
   function reloadData() {
+    // triggers new data fetches
     setReload(reload + 1);
   }
 
   const sectionLoaded = useCallback(() => {
+    // checks if all data is loaded
     let status = loadStatus;
     status[0]++;
     if (status[0] === status[1]) {
@@ -145,6 +152,7 @@ function SettingsGroups() {
   }, [reload, sectionLoaded]);
 
   function getAvailableUsers() {
+    // returns all users that are not in the selected group
     if (!getSelectedGroup()?.handlers) {
       return userData;
     }
@@ -163,6 +171,7 @@ function SettingsGroups() {
   }
 
   function getOnlyHandlers() {
+    // returns all users that have the handler role
     return userData.filter((x) => x.roles.includes(4));
   }
 
@@ -185,6 +194,7 @@ function SettingsGroups() {
   function groupHandleChange(event: { target: any }) {
     const target = event.target;
     let value = target.value;
+    // chechbox handling
     if (target.name === "groupExternal") {
       value = target.checked ? true : false;
     }
@@ -211,6 +221,7 @@ function SettingsGroups() {
       servingID: groupForm.groupServing,
       external: groupForm.groupExternal ? 1 : 0,
     } as unknown as groupFormSubmitInterface;
+    // removes key employeeID if empty
     if (data.employeeID === "") {
       delete data.employeeID;
     }
@@ -259,6 +270,7 @@ function SettingsGroups() {
     reloadData();
     return;
   }
+
   async function handlerHandleSubmit(event: any) {
     event.preventDefault();
     const data = {
@@ -290,6 +302,7 @@ function SettingsGroups() {
 
   async function handlerDeleteHandleSubmit(event: any) {
     event.preventDefault();
+    // gets data from hidden input
     const data = {
       employeeID: event.target.elements[0].value,
       groupID: selectedGroup,

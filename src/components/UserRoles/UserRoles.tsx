@@ -12,8 +12,12 @@ const icons = [
   "person"
 ]
 
+//
+
 function UserRoles({roles}: Props) {
   let rolesBool: Array<Boolean> = []
+
+  // checks what permissions a user has but with bools
 
   if (!Array.isArray(roles)) {
     rolesBool = new Array(5).fill(false)
@@ -28,6 +32,7 @@ function UserRoles({roles}: Props) {
   }
 
 
+  // renders icons for each role if user has them
   return (
     <>
       {rolesBool.map((i, key) => (

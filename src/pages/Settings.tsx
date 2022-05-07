@@ -28,6 +28,7 @@ function Settings() {
         </Link>
       ))}
     </div>
+    {/* Outlet renders the inner element specified by page */}
     <Outlet />
     </>
   )

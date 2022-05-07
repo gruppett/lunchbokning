@@ -53,9 +53,12 @@ function PersonalSettings() {
 
   function formHandleChange (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
     const target = e.target
+    // gets value
     const value = target.value
+    // gets form and key of input
     const [form, name] = target.name.split("-")
     const newFormData = formData
+    // updates form with new key value
     newFormData[form][name] = value
     setFormData({...newFormData})
   }
@@ -83,6 +86,7 @@ function PersonalSettings() {
     } catch (error) {
       console.log(error)
     }
+    // updates personal data without having to fetch new data
     const user = {
       employeeID: userData.employeeID,
       employeeEmail: userData.employeeEmail,
@@ -97,6 +101,7 @@ function PersonalSettings() {
 
 
   useEffect(() => {
+    // checks if userData has loaded yet
     if (Object.keys(userData).length === 0) {
       return
     }
@@ -104,7 +109,10 @@ function PersonalSettings() {
       try {
         setLoading(true)
         const fetchHelpWithEmail = fetchHelp
+        // specify the email to the fetch
         fetchHelpWithEmail[1].data = {email: userData.employeeEmail}
+        // goes trough fetchHelp and fetches data
+        // different fetches if there is a body to be included
         const results = await Promise.all(fetchHelpWithEmail.map(i => {
           if (i.method === 'GET') {
             return fetch(process.env.REACT_APP_API_SERVER +  i.url, {
@@ -123,6 +131,7 @@ function PersonalSettings() {
             })
           }
         }))
+        // prosesses fetched data
         const data = await Promise.all(results.map((i) => {
           if (i.ok) {
             return i.json()
@@ -130,6 +139,7 @@ function PersonalSettings() {
           return null
         }))
         const newFetchedData = fetchedData
+        // adds data to fetchedData
         data.map((i, key) => (
           newFetchedData[fetchHelp[key].name] = i
         ))
@@ -146,9 +156,11 @@ function PersonalSettings() {
 
 
   useEffect(() => {
+    // checks if fetchedData has loaded yet
     if (Object.keys(fetchedData).length === 0) {
       return
     }
+    // selects from fetchedData
     const newFormData = formData
     newFormData.preferences.diet = userData.diet
     newFormData.preferences.serving = userData.servingID
