@@ -18,7 +18,7 @@ interface iForm extends iFormKeys {
     startDate: string;
     endDate: string;
     period: string;
-    serving: string;
+    serving: number;
   };
 }
 
@@ -68,7 +68,7 @@ function GroupBooking(props: any) {
       startDate: formatDate(new Date()),
       endDate: formatDate(new Date()),
       period: "",
-      serving: "1",
+      serving: 0,
     },
   } as iForm);
 
@@ -121,8 +121,8 @@ function GroupBooking(props: any) {
     newFormData.bookingDates.serving = user.groups.find(
       (group: any) => group.id === groupID
     )?.servingID;
-    if (newFormData.bookingDates.serving === undefined) {
-      newFormData.bookingDates.serving = "1";
+    if (newFormData.bookingDates.serving === 0) {
+      newFormData.bookingDates.serving = servings[0].servingID;
     }
     setFormData({ ...newFormData });
   }

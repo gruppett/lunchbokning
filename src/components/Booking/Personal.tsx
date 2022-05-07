@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 
 interface iFormKeys {
   [key: string]: {
-    [key: string]: string | undefined;
+    [key: string]: string | number | undefined;
   };
 }
 
@@ -16,7 +16,7 @@ interface iForm extends iFormKeys {
     startDate: string;
     endDate: string;
     period: string;
-    serving: string;
+    serving: number;
   };
 }
 
@@ -59,7 +59,7 @@ function PersonalBooking(props: any) {
       startDate: formatDate(new Date()),
       endDate: formatDate(new Date()),
       period: "",
-      serving: userData.servingID !== 0 ? userData.servingID : "",
+      serving: userData.servingID,
     },
   } as iForm);
 
@@ -308,6 +308,11 @@ function PersonalBooking(props: any) {
         })
         .then((data) => {
           setServings(data);
+          if (formData.bookingDates.serving === 0) {
+            const newFormData = formData;
+            newFormData.bookingDates.serving = data[0].servingID;
+            setFormData({ ...newFormData });
+          }
           setServingsLoading(false);
         })
         .catch((error) => {
