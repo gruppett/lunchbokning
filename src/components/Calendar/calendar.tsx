@@ -243,7 +243,6 @@ function HjortenCalendar(props: any) {
               props.setBookings(null);
             }
             setGroupBookingData(null);
-            console.log(error);
             return error;
           })
           .then((error) => {
@@ -261,6 +260,39 @@ function HjortenCalendar(props: any) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [groupData, user.mail, props.bookingID, props.group]);
 
+  useEffect(() => {
+    const errors = [
+      personalError,
+      appUserError,
+      excludeDatesError,
+      groupError,
+      groupBookingError,
+    ];
+    errors.forEach((x, index) => {
+      let processingError;
+      switch (index) {
+        case 0:
+          processingError = "Personal bookings error";
+          break;
+        case 1:
+          processingError = "Personal information error";
+          break;
+        case 2:
+          processingError = "Exclude dates error";
+          break;
+        case 3:
+          processingError = "Group error";
+          break;
+        case 4:
+          processingError = "Group booking error";
+          break;
+      }
+      if (x !== undefined && x !== false && x !== null) {
+        console.log(processingError + ": " + x.error);
+      }
+    });
+  }, []);
+
   if (
     personalLoading ||
     excludeDatesLoading ||
@@ -270,37 +302,6 @@ function HjortenCalendar(props: any) {
   ) {
     return <Spinner />;
   }
-
-  const errors = [
-    personalError,
-    appUserError,
-    excludeDatesError,
-    groupError,
-    groupBookingError,
-  ];
-  errors.forEach((x, index) => {
-    let processingError;
-    switch (index) {
-      case 0:
-        processingError = "Personal bookings error";
-        break;
-      case 1:
-        processingError = "Personal information error";
-        break;
-      case 2:
-        processingError = "Exclude dates error";
-        break;
-      case 3:
-        processingError = "Group error";
-        break;
-      case 4:
-        processingError = "Group booking error";
-        break;
-    }
-    if (x !== undefined && x !== false && x !== null) {
-      console.log(processingError + ": " + x.error);
-    }
-  });
 
   return (
     <>

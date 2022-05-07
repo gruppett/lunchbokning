@@ -16,7 +16,7 @@ interface iForm extends iFormKeys {
     startDate: string;
     endDate: string;
     period: string;
-    serving: string;
+    serving: number;
     groupName: string;
     groupCount: number;
     groupDiet: number;
@@ -70,7 +70,7 @@ function ExternalGroupBooking(props: any) {
       startDate: formatDate(new Date()),
       endDate: formatDate(new Date()),
       period: "",
-      serving: "1",
+      serving: 0,
       groupName: "",
       groupCount: 0,
       groupDiet: 0,
@@ -192,7 +192,7 @@ function ExternalGroupBooking(props: any) {
         }
       })
       .then((response) => {
-        setNewGroup(response.groupID as number);
+        setNewGroup(response);
       })
       .catch((error) => {
         return error;
@@ -355,6 +355,11 @@ function ExternalGroupBooking(props: any) {
         })
         .then((data) => {
           setServings(data);
+          if (formData.bookingDates.serving === 0) {
+            const newFormData = formData;
+            newFormData.bookingDates.serving = data[0].servingID;
+            setFormData({ ...newFormData });
+          }
           setServingsLoading(false);
         })
         .catch((error) => {
@@ -400,9 +405,20 @@ function ExternalGroupBooking(props: any) {
   }, [updateGroup]);
 
   useEffect(() => {
-    if (newGroup !== null && newGroup !== undefined) {
-      console.log(newGroup);
+    let bookingGroup;
+    if (typeof newGroup !== "number") {
+      bookingGroup = groups.find(
+        (group: any) => group.name === formData.bookingDates.groupName
+      )?.groupID;
+    }
+    if (
+      newGroup !== null &&
+      newGroup !== undefined &&
+      typeof newGroup === "number"
+    ) {
       formHandleGroupChange(newGroup);
+    } else {
+      formHandleGroupChange(bookingGroup);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [groups]);

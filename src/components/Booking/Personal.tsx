@@ -324,6 +324,7 @@ function PersonalBooking(props: any) {
         });
     }
     fetchServings();
+    // eslint-disable react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
