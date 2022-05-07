@@ -105,12 +105,44 @@ function HjortenCalendar(props: any) {
             if (props.group !== undefined && props.group !== null) {
               data.groups.find((x: any) => x.id === parseInt(props.group)) ===
               undefined
-                ? setGroupData(props.group)
+                ? fetch(
+                    process.env.REACT_APP_API_SERVER +
+                      "groups/getExternals.php",
+                    {
+                      method: "POST",
+                      mode: "cors",
+                      headers: {
+                        "Content-Type": "application/json",
+                        "API-Key": process.env.REACT_APP_API_KEY as string,
+                      },
+                    }
+                  )
+                    .then((response) => {
+                      if (response.ok) {
+                        setGroupError(false);
+                        return response.json();
+                      } else {
+                        throw response.json();
+                      }
+                    })
+                    .then((data) => {
+                      setGroupData(
+                        data.find(
+                          (x: any) => x.groupID === parseInt(props.group)
+                        )
+                      );
+                    })
+                    .catch((error) => {
+                      setGroupData(null);
+                      setGroupError(error);
+                    })
                 : setGroupData(
                     data.groups.find((x: any) => x.id === parseInt(props.group))
                   );
             } else {
-              setGroupData(data.groups.find((x: any) => x.primary === 1));
+              if (props.view !== "Groups") {
+                setGroupData(data.groups.find((x: any) => x.primary === 1));
+              }
             }
             setGroupError(false);
             setGroupLoading(false);
@@ -293,6 +325,7 @@ function HjortenCalendar(props: any) {
     });
   }, []);
 
+  console.log(groupData);
   if (
     personalLoading ||
     excludeDatesLoading ||
