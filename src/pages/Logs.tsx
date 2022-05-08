@@ -22,7 +22,7 @@ function Logs() {
   const [error, setError] = useState(false as any)
 
   async function postCleanup() {
-    const decision = prompt(`Är du säker på att du vill radera all data till och med ${(new Date).toLocaleDateString()}?
+    const decision = prompt(`Är du säker på att du vill radera all data till och med ${(new Date()).toLocaleDateString()}?
     \n Detta beslut är permanent och kan inte ångras.
     \n Om du är säker, skriv "Jag är säker, radera allt".`);
     if (decision !== "Jag är säker, radera allt") {
@@ -156,11 +156,14 @@ function Logs() {
     return <Spinner />;
   }
 
+
   if (error) {
     console.log(error)
     return (
       <div>
         <h2>{error}</h2>
+        <button onClick={postCleanup} className="px-3 py-1 bg-red-500 hover:bg-opacity-60">Radera all till och med {(new Date()).toLocaleDateString()}</button>
+
       </div>
     )
   }
@@ -179,7 +182,7 @@ function Logs() {
       highlightOnHover
       dense
     />
-    <button onClick={postCleanup} className="px-3 py-1 bg-red-500 hover:bg-opacity-60">Radera all till och med{(new Date).toLocaleDateString()}</button>
+      <button onClick={postCleanup} className="px-3 py-1 bg-red-500 hover:bg-opacity-60">Radera all till och med{(new Date()).toLocaleDateString()}</button>
     </>
   );
 }
