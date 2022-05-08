@@ -326,8 +326,6 @@ function HjortenCalendar(props: any) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  console.log(groupData);
-
   if (
     personalLoading ||
     excludeDatesLoading ||
