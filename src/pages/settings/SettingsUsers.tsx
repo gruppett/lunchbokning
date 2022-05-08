@@ -439,6 +439,7 @@ function SettingsUsers() {
               />
             </form>
           </div>
+          {getSelectedUser().roles.includes(4) ?
           <div className="flex gap-6 items-start sm:flex-wrap flex-col sm:flex-row">
             <table className="table-auto text-left border-collapse">
               <thead>
@@ -490,6 +491,8 @@ function SettingsUsers() {
               ></input>
             </form>
           </div>
+          :<></>
+          }
           <button
             type="button"
             className="px-3 py-1 bg-red-500 hover:bg-opacity-60"
