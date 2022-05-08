@@ -364,6 +364,7 @@ function SettingsGroups() {
   }
 
   console.log(groupForm);
+  console.log(servingData)
 
   return (
     <div className="flex gap-3 flex-col p-3l">
@@ -398,7 +399,7 @@ function SettingsGroups() {
                   </td>
                   <td className="border p-1">
                     {
-                      servingData.find((x) => x.servingID === i.servingID)
+                      Array.isArray(servingData) && servingData.find((x) => x.servingID === i.servingID)
                         ?.servingName
                     }
                   </td>
@@ -440,7 +441,7 @@ function SettingsGroups() {
                   <th className="border p-1">Dukning</th>
                   <td className="border p-1">
                     {
-                      servingData.find((x) => x.servingID === i.servingID)
+                      Array.isArray(servingData) && servingData.find((x) => x.servingID === i.servingID)
                         ?.servingName
                     }
                   </td>
@@ -536,7 +537,7 @@ function SettingsGroups() {
             value={groupForm.groupServing}
           >
             <option value="0">Ingen servering</option>
-            {servingData.map((i: any, key: any) => (
+            {Array.isArray(servingData) && servingData.map((i: any, key: any) => (
               <option value={i.servingID} key={key}>
                 {i.servingName}
               </option>
