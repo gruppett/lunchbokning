@@ -590,7 +590,7 @@ function Overview_popup(props: any) {
         </span>
       </div>
       <div
-        className="absolute !min-w-full !min-h-full top-0 left-0 z-40 bg-gray-400 bg-opacity-50 filter blur-lg"
+        className="fixed !min-w-full !min-h-full top-0 z-40 bg-gray-400 bg-opacity-50 filter blur-lg"
         onClick={() => unmountPopup()}
       ></div>
     </>
