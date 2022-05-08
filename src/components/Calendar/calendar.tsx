@@ -323,9 +323,11 @@ function HjortenCalendar(props: any) {
         console.log(processingError + ": " + x.error);
       }
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   console.log(groupData);
+
   if (
     personalLoading ||
     excludeDatesLoading ||
@@ -387,8 +389,8 @@ function HjortenCalendar(props: any) {
               {props.view === "Overview" || props.view === "Groups" ? (
                 tile_Matchesdate(date, groupBookingData, view) ? (
                   <p className="bg-gradient-to-tr from-red-400 to-red-200 rounded p-1">
-                    {groupData !== undefined
-                      ? groupData.name !== undefined
+                    {groupData !== undefined && groupData !== null
+                      ? groupData.name !== undefined && groupData.name !== null
                         ? groupData.name
                         : groupBookingData[0].name
                       : ""}

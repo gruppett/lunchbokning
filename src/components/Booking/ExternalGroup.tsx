@@ -402,6 +402,7 @@ function ExternalGroupBooking(props: any) {
     if (updateGroup === 0) {
       fetchServings();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [updateGroup]);
 
   useEffect(() => {
