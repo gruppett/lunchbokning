@@ -178,11 +178,11 @@ function PersonalSettings() {
     <>
       <div className="">
         <h1>Personliga inställningar</h1>
-        <p>Här kan du ändra din förvalada dukning och meddela eventuell diet.</p>
+        <p>Här kan du ändra din förvalada servring och meddela eventuell diet.</p>
         <form name='preferences' onSubmit={preferencesHandleSubmit} className="flex flex-col gap-1 items-start">
-          <label htmlFor="serving">Dukning</label>
+          <label htmlFor="serving">Servering</label>
           <select name="preferences-serving" id="serving" required value={formData.preferences.serving} onChange={formHandleChange} className='bg-slate-100 p-1'>
-            <option value="">Välj dukning</option>
+            <option value="">Välj Servering</option>
             {fetchedData.serving && fetchedData.serving.map((i: any, key: number) => (
               <option value={i.servingID} key={key}>{i.servingName}</option>
               ))}
