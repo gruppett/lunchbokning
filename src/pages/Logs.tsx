@@ -5,10 +5,11 @@ import DataTable, {
   Media,
   defaultThemes,
 } from "react-data-table-component";
-
+import moment from "moment";
 function Logs() {
   const [loaded, setLoaded] = useState(false);
   const [logData, setLogData] = useState({} as any);
+  const [refetch, setRefetch] = useState(0);
   interface DataRow {
     date: string;
     employeeName: string;
@@ -19,6 +20,31 @@ function Logs() {
     servingName: string;
   }
   const [error, setError] = useState(false as any)
+
+  async function postCleanup() {
+    const decision = prompt(`Är du säker på att du vill radera all data till och med ${(new Date).toLocaleDateString()}?
+    \n Detta beslut är permanent och kan inte ångras.
+    \n Om du är säker, skriv "Jag är säker, radera allt".`);
+    if (decision !== "Jag är säker, radera allt") {
+      return;
+    }
+    const response = await fetch(process.env.REACT_APP_API_SERVER + "log/postCleanup.php", {
+      method: "POST",
+      headers: {
+        "API-Key": process.env.REACT_APP_API_KEY as string,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({date: moment().format("YYYY-MM-DD")}),
+    })
+    const data = await response.json();
+    if (response.ok) {
+      alert("Data raderad!");
+      setRefetch(refetch + 1);
+    } else {
+      console.log(data)
+      alert(`Något gick fel!`);
+    }
+  }
 
   const customStyles = {
     header: {
@@ -107,6 +133,7 @@ function Logs() {
   useEffect(() => {
     ( async () => {
       try {
+        setLoaded(false)
         const response = await fetch(process.env.REACT_APP_API_SERVER + "log/getLogs.php", {
           headers: {
             "API-Key": process.env.REACT_APP_API_KEY as string,
@@ -123,7 +150,7 @@ function Logs() {
         setLoaded(true)
       }
     })()
-  }, []);
+  }, [refetch]);
 
   if (!loaded) {
     return <Spinner />;
@@ -140,6 +167,7 @@ function Logs() {
 
 
   return (
+    <>
     <DataTable
       columns={columns}
       data={logData}
@@ -151,6 +179,8 @@ function Logs() {
       highlightOnHover
       dense
     />
+    <button onClick={postCleanup} className="px-3 py-1 bg-red-500 hover:bg-opacity-60">Radera all till och med{(new Date).toLocaleDateString()}</button>
+    </>
   );
 }
 
