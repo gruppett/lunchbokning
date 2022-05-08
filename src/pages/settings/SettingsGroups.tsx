@@ -379,7 +379,7 @@ function SettingsGroups() {
                 <th className="border p-1">Antal</th>
                 <th className="border p-1">Diet</th>
                 <th className="border p-1">Primär handledare</th>
-                <th className="border p-1">Dukning</th>
+                <th className="border p-1">Servering</th>
                 <th className="border p-1">Extern</th>
               </tr>
             </thead>
@@ -438,7 +438,7 @@ function SettingsGroups() {
                   </td>
                 </tr>
                 <tr>
-                  <th className="border p-1">Dukning</th>
+                  <th className="border p-1">Servering</th>
                   <td className="border p-1">
                     {
                       Array.isArray(servingData) && servingData.find((x) => x.servingID === i.servingID)

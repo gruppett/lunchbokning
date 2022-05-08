@@ -483,7 +483,7 @@ function SettingsDates() {
         :<p>Välj ett exkluderad datum för att hantera den.</p>}
         <div className="flex gap-6 items-start sm:flex-wrap flex-col sm:flex-row">
         <div className=''>
-        <h2 className="text-xl">Dukningar</h2>
+        <h2 className="text-xl">Servering</h2>
           <table className='table-auto text-left border-collapse'>
               <thead>
                 <tr className='bg-white'>
