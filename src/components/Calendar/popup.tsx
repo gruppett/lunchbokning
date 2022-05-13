@@ -66,6 +66,10 @@ function Overview_popup(props: any) {
   const [editBooking, setEditBooking] = useState(false);
   const [editBookingGroup, setEditBookingGroup] = useState(false);
 
+  if (props.group.id === undefined || props.group.id === null) {
+    props.group.id = props.group.groupID;
+  }
+
   function formHandleChangeInput(e: React.ChangeEvent<HTMLInputElement>) {
     const form = e.target.parentElement?.parentElement?.attributes.getNamedItem(
       "name"
