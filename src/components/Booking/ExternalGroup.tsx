@@ -170,7 +170,11 @@ function ExternalGroupBooking(props: any) {
     if (formData.bookingDates.weekday !== "0") {
       data.wday = formData.bookingDates.weekday;
     }
-    if (formData.bookingDates.groupName.length !== 0) {
+    if (
+      formData.bookingDates.groupName.length !== 0 &&
+      (formData.bookingDates.group === 0 ||
+        formData.bookingDates.group === undefined)
+    ) {
       data.name = formData.bookingDates.groupName;
     } else {
       data.groupID = formData.bookingDates.group;
